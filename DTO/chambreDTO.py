@@ -1,6 +1,7 @@
 from typing import Any, Optional
 from pydantic import BaseModel
-from modele.chambre import TypeChambre, Chambre
+from modele.chambre import Chambre
+from modele.TypeChambre import TypeChambre
 from uuid import UUID
 
 # Data Transfer Object : pydantic BaseModel pour intégration facile avec FastAPI
@@ -18,6 +19,7 @@ class TypeChambreDTO(BaseModel):
                          prix_plafond = typeChambre.prix_plafond,
                          prix_plancher = typeChambre.prix_plancher,
                          description_chambre = typeChambre.description_chambre)
+
         
 class ChambreDTO(BaseModel):
     idChambre : Optional[UUID]

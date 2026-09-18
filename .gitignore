@@ -216,3 +216,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+metier/chambreMetier.py
+.vscode/settings.json
+tests/__init__.py
