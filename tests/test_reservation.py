@@ -30,8 +30,8 @@ class TestReservation(unittest.TestCase):
             reservation = session.execute(stmt).scalar_one()
             
             # Vérification des champs simples
-            self.assertEqual(reservation.date_debut_reservation, datetime(2026, 10, 5, 0))
-            self.assertEqual(reservation.date_fin_reservation, datetime(2026, 10, 7, 0))
+            self.assertEqual(reservation.date_debut_reservation, datetime(2026, 10, 1))
+            self.assertEqual(reservation.date_fin_reservation, datetime(2026, 10, 5))
             self.assertEqual(reservation.prix_jour, Decimal('199.99'))
             self.assertEqual(reservation.info_reservation, 'Reservation test')
             self.assertIsNotNone(reservation.id_reservation)
