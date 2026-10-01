@@ -1,5 +1,5 @@
 from typing import Any, Optional
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, model_validator, field_validator
 from modele.chambre import Chambre
 from modele.TypeChambre import TypeChambre
 from uuid import UUID
@@ -13,6 +13,15 @@ class TypeChambreDTO(BaseModel):
     prix_plancher : float = Field(ge=0, custom_error='prix_plancher doit être une valeur positive') #ge = Greater or Equal
     description_chambre : Optional[str] = Field(max_length=200, custom_error="description_chambre a une limite de 200 caractères")
 
+    @model_validator(mode="after")
+    def validerPrix(self):
+        # Le model_validator est exécuté après la validation invidividuelle des champs
+        # Permet de comparer les prix entre eux
+        # Le prix plafond peut être None, donc on le vérifie d'abord et si il existe, il doit être supérieur à plancher
+        if self.prix_plafond is not None and self.prix_plafond <= self.prix_plancher:
+            raise ValueError("Le prix plafond doit être supérieur au prix plancher.")
+        # Si les prix sont valides, pydantic continuer la création du DTO
+        return self
     def __init__(self, typeChambre: TypeChambre = None): 
         super().__init__(id_type_chambre = typeChambre.id_type_chambre,
                          nom_type = typeChambre.nom_type,
@@ -28,6 +37,17 @@ class ChambreDTO(BaseModel):
     autre_informations: Optional[str] = Field(default=None, max_length=2147483647, custom_error='autre_informations doit posséder une taille plus petite que 2GB')
     type_chambre: TypeChambreDTO
 
+    @field_validator("numero_chambre", mode="before")
+    @classmethod
+    def validerNumeroChambre(cls, valeur):
+        # Ce field_validator s'applique uniquement au champ numero_chambre
+        # Le mode "before" permet de vérifier la valeur avant que pydantic essaie de le convertir
+        # Une chambre doit obligatoirement avoir un numéro
+        # Si aucune valeur fournie, on empêche la création
+        if valeur is None:
+            raise ValueError("Le numéro de chambre ne peut pas être nul.")
+        # Si le numéro n'est pas nul, on retourne la valeur que pydantic puisse continuer ses autres validations
+        return valeur
     def __init__(self, chambre: Chambre = None):
         super().__init__(idChambre = chambre.id_chambre,
                          numero_chambre = chambre.numero_chambre,
