@@ -1,13 +1,12 @@
 import unittest
 import logging
-
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select
-
 from modele.chambre import Chambre
 from modele.TypeChambre import TypeChambre
 from modele.usager import Usager
 from modele.reservation import Reservation
+from DTO.chambreDTO import TypeChambreDTO
 
 
 logging.basicConfig()
@@ -70,3 +69,19 @@ class TestTypeChambre(unittest.TestCase):
                     for chambre in type_chambre.chambres
                 )
             )
+    
+    def test_prixPlafondInferieurPrixPlancher(self):
+        # Création d'un TypeChambre uniquement pour tester
+        type_chambre = TypeChambre()
+
+        type_chambre.id_type_chambre = None
+        type_chambre.nom_type = "Test"
+        # On donne volontairement des valeurs invalides
+        type_chambre.prix_plafond = 100
+        type_chambre.prix_plancher = 200
+        type_chambre.description_chambre = "Test"
+
+        # assertRaises vérifie que la création du DTO déclenche une erreur
+        # Si aucun ValueError n'est déclenché, le test échoue
+        with self.assertRaises(ValueError):
+            TypeChambreDTO(type_chambre)
