@@ -98,16 +98,36 @@ def getChambreParNumero(no_chambre: int):
         for chambre in result.scalars():
             return ChambreDTO (chambre)
 
-def modifierChambre(chambre: ChambreDTO):
-    #TODO: Valider que la chambre existe bien dans la BD et autres validations.
-    #TODO: Ajouter gestion des erreurs. On va voir un exemple au prochain cours.
-    with Session(engine) as session:
-        stmt = select(Chambre).where(Chambre.id_chambre == chambre.idChambre)
-        chambreAModifier = session.execute(stmt).scalars().one()
 
-        chambreAModifier.disponible_reservation = chambre.disponible_reservation
-        chambreAModifier.autre_informations = chambre.autre_informations
+def modifierChambre(chambre: ChambreDTO):
+    #TODO: Ajouter gestion des erreurs. On va voir un exemple au prochain cours.
+    
+    with Session(engine) as session:
+        
+        stmt = select(Chambre).where(Chambre.id_chambre == chambre.idChambre)
+        
+        # one_or_none() retourne la chambre si elle existe, sinon retourne None.
+        chambreAModifier = session.execute(stmt).scalars().one_or_none()
+        
+        # Vérifier que la chambre existe déjà dans la base de données avant de la modifier
+        if chambreAModifier is None:
+            raise ValueError("La chambre n'existe pas")
+
+        # Met à jour le numéro de la chambre
         chambreAModifier.numero_chambre = chambre.numero_chambre
-        #TODO: Setter les autres champs
+        
+        # Met à jour la disponibilité de la chambre pour les réservations
+        chambreAModifier.disponible_reservation = chambre.disponible_reservation
+
+        # Vérifie si de nouvelles informations ont été fournies avant de les modifier.
+        # Si autre_informations=None, on conserve la valeur déjà présente dans la base de données.
+        if chambre.autre_informations is not None:
+            chambreAModifier.autre_informations = chambre.autre_informations
+
+        # Recherche le type de chambre dans la base de données à partir de l'id fourni dans le DTO.
+        typeChambre = session.execute(
+            select(TypeChambre).where(TypeChambre.id_type_chambre == chambre.type_chambre.id_type_chambre)
+        ).scalars().one()
+        chambreAModifier.type_chambre = typeChambre
 
         session.commit()
