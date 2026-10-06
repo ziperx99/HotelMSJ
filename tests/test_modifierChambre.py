@@ -3,6 +3,8 @@ import unittest
 import logging
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select
+from DTO.chambreDTO import ChambreDTO
+from metier.chambreMetier import modifierChambre
 from modele.chambre import Chambre
 
 # Configuration de base
@@ -22,11 +24,16 @@ class TestChambre(unittest.TestCase):
         
         # Ouverture d'une session SQLAlchemy
         with Session(engine) as session:
-
+            
             # Récupération de la chambre
             stmt = select(Chambre).where(Chambre.numero_chambre == 115)
-            chambre = session.execute(stmt).scalar_one()
 
+            # Exécution de la requête
+            chambre = session.execute(stmt).scalar_one()
+            
+            if chambre is None:
+                raise ValueError("La chambre n'existe pas")
+            
             # Sauvegarde de l'état initial
             ancienne_info = chambre.autre_informations
             ancienne_disponibilite = chambre.disponible_reservation
@@ -59,3 +66,21 @@ class TestChambre(unittest.TestCase):
             # Vérification des champs modifiés
             self.assertEqual(chambre_nettoyee.autre_informations, ancienne_info)
             self.assertEqual(chambre_nettoyee.disponible_reservation, ancienne_disponibilite)
+            
+            
+    def test_modifierChambreInexistante(self):
+        # Création d'une chambre uniquement pour tester
+        chambre = Chambre()
+
+        # On donne volontairement un numéro de chambre qui n'existe pas dans la BD
+        chambre.id_chambre = None
+        chambre.numero_chambre = 9999
+        chambre.disponible_reservation = True
+        chambre.autre_informations = "Test"
+
+        # Création du DTO
+        chambreDTO = ChambreDTO(chambre)
+
+        # Vérifier que la modification d'une chambre inexistante déclenche une erreur
+        with self.assertRaises(ValueError):
+            modifierChambre(chambreDTO)
