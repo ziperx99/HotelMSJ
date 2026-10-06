@@ -2,10 +2,7 @@ import unittest
 import logging
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select
-from modele.chambre import Chambre
 from modele.TypeChambre import TypeChambre
-from modele.usager import Usager
-from modele.reservation import Reservation
 from DTO.chambreDTO import TypeChambreDTO
 
 
