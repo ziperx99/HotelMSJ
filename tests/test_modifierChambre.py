@@ -6,6 +6,8 @@ from sqlalchemy import create_engine, select
 from DTO.chambreDTO import ChambreDTO
 from metier.chambreMetier import modifierChambre
 from modele.chambre import Chambre
+from modele.TypeChambre import TypeChambre
+from uuid import uuid4
 
 # Configuration de base
 logging.basicConfig()
@@ -21,7 +23,7 @@ engine = create_engine(
 class TestChambre(unittest.TestCase):
 
     def test_modifierChambre(self):
-        
+    
         # Ouverture d'une session SQLAlchemy
         with Session(engine) as session:
             
@@ -38,23 +40,25 @@ class TestChambre(unittest.TestCase):
             ancienne_info = chambre.autre_informations
             ancienne_disponibilite = chambre.disponible_reservation
 
-            # Modification
-            chambre.autre_informations = "Chambre en rénovation"
-            chambre.disponible_reservation = False
+            # Création du DTO avec les informations de la chambre
+            chambreDTO = ChambreDTO(chambre)
 
-            # Sauvegarde en BD
-            session.commit()
+            # Modification des informations dans le DTO
+            chambreDTO.autre_informations = "Chambre en rénovation"
+            chambreDTO.disponible_reservation = False
+
+            # Modification de la chambre avec la fonction métier
+            modifierChambre(chambreDTO)
 
             # Relecture
             stmt = select(Chambre).where(Chambre.numero_chambre == 115)
             chambre_modifiee = session.execute(stmt).scalar_one()
 
             # Vérifications
-            self.assertEqual(chambre_modifiee.autre_informations,"Chambre en rénovation")
+            self.assertEqual(chambre_modifiee.autre_informations, "Chambre en rénovation")
             self.assertFalse(chambre_modifiee.disponible_reservation)
 
             # Nettoyage : retour aux données originales
-            # retour aux données originales 
             chambre_modifiee.autre_informations = ancienne_info
             chambre_modifiee.disponible_reservation = ancienne_disponibilite
             session.commit()
@@ -69,14 +73,26 @@ class TestChambre(unittest.TestCase):
             
             
     def test_modifierChambreInexistante(self):
+    
         # Création d'une chambre uniquement pour tester
         chambre = Chambre()
 
-        # On donne volontairement un numéro de chambre qui n'existe pas dans la BD
-        chambre.id_chambre = None
+        # On donne volontairement un identifiant qui n'existe pas dans la BD
+        chambre.id_chambre = uuid4()
         chambre.numero_chambre = 9999
         chambre.disponible_reservation = True
         chambre.autre_informations = "Test"
+
+        # Récupération d'un type de chambre existant dans la BD
+        with Session(engine) as session:
+            stmt = select(TypeChambre)
+            type_chambre = session.execute(stmt).scalars().first()
+        
+            if type_chambre is None:
+                raise ValueError("Aucun type de chambre n'existe dans la BD")
+
+        # Association du type de chambre à la chambre de test
+        chambre.type_chambre = type_chambre
 
         # Création du DTO
         chambreDTO = ChambreDTO(chambre)
