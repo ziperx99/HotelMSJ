@@ -7,7 +7,7 @@ from uuid import UUID
 # Data Transfer Object : pydantic BaseModel pour intégration facile avec FastAPI
 # Facilite aussi grandement la sérialization et la validation des données contenues dans les DTOs
 class TypeChambreDTO(BaseModel):
-    id_type_chambre : Optional[UUID] = Field(default=None, custom_error='id_type_chambre doit être un UUID comportant 36 caractères') #Le champ étant UUID valide déjà la taille
+    id_type_chambre : UUID = Field(custom_error='id_type_chambre doit être un UUID comportant 36 caractères') #Le champ étant UUID valide déjà la taille
     nom_type : str = Field(max_length=50, custom_error='nom_type a une limite de 50 caractères')
     prix_plafond : Optional[float] = Field(default=None, ge=0, custom_error='prix_plafond doit être une valeur positive')
     prix_plancher : float = Field(ge=0, custom_error='prix_plancher doit être une valeur positive') #ge = Greater or Equal
@@ -31,7 +31,7 @@ class TypeChambreDTO(BaseModel):
 
         
 class ChambreDTO(BaseModel):
-    idChambre : Optional[UUID] = Field(default=None, custom_error='id_type_chambre doit être un UUID comportant 36 caractères')
+    idChambre : UUID = Field(custom_error='id_type_chambre doit être un UUID comportant 36 caractères')
     numero_chambre : int = Field(ge=0, le=2147483647, custom_error='numero_chambre doit être une valeur positive avec une taille maximale de 4 bytes')
     disponible_reservation : bool = Field(custom_error='disponible_reservation doit être un bool')
     autre_informations: Optional[str] = Field(default=None, max_length=2147483647, custom_error='autre_informations doit posséder une taille plus petite que 2GB')

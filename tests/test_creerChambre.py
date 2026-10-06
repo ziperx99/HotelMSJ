@@ -29,7 +29,7 @@ class test_creerChambre(unittest.TestCase):
                         autre_informations = None,
                         type_chambre = 
                             TypeChambre(
-                                id_type_chambre = None,
+                                id_type_chambre = uuid4(),
                                 nom_type = 'king', 
                                 prix_plancher = 229.0,
                                 prix_plafond = None,
