@@ -29,7 +29,7 @@ class test_modifierUsager(unittest.TestCase):
 
         # Créer l'usager
         usager = Usager(
-            id_usager=None,
+            id_usager=uuid4(),
             prenom="TestPrenom",
             nom="TestNom",
             adresse="123 rue Test",
