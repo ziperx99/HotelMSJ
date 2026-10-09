@@ -28,7 +28,7 @@ class test_getUsagerParId(unittest.TestCase):
     def test_getUsagerParId(self):
 
         usager = Usager(
-            id_usager=None,
+            id_usager=uuid4(),
             prenom="TestPrenom",
             nom="TestNom",
             adresse="123 rue Test",

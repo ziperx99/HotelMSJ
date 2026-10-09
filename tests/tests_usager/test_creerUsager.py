@@ -6,6 +6,7 @@ from sqlalchemy import create_engine, select, delete
 from modele.usager import Usager
 from DTO.usagerDTO import UsagerDTO
 from metier.usagerMetier import creerUsager
+from uuid import uuid4
 
 
 engine = create_engine(
@@ -22,7 +23,7 @@ class test_creerUsager(unittest.TestCase):
     def test_creerUsager(self):
 
         usager = Usager(
-            id_usager=None,
+            id_usager=uuid4(),
             prenom="TestPrenom",
             nom="TestNom",
             adresse="123 rue Test",
@@ -90,7 +91,7 @@ class test_creerUsager(unittest.TestCase):
     def test_creerUsagerPrenomVide(self):
 
         usager = Usager(
-            id_usager=None,
+            id_usager=uuid4(),
             prenom="",
             nom="TestNom",
             adresse="123 rue Test",
@@ -105,7 +106,7 @@ class test_creerUsager(unittest.TestCase):
     def test_creerUsagerNomVide(self):
 
         usager = Usager(
-            id_usager=None,
+            id_usager=uuid4(),
             prenom="TestPrenom",
             nom="",
             adresse="123 rue Test",
@@ -120,7 +121,7 @@ class test_creerUsager(unittest.TestCase):
     def test_creerUsagerAdresseVide(self):
 
         usager = Usager(
-            id_usager=None,
+            id_usager=uuid4(),
             prenom="TestPrenom",
             nom="TestNom",
             adresse="",
@@ -135,7 +136,7 @@ class test_creerUsager(unittest.TestCase):
     def test_creerUsagerMobileVide(self):
 
         usager = Usager(
-            id_usager=None,
+            id_usager=uuid4(),
             prenom="TestPrenom",
             nom="TestNom",
             adresse="123 rue Test",
@@ -150,7 +151,7 @@ class test_creerUsager(unittest.TestCase):
     def test_creerUsagerMotDePasseVide(self):
 
         usager = Usager(
-            id_usager=None,
+            id_usager=uuid4(),
             prenom="TestPrenom",
             nom="TestNom",
             adresse="123 rue Test",
