@@ -43,8 +43,9 @@ def creerChambre(chambre: ChambreDTO):
 
             session.add(nouvelleChambre)
             session.commit()
+            session.refresh(nouvelleChambre)
 
-            return chambre
+            return ChambreDTO (nouvelleChambre)
 
     except InterfaceError as e:
             print(f"Erreur de connexion à la base de données. Vérifier l'URL du pilote de connexion.: {e}")    
@@ -73,8 +74,9 @@ def creerTypeChambre(typeChambre: TypeChambreDTO):
 
             session.add(nouveauTypeChambre)
             session.commit()
-
-            return typeChambre
+            session.refresh(nouveauTypeChambre)
+            
+            return TypeChambreDTO (nouveauTypeChambre)
 
     except InterfaceError as e:
             print(f"Erreur de connexion à la base de données. Vérifier l'URL du pilote de connexion.: {e}")

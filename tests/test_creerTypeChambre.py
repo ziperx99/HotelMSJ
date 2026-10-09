@@ -31,7 +31,8 @@ class test_creerTypeChambre(unittest.TestCase):
                     
         typeChambreDTOCree = creerTypeChambre(TypeChambreDTO)
 
-        self.assertIsNone(typeChambreDTOCree.id_type_chambre)
+        self.assertIsNotNone(typeChambreDTOCree.id_type_chambre)
+        self.assertIsInstance(typeChambreDTOCree.id_type_chambre, UUID)
         self.assertEqual(typeChambreDTOCree.nom_type, 'Test')
         self.assertEqual(typeChambreDTOCree.prix_plancher, 229.0)
         self.assertIsNone(typeChambreDTOCree.prix_plafond)
