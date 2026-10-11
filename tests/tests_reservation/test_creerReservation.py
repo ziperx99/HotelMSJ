@@ -14,6 +14,7 @@ from metier.usagerMetier import creerUsager
 from metier.chambreMetier import creerChambre
 from uuid import uuid4
 from datetime import datetime
+from pydantic import ValidationError
 
 
 engine = create_engine(
@@ -75,6 +76,7 @@ class test_creerReservation(unittest.TestCase):
 
         reservationDTOCree = creerReservation(reservationDTO)
 
+        # Tests
         self.assertIsNotNone(
             reservationDTO.id_reservation
         )
@@ -95,8 +97,16 @@ class test_creerReservation(unittest.TestCase):
             reservationDTO.info_reservation, "Test création de réservation"
         )
 
+        self.assertEqual(
+            reservationDTO.usager, usagerCree
+        )
 
-        # Vérifier que l'usager est dans la BD
+        self.assertEqual(
+            reservationDTO.chambre, chambreCree
+        )
+
+
+        # Vérifier que la réservation est dans la BD
         with Session(engine) as session:
 
             stmt = select(Reservation).where(
@@ -136,14 +146,198 @@ class test_creerReservation(unittest.TestCase):
 
 
 
+    def test_creerReservationDateDebutVide(self):
+
+        with self.assertRaises(ValidationError):
+
+            usager = Usager(
+                id_usager = uuid4(),
+                prenom = "TestDebugReservation",
+                nom = "TestNom",
+                adresse = "123 rue Test",
+                mobile = "514-555-9999",
+                mot_de_passe = "test123"
+            )
+    
+            typeChambre = TypeChambre(
+                id_type_chambre = "99EF51BF-5E86-47E6-A1A3-601B936D91F0",
+                nom_type = 'king',
+                prix_plancher = 179.0,
+                prix_plafond = 299.0,
+                description_chambre = "Chambre avec lit king"
+            )
+    
+            chambre = Chambre(
+                id_chambre = uuid4(),
+                numero_chambre = 9500,
+                disponible_reservation = True,
+                autre_informations = None,
+                type_chambre = typeChambre
+            )
+
+            ReservationDTO(
+                Reservation(
+                    id_reservation = uuid4(),
+                    date_debut_reservation = None,
+                    date_fin_reservation = datetime.now(),
+                    prix_jour = 350,
+                    info_reservation = "Test création de réservation",
+                    usager = usager,
+                    chambre = chambre)
+            )
+
+    def test_creerReservationDateFinVide(self):
+    
+        with self.assertRaises(ValidationError):
+
+            usager = Usager(
+                id_usager = uuid4(),
+                prenom = "TestDebugReservation",
+                nom = "TestNom",
+                adresse = "123 rue Test",
+                mobile = "514-555-9999",
+                mot_de_passe = "test123"
+            )
+    
+            typeChambre = TypeChambre(
+                id_type_chambre = "99EF51BF-5E86-47E6-A1A3-601B936D91F0",
+                nom_type = 'king',
+                prix_plancher = 179.0,
+                prix_plafond = 299.0,
+                description_chambre = "Chambre avec lit king"
+            )
+    
+            chambre = Chambre(
+                id_chambre = uuid4(),
+                numero_chambre = 9500,
+                disponible_reservation = True,
+                autre_informations = None,
+                type_chambre = typeChambre
+            )
+
+            ReservationDTO(
+                Reservation(
+                    id_reservation = uuid4(),
+                    date_debut_reservation = datetime.now(),
+                    date_fin_reservation = None,
+                    prix_jour = 350,
+                    info_reservation = "Test création de réservation",
+                    usager = usager,
+                    chambre = chambre)
+            )
+
+
+    def test_creerReservationPrixJourVide(self):
+    
+        with self.assertRaises(ValidationError):
+
+            usager = Usager(
+                id_usager = uuid4(),
+                prenom = "TestDebugReservation",
+                nom = "TestNom",
+                adresse = "123 rue Test",
+                mobile = "514-555-9999",
+                mot_de_passe = "test123"
+            )
+    
+            typeChambre = TypeChambre(
+                id_type_chambre = "99EF51BF-5E86-47E6-A1A3-601B936D91F0",
+                nom_type = 'king',
+                prix_plancher = 179.0,
+                prix_plafond = 299.0,
+                description_chambre = "Chambre avec lit king"
+            )
+    
+            chambre = Chambre(
+                id_chambre = uuid4(),
+                numero_chambre = 9500,
+                disponible_reservation = True,
+                autre_informations = None,
+                type_chambre = typeChambre
+            )
+
+            ReservationDTO(
+                Reservation(
+                    id_reservation = uuid4(),
+                    date_debut_reservation = datetime.now(),
+                    date_fin_reservation = datetime.now(),
+                    prix_jour = None,
+                    info_reservation = "Test création de réservation",
+                    usager = usager,
+                    chambre = chambre)
+            )
+
+    def test_creerReservationInfoReservationMauvaisType(self):
+
+        with self.assertRaises(ValidationError):
+
+            usager = Usager(
+                id_usager = uuid4(),
+                prenom = "TestDebugReservation",
+                nom = "TestNom",
+                adresse = "123 rue Test",
+                mobile = "514-555-9999",
+                mot_de_passe = "test123"
+            )
+    
+            typeChambre = TypeChambre(
+                id_type_chambre = "99EF51BF-5E86-47E6-A1A3-601B936D91F0",
+                nom_type = 'king',
+                prix_plancher = 179.0,
+                prix_plafond = 299.0,
+                description_chambre = "Chambre avec lit king"
+            )
+    
+            chambre = Chambre(
+                id_chambre = uuid4(),
+                numero_chambre = 9500,
+                disponible_reservation = True,
+                autre_informations = None,
+                type_chambre = typeChambre
+            )
+
+            ReservationDTO(
+                Reservation(
+                    id_reservation = uuid4(),
+                    date_debut_reservation = datetime.now(),
+                    date_fin_reservation = datetime.now(),
+                    prix_jour = 350,
+                    info_reservation = datetime.now(),
+                    usager = usager,
+                    chambre = chambre)
+            )
+
+
+    def test_creerReservationUsagerVide(self):
+    
+            with self.assertRaises(ValueError):
         
-
+                typeChambre = TypeChambre(
+                    id_type_chambre = "99EF51BF-5E86-47E6-A1A3-601B936D91F0",
+                    nom_type = 'king',
+                    prix_plancher = 179.0,
+                    prix_plafond = 299.0,
+                    description_chambre = "Chambre avec lit king"
+                )
         
-
-
-
-
-
+                chambre = Chambre(
+                    id_chambre = uuid4(),
+                    numero_chambre = 9500,
+                    disponible_reservation = True,
+                    autre_informations = None,
+                    type_chambre = typeChambre
+                )
+    
+                ReservationDTO(
+                    Reservation(
+                        id_reservation = uuid4(),
+                        date_debut_reservation = datetime.now(),
+                        date_fin_reservation = datetime.now(),
+                        prix_jour = 350,
+                        info_reservation = datetime.now(),
+                        usager = None,
+                        chambre = chambre)
+                )
 
 
 if __name__ == "__main__":
