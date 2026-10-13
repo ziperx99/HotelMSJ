@@ -31,8 +31,8 @@ class test_creerChambre(unittest.TestCase):
                             TypeChambre(
                                 id_type_chambre = uuid4(),
                                 nom_type = 'king', 
-                                prix_plancher = 229.0,
-                                prix_plafond = None,
+                                prix_plancher = 179.0,
+                                prix_plafond = 299.0,
                                 description_chambre = None
                         )
                     )
@@ -46,8 +46,8 @@ class test_creerChambre(unittest.TestCase):
         #construit adéquatement et est complet.
         self.assertIsNone(chambreDTOCree.autre_informations)
         self.assertEqual(chambreDTOCree.type_chambre.nom_type, 'king')
-        self.assertEqual(chambreDTOCree.type_chambre.prix_plancher, 229.0)
-        self.assertIsNone(chambreDTOCree.type_chambre.prix_plafond)
+        self.assertEqual(chambreDTOCree.type_chambre.prix_plancher, 179.0)
+        self.assertEqual(chambreDTOCree.type_chambre.prix_plafond, 299.0)
 
         #TODO: Supprimer la chambre nouvellement créée:
         #importer create_engine et delete de SQLAlchemy. Créer une session et exécuter

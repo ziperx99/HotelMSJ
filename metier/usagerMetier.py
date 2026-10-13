@@ -1,6 +1,6 @@
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select
-from sqlalchemy.exc import SQLAlchemyError
 from DTO.usagerDTO import UsagerDTO
 from modele.usager import Usager
 from uuid import uuid4
