@@ -1,9 +1,9 @@
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select
 from DTO.usagerDTO import UsagerDTO
 from modele.usager import Usager
 from uuid import uuid4
-
 
 engine = create_engine(
     'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',
@@ -70,6 +70,32 @@ def getUsagerParId(id_usager):
             )
 
         return UsagerDTO(usager)
+
+def getUsagerParNom(nom: str):
+    # Vérifie qu'un nom a été donné. On refuse None, un chaîne vide ou juste des espaces
+    if nom is None or nom.strip() == "":
+        raise ValueError("Le nom de l'usager doit exister.")
+    
+    try:
+        with Session(engine) as session:
+            # Rechercher les usagers avec ce nom
+            stmt = select(Usager).where(Usager.nom == nom.strip())
+
+            # scalars().all() retourne une liste d'usagers
+            usagers = session.execute(stmt).scalars().all()
+
+            # Si aucun usager avec ce nom
+            if len(usagers) == 0:
+                raise ValueError("Aucun usager trouvé avec ce nom.")
+            
+            # Convertir les objets SQLAlchemy en DTO
+            resultats = []
+            for usager in usagers:
+                resultats.append(UsagerDTO(usager))
+            return resultats
+    except SQLAlchemyError as e:
+        print(f"Une erreur est survenue avec la base de données : {e}")
+        raise
 
 
 def modifierUsager(usager: UsagerDTO):

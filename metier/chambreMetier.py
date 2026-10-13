@@ -133,3 +133,86 @@ def modifierChambre(chambre: ChambreDTO):
         chambreAModifier.type_chambre = typeChambre
 
         session.commit()
+
+def supprimerChambre(id_chambre):
+    # Vérifier qu'un identifiant a été fourni
+    # Sans ça, on peut pas savoir quelle chambre supprimer
+    if id_chambre is None:
+        raise ValueError("L'identifiant de la chambre doit exister.")
+    
+    try:
+        with Session(engine) as session:
+            # Rechercher la chambre dans la BD à partir de son UUID
+            stmt = select(Chambre).where(
+                Chambre.id_chambre == id_chambre
+            )
+
+            # Retourne la chambre trouvée ou None si elle n'existe pas
+            chambre = session.execute(stmt).scalar_one_or_none()
+            # Vérifier que la chambre existe
+            if chambre is None:
+                raise ValueError("La chambre n'existe pas.")
+            
+            # Vérifier si des réservations sont associés à cette chambre
+            # On refuse la suppression pour ne pas perdre les réservations existantes
+            if len(chambre.reservations) > 0:
+                raise ValueError(
+                    "Impossible de supprimer une chambre qui possède des réservations."
+                )
+            
+            # Supprimer la chambre de la session
+            session.delete(chambre)
+            # Enregistrer la suppression dans la BD
+            session.commit()
+    
+    except InterfaceError as e:
+        print(f"Erreur de connexion à la base de données : {e}")
+        raise
+    except SQLAlchemyError as e:
+        print(f"Une erreur est survenue avec la base de données : {e}")
+        raise
+
+def supprimerTypeChambre(id_type_chambre):
+    # Vérifier qu'un identifiant a été fourni
+    # Sans ça, on peut pas savoir quel type supprimer
+    if id_type_chambre is None:
+        raise ValueError("L'identifiant du type de chambre doit exister.")
+    
+    try:
+        with Session(engine) as session:
+            # Rechercher le type de chambre dans la base de données
+            stmt = select(TypeChambre).where(
+                TypeChambre.id_type_chambre == id_type_chambre
+            )
+
+            # Retourne le type de chambre trouvé ou None si y'en a pas
+            typeChambre = session.execute(stmt).scalar_one_or_none()
+            # Empêcher la suppression d'un type inexistant
+            if typeChambre is None:
+                raise ValueError("Le type de chambre n'existe pas.")
+            
+            # Vérifier si des chambres utilisent encore ce type
+            stmtChambres = select(Chambre).where(
+                Chambre.fk_type_chambre == id_type_chambre
+            )
+            chambreExistante = session.execute(
+                stmtChambres
+            ).scalars().first()
+
+            # Une chambre utilise ce type donc on refuse la suppression
+            if chambreExistante is not None:
+                raise ValueError(
+                    "Impossible de supprimer un type de chambre utilisé."
+                )
+            
+            # Supprimer le type de chambre trouvé
+            session.delete(typeChambre)
+            # Enregistrer la suppression dans la BD
+            session.commit()
+
+    except InterfaceError as e:
+        print(f"Erreur de connexion à la base de données : {e}")
+        raise
+    except SQLAlchemyError as e:
+        print(f"Une erreur est survenue avec la base de données : {e}")
+        raise
