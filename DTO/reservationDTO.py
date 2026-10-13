@@ -15,6 +15,12 @@ class ReservationDTO(BaseModel):
     usager : UsagerDTO
     chambre : Optional[ChambreDTO]
 
+    @model_validator(mode='after')
+    def verifier_date_fin_ulterieure(self):
+        if(self.date_fin_reservation <= self.date_debut_reservation):
+            raise ValueError("La date de fin de la réservation ne peut pas être avant son début")
+        return self
+
     def __init__(self, reservation: Reservation = None):
 
         if reservation.usager is None:

@@ -1,7 +1,7 @@
 import unittest
 
 from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, select, delete
+from sqlalchemy import create_engine, select
 from modele.chambre import Chambre
 from modele.usager import Usager
 from modele.TypeChambre import TypeChambre
@@ -25,126 +25,121 @@ engine = create_engine(
     use_setinputsizes=False
 )
 
-
 class test_creerReservation(unittest.TestCase):
 
     def test_creerReservation(self):
 
-        usager = Usager(
-            id_usager = uuid4(),
-            prenom = "TestDebugReservation",
-            nom = "TestNom",
-            adresse = "123 rue Test",
-            mobile = "514-555-9999",
-            mot_de_passe = "test123"
-        )
+        try:
 
-        typeChambre = TypeChambre(
-            id_type_chambre = "99EF51BF-5E86-47E6-A1A3-601B936D91F0",
-            nom_type = 'king',
-            prix_plancher = 179.0,
-            prix_plafond = 299.0,
-            description_chambre = "Chambre avec lit king"
-        )
-
-        chambre = Chambre(
-            id_chambre = uuid4(),
-            numero_chambre = 9500,
-            disponible_reservation = True,
-            autre_informations = None,
-            type_chambre = typeChambre
-        )
-
-        usagerCree = creerUsager(UsagerDTO(usager))
-        chambreCree = creerChambre(ChambreDTO(chambre))
-
-        with Session(engine) as session:
-            usagerDB = session.get(Usager, usagerCree.id_usager)
-            chambreDB = session.get(Chambre, chambreCree.idChambre)
-
-            reservation = Reservation(
-                id_reservation = uuid4(),
-                date_debut_reservation = datetime.now(),
-                date_fin_reservation = datetime.now(),
-                prix_jour = 350,
-                info_reservation = "Test création de réservation",
-                usager = usagerDB,
-                chambre = chambreDB
+            usager = Usager(
+                id_usager = uuid4(),
+                prenom = "TestDebugReservation",
+                nom = "TestNom",
+                adresse = "123 rue Test",
+                mobile = "514-555-9999",
+                mot_de_passe = "test123"
             )
 
-            reservationDTO = ReservationDTO(reservation)
-
-        reservationDTOCree = creerReservation(reservationDTO)
-
-        # Tests
-        self.assertIsNotNone(
-            reservationDTO.id_reservation
-        )
-
-        self.assertIsNotNone(
-            reservationDTO.date_debut_reservation
-        )
-
-        self.assertIsNotNone(
-            reservationDTO.date_fin_reservation
-        )
-
-        self.assertEqual(
-            reservationDTO.prix_jour, 350
-        )
-
-        self.assertEqual(
-            reservationDTO.info_reservation, "Test création de réservation"
-        )
-
-        self.assertEqual(
-            reservationDTO.usager, usagerCree
-        )
-
-        self.assertEqual(
-            reservationDTO.chambre, chambreCree
-        )
-
-
-        # Vérifier que la réservation est dans la BD
-        with Session(engine) as session:
-
-            stmt = select(Reservation).where(
-                Reservation.id_reservation == reservationDTOCree.id_reservation
+            typeChambre = TypeChambre(
+                id_type_chambre = "99EF51BF-5E86-47E6-A1A3-601B936D91F0",
+                nom_type = 'king',
+                prix_plancher = 179.0,
+                prix_plafond = 299.0,
+                description_chambre = "Chambre avec lit king"
             )
 
-            reservationBD = session.execute(
-                stmt
-            ).scalar_one_or_none()
-
-            self.assertIsNotNone(reservationBD)
-            
-
-        # Nettoyer la BD
-        with Session(engine) as session:
-
-            stmt = delete(Reservation).where(
-                Reservation.id_reservation == reservationDTOCree.id_reservation
+            chambre = Chambre(
+                id_chambre = uuid4(),
+                numero_chambre = 9500,
+                disponible_reservation = True,
+                autre_informations = None,
+                type_chambre = typeChambre
             )
 
-            session.execute(stmt)
-            session.commit()
+            usagerCree = creerUsager(UsagerDTO(usager))
+            chambreCree = creerChambre(ChambreDTO(chambre))
 
-            stmt2 = delete(Usager).where(
-                Usager.prenom == "TestDebugReservation"
+            with Session(engine) as session:
+                usagerDB = session.get(Usager, usagerCree.id_usager)
+                chambreDB = session.get(Chambre, chambreCree.idChambre)
+
+                reservation = Reservation(
+                    id_reservation = uuid4(),
+                    date_debut_reservation = datetime(2034, 9, 11),
+                    date_fin_reservation = datetime(2034, 10, 30),
+                    prix_jour = 350,
+                    info_reservation = "Test création de réservation",
+                    usager = usagerDB,
+                    chambre = chambreDB
+                )
+
+                reservationDTO = ReservationDTO(reservation)
+                reservationDTOCree = creerReservation(reservationDTO)
+
+            # Tests
+            self.assertIsNotNone(
+                reservationDTO.id_reservation
             )
 
-            session.execute(stmt2)
-            session.commit()
-
-            stmt3 = delete(Chambre).where(
-                Chambre.numero_chambre == "9500"
+            self.assertIsNotNone(
+                reservationDTO.date_debut_reservation
             )
 
-            session.execute(stmt3)
-            session.commit()
+            self.assertIsNotNone(
+                reservationDTO.date_fin_reservation
+            )
+
+            self.assertEqual(
+                reservationDTO.prix_jour, 350
+            )
+
+            self.assertEqual(
+                reservationDTO.info_reservation, "Test création de réservation"
+            )
+
+            self.assertEqual(
+                reservationDTO.usager, usagerCree
+            )
+
+            self.assertEqual(
+                reservationDTO.chambre, chambreCree
+            )
 
 
+            # Vérifier que la réservation est dans la BD
+            with Session(engine) as session:
+
+                stmt = select(Reservation).where(
+                    Reservation.id_reservation == reservationDTOCree.id_reservation
+                )
+
+                reservationBD = session.execute(
+                    stmt
+                ).scalar_one_or_none()
+
+                self.assertIsNotNone(reservationBD)
+
+        finally:
+
+
+            # Nettoyage de la BD
+            with Session(engine) as session:
+                try:
+                    reservation = session.get(Reservation, reservationDTOCree.id_reservation)
+                    if reservation is not None:
+                        session.delete(reservation)
+                        session.commit()
+
+                finally:
+                    usagerDB = session.get(Usager, usagerCree.id_usager)
+                    if usagerDB is not None:
+                        session.delete(usagerDB)
+                        session.commit()
+
+                    chambreDB = session.get(Chambre, chambreCree.idChambre)
+                    if chambreDB is not None:
+                        session.delete(chambreDB)
+                        session.commit()
 
     def test_creerReservationDateDebutVide(self):
 
@@ -259,8 +254,8 @@ class test_creerReservation(unittest.TestCase):
             ReservationDTO(
                 Reservation(
                     id_reservation = uuid4(),
-                    date_debut_reservation = datetime.now(),
-                    date_fin_reservation = datetime.now(),
+                    date_debut_reservation = datetime(2034, 9, 11),
+                    date_fin_reservation = datetime(2034, 10, 30),
                     prix_jour = None,
                     info_reservation = "Test création de réservation",
                     usager = usager,
@@ -299,8 +294,8 @@ class test_creerReservation(unittest.TestCase):
             ReservationDTO(
                 Reservation(
                     id_reservation = uuid4(),
-                    date_debut_reservation = datetime.now(),
-                    date_fin_reservation = datetime.now(),
+                    date_debut_reservation = datetime(2034, 9, 11),
+                    date_fin_reservation = datetime(2034, 10, 30),
                     prix_jour = 350,
                     info_reservation = datetime.now(),
                     usager = usager,
@@ -310,35 +305,71 @@ class test_creerReservation(unittest.TestCase):
 
     def test_creerReservationUsagerVide(self):
     
-            with self.assertRaises(ValueError):
-        
-                typeChambre = TypeChambre(
-                    id_type_chambre = "99EF51BF-5E86-47E6-A1A3-601B936D91F0",
-                    nom_type = 'king',
-                    prix_plancher = 179.0,
-                    prix_plafond = 299.0,
-                    description_chambre = "Chambre avec lit king"
-                )
-        
-                chambre = Chambre(
-                    id_chambre = uuid4(),
-                    numero_chambre = 9500,
-                    disponible_reservation = True,
-                    autre_informations = None,
-                    type_chambre = typeChambre
-                )
+        with self.assertRaises(ValueError):
     
-                ReservationDTO(
-                    Reservation(
-                        id_reservation = uuid4(),
-                        date_debut_reservation = datetime.now(),
-                        date_fin_reservation = datetime.now(),
-                        prix_jour = 350,
-                        info_reservation = datetime.now(),
-                        usager = None,
-                        chambre = chambre)
-                )
+            typeChambre = TypeChambre(
+                id_type_chambre = "99EF51BF-5E86-47E6-A1A3-601B936D91F0",
+                nom_type = 'king',
+                prix_plancher = 179.0,
+                prix_plafond = 299.0,
+                description_chambre = "Chambre avec lit king"
+            )
+    
+            chambre = Chambre(
+                id_chambre = uuid4(),
+                numero_chambre = 9500,
+                disponible_reservation = True,
+                autre_informations = None,
+                type_chambre = typeChambre
+            )
 
+            ReservationDTO(
+                Reservation(
+                    id_reservation = uuid4(),
+                    date_debut_reservation = datetime(2034, 9, 11),
+                    date_fin_reservation = datetime(2034, 10, 30),
+                    prix_jour = 350,
+                    info_reservation = datetime.now(),
+                    usager = None,
+                    chambre = chambre)
+            )
 
-if __name__ == "__main__":
-    unittest.main()
+    def test_creerReservationDateDebutUlterieure(self):
+
+        with self.assertRaises(ValueError):
+
+            usager = Usager(
+                id_usager = uuid4(),
+                prenom = "TestDebugReservation",
+                nom = "TestNom",
+                adresse = "123 rue Test",
+                mobile = "514-555-9999",
+                mot_de_passe = "test123"
+            )
+                
+            typeChambre = TypeChambre(
+                id_type_chambre = "99EF51BF-5E86-47E6-A1A3-601B936D91F0",
+                nom_type = 'king',
+                prix_plancher = 179.0,
+                prix_plafond = 299.0,
+                description_chambre = "Chambre avec lit king"
+            )
+    
+            chambre = Chambre(
+                id_chambre = uuid4(),
+                numero_chambre = 9500,
+                disponible_reservation = True,
+                autre_informations = None,
+                type_chambre = typeChambre
+            )
+
+            ReservationDTO(
+                Reservation(
+                    id_reservation = uuid4(),
+                    date_debut_reservation = datetime(2034, 10, 30),
+                    date_fin_reservation = datetime(2034, 9, 11),
+                    prix_jour = 350,
+                    info_reservation = datetime.now(),
+                    usager = usager,
+                    chambre = chambre)
+            )

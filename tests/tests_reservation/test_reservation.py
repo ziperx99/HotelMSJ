@@ -1,15 +1,9 @@
 import unittest
 import logging
-
 from datetime import datetime
 from decimal import Decimal
-
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select
-
-from modele.chambre import Chambre
-from modele.TypeChambre import TypeChambre
-from modele.usager import Usager
 from modele.reservation import Reservation
 
 
