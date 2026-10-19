@@ -23,55 +23,70 @@ engine = create_engine(
 class TestChambre(unittest.TestCase):
 
     def test_modifierChambre(self):
-    
-        # Ouverture d'une session SQLAlchemy
-        with Session(engine) as session:
-            
-            # Récupération de la chambre
-            stmt = select(Chambre).where(Chambre.numero_chambre == 115)
 
-            # Exécution de la requête
-            chambre = session.execute(stmt).scalar_one()
-            
-            if chambre is None:
-                raise ValueError("La chambre n'existe pas")
-            
-            # Sauvegarde de l'état initial
-            ancienne_info = chambre.autre_informations
-            ancienne_disponibilite = chambre.disponible_reservation
+        id_chambre_test = None
 
-            # Création du DTO avec les informations de la chambre
-            chambreDTO = ChambreDTO(chambre)
+        try:
 
-            # Modification des informations dans le DTO
-            chambreDTO.autre_informations = "Chambre en rénovation"
-            chambreDTO.disponible_reservation = False
+            # Ouverture d'une session SQLAlchemy
+            with Session(engine) as session:
 
-            # Modification de la chambre avec la fonction métier
-            modifierChambre(chambreDTO)
+                # Récupération d'un type de chambre valide
+                type_chambre = session.execute(select(TypeChambre)).scalars().first()
+                self.assertIsNotNone(type_chambre, "Aucun type de chambre dans la base.")
 
-            # Relecture
-            stmt = select(Chambre).where(Chambre.numero_chambre == 115)
-            chambre_modifiee = session.execute(stmt).scalar_one()
+                # Création d'une chambre de test
+                chambre = Chambre(
+                    id_chambre=uuid4(),
+                    numero_chambre=9999,
+                    disponible_reservation=True,
+                    autre_informations="Test",
+                    type_chambre=type_chambre
+                )
 
-            # Vérifications
-            self.assertEqual(chambre_modifiee.autre_informations, "Chambre en rénovation")
-            self.assertFalse(chambre_modifiee.disponible_reservation)
+                session.add(chambre)
+                session.commit()
 
-            # Nettoyage : retour aux données originales
-            chambre_modifiee.autre_informations = ancienne_info
-            chambre_modifiee.disponible_reservation = ancienne_disponibilite
-            session.commit()
+                id_chambre_test = chambre.id_chambre
 
-            # Vérification du nettoyage
-            stmt = select(Chambre).where(Chambre.numero_chambre == 115)
-            chambre_nettoyee = session.execute(stmt).scalar_one()
-            
-            # Vérification des champs modifiés
-            self.assertEqual(chambre_nettoyee.autre_informations, ancienne_info)
-            self.assertEqual(chambre_nettoyee.disponible_reservation, ancienne_disponibilite)
-            
-            
+                # Création du DTO
+                chambreDTO = ChambreDTO(chambre)
+
+                # Modifications à tester
+                chambreDTO.autre_informations = "Chambre en rénovation"
+                chambreDTO.disponible_reservation = False
+
+                # Fonction métier
+                modifierChambre(chambreDTO)
+
+                # On vide le cache SQLAlchemy
+                session.expire_all()
+
+                # Relecture
+                chambre_modifiee = session.execute(
+                    select(Chambre).where(Chambre.id_chambre == id_chambre_test)).scalars().one()
+
+                # Vérifications
+                self.assertEqual(chambre_modifiee.autre_informations,"Chambre en rénovation")
+                self.assertFalse(chambre_modifiee.disponible_reservation)
+
+        finally:
+
+            # Nettoyage garanti même en cas d'échec
+            if id_chambre_test is not None:
+
+                # Ouverture d'une session SQLAlchemy
+                with Session(engine) as session:
+
+                    chambre_test = session.execute(
+                        select(Chambre).where(Chambre.id_chambre == id_chambre_test)).scalars().one_or_none()
+
+                    if chambre_test is not None:
+                        session.delete(chambre_test)
+                        session.commit()
+                        
+                        
+
     def test_modifierChambreInexistante(self):
     
         # Création d'une chambre uniquement pour tester

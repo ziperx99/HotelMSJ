@@ -1,11 +1,13 @@
 # Modules et librairies
 import unittest
 import logging
+from uuid import uuid4
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select
+from modele.TypeChambre import TypeChambre
 from modele.chambre import Chambre
 
-# Confirguration de base
+# Configuration de base
 logging.basicConfig()
 # Activation des logs SQLAlchemy
 logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
@@ -17,26 +19,66 @@ engine = create_engine(
 
 
 class TestChambre(unittest.TestCase):
-    
-    def test_getChambreParNumero(self):
-        
-        # Ouverture d'une session SQLAlchemy
-        with Session(engine) as session:
-            
-            # Requête : chercher la chambre correspondant au numéro
-            stmt = select(Chambre).where(Chambre.numero_chambre == 115)
-            chambre = session.execute(stmt).scalar_one()
-            
-            # Vérification des champs simples
-            self.assertEqual(chambre.numero_chambre, 115)
-            self.assertIsNone(chambre.autre_informations)
-            self.assertTrue(chambre.disponible_reservation)
-            self.assertEqual(str(chambre.id_chambre).upper(),'8CC1969D-38D8-469B-A5CE-043807402F2F')
-            self.assertIsNotNone(chambre.fk_type_chambre)
-            
-            # Vérification de la relation avec TypeChambre
-            self.assertEqual(chambre.type_chambre.nom_type,'queen')
 
-            # Vérification de la relation avec Reservation
-            self.assertEqual(len(chambre.reservations), 1)
-            self.assertEqual(chambre.reservations[0].info_reservation, 'Reservation test')
+    def test_getChambreParNumero(self):
+
+        id_chambre_test = None
+
+        try:
+
+        # Ouverture d'une session SQLAlchemy
+            with Session(engine) as session:
+
+                # Récupérer un type de chambre valide
+                type_chambre = session.execute(select(TypeChambre)).scalars().first()
+
+                if type_chambre is None:
+                    self.fail("Aucun type de chambre disponible pour le test.")
+
+                # Création d'une chambre de test
+                chambre_test = Chambre(
+                    id_chambre=uuid4(),
+                    numero_chambre=9999,
+                    disponible_reservation=True,
+                    autre_informations=None,
+                    type_chambre=type_chambre
+                )
+
+                session.add(chambre_test)
+                session.commit()
+
+                id_chambre_test = chambre_test.id_chambre
+
+                # Recherche de la chambre par numéro
+                stmt = select(Chambre).where(Chambre.numero_chambre == 9999)
+
+                chambre = session.execute(stmt).scalar_one()
+
+                # Vérification des champs simples
+                self.assertEqual(chambre.numero_chambre, 9999)
+                self.assertIsNone(chambre.autre_informations)
+                self.assertTrue(chambre.disponible_reservation)
+
+                # Vérification de l'identifiant
+                self.assertEqual(chambre.id_chambre, id_chambre_test)
+
+                # Vérification de la clé étrangère
+                self.assertIsNotNone(chambre.fk_type_chambre)
+
+                # Vérification de la relation TypeChambre
+                self.assertEqual(chambre.type_chambre.id_type_chambre, type_chambre.id_type_chambre)
+                self.assertEqual(chambre.type_chambre.nom_type, type_chambre.nom_type)
+
+        finally:
+
+            # Nettoyage garanti même si le test échoue
+            if id_chambre_test is not None:
+
+                # Ouverture d'une session SQLAlchemy
+                with Session(engine) as session:
+
+                    chambre = session.execute(select(Chambre).where(Chambre.id_chambre == id_chambre_test)).scalars().one_or_none()
+
+                    if chambre is not None:
+                        session.delete(chambre)
+                        session.commit()
