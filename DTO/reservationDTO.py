@@ -1,5 +1,5 @@
-from typing import Any, Optional
-from pydantic import BaseModel, Field, model_validator, field_validator
+from typing import Optional
+from pydantic import BaseModel, Field, model_validator
 from modele.reservation import Reservation
 from datetime import datetime
 from DTO.chambreDTO import ChambreDTO

@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Optional
 from pydantic import BaseModel, Field, model_validator, field_validator
 from modele.chambre import Chambre
 from modele.TypeChambre import TypeChambre
