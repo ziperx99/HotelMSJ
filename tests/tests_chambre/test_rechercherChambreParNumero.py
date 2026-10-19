@@ -7,7 +7,7 @@ from sqlalchemy import create_engine, select
 from modele.TypeChambre import TypeChambre
 from modele.chambre import Chambre
 
-# Confirguration de base
+# Configuration de base
 logging.basicConfig()
 # Activation des logs SQLAlchemy
 logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
