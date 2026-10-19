@@ -1,4 +1,3 @@
-# Modules et librairies
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError, InterfaceError
 from sqlalchemy import create_engine, select
@@ -8,9 +7,8 @@ from modele.usager import Usager
 from modele.chambre import Chambre
 from modele.reservation import Reservation
 from uuid import uuid4
+from datetime import datetime
 
-
-# Configuration du moteur de base de données
 engine = create_engine(
     'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',
     connect_args={
@@ -18,7 +16,6 @@ engine = create_engine(
     },
     use_setinputsizes=False
 )
-
 
 def creerReservation(reservation: ReservationDTO):
     try:
@@ -54,73 +51,43 @@ def creerReservation(reservation: ReservationDTO):
     except SQLAlchemyError as e:
             print(f"Une erreur est survenue avec la base de données : {e}")    
             raise e
-
+    
     else:
         print("Réservation créée sans problème")
 
 
+
 def rechercherReservation(criteres: RechercherReservationDTO):
+    stmt = select(Reservation)
 
-    try:
+    if(criteres.id_reservation):
+        stmt = stmt.where(Reservation.id_reservation == criteres.id_reservation)
 
-        # Vérification des critères reçus
-        if criteres is None:
-            raise ValueError("Les critères de recherche sont obligatoires.")
+    if(criteres.id_usager):
+        stmt = stmt.where(Reservation.fk_id_usager == criteres.id_usager)
 
-        stmt = select(Reservation)
+    if(criteres.id_chambre):
+        stmt = stmt.where(Reservation.fk_id_chambre == criteres.id_chambre)
 
-        if criteres.id_reservation:
-            stmt = stmt.where(Reservation.id_reservation == criteres.id_reservation)
+    if(criteres.nom):
+        stmt = stmt.join(Usager).where(Usager.nom == criteres.nom)
+        stmt = stmt.where(Usager.prenom == criteres.prenom)
 
-        if criteres.id_usager:
-            stmt = stmt.where(Reservation.fk_id_usager == criteres.id_usager)
+    if(criteres.disponible_reservation):
+        stmt = stmt.join(Chambre).where(Chambre.disponible_reservation == criteres.disponible_reservation)
 
-        if criteres.id_chambre:
-            stmt = stmt.where(Reservation.fk_id_chambre == criteres.id_chambre)
+    if(criteres.date):
+        stmt = stmt.where(Reservation.date_debut_reservation <= criteres.date)
+        stmt = stmt.where(Reservation.date_fin_reservation >= criteres.date)
 
-        if criteres.nom:
-            stmt = stmt.join(Usager)
-            stmt = stmt.where(Usager.nom == criteres.nom)
+    reservations = []
+    with Session(engine) as session:
+        for reservation in session.execute(stmt).scalars():
+            reservation.usager
+            reservation.chambre
+            reservations.append(ReservationDTO(reservation))
 
-            if criteres.prenom:
-                stmt = stmt.where(Usager.prenom == criteres.prenom)
-
-        if criteres.disponible_reservation is not None:
-            stmt = stmt.join(Chambre).where(Chambre.disponible_reservation == criteres.disponible_reservation)
-
-        if criteres.date:
-            stmt = stmt.where(Reservation.date_debut_reservation <= criteres.date)
-            stmt = stmt.where(Reservation.date_fin_reservation >= criteres.date)
-
-        reservations = []
-        with Session(engine) as session:
-
-            for reservation in session.execute(stmt).scalars():
-                reservation.usager
-                reservation.chambre
-                reservations.append(ReservationDTO(reservation))
-
-        return reservations
-
-    except ValueError as e:
-        # Gestion des erreurs de validation
-        raise Exception(
-            f"Erreur de validation : {str(e)}"
-        )
-
-    except InterfaceError as e:
-        # Gestion des erreurs de connexion à la base de données
-        print(f"Erreur de connexion à la base de données : {e}")
-        raise
-    
-    except SQLAlchemyError as e:
-         # Gestion des erreurs SQLAlchemy
-        print(f"Une erreur est survenue avec la base de données : {e}")
-        raise
-
-    finally:
-         # Confirmation de la fin du traitement peu importe le résultat
-        print("Tentative de recherche de réservations terminée.")
+    return reservations 
 
 
 def supprimerReservation(id_reservation):
