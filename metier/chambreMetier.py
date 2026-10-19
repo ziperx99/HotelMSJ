@@ -1,3 +1,4 @@
+# Modules et librairies
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError, InterfaceError
 from sqlalchemy import create_engine, select
@@ -6,6 +7,7 @@ from modele.chambre import Chambre
 from modele.TypeChambre import TypeChambre
 from uuid import uuid4
 
+# Configuration du moteur de base de données
 engine = create_engine(
     'mssql+pyodbc://localhost\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',
     connect_args=
@@ -91,48 +93,78 @@ def creerTypeChambre(typeChambre: TypeChambreDTO):
     
 
 def getChambreParNumero(no_chambre: int):
-    #TODO : Ajouter des validations au besoin. EX: no_chambre ne doit pas être null.
-    #TODO : Ajouter gestion des erreurs. On va voir un exemple au prochain cours.
-    with Session(engine) as session:
-        stmt = select(Chambre).where(Chambre.numero_chambre == no_chambre)
-        result = session.execute(stmt)
+    # Certaines validations se retrouvent dans la classe DTO.
+    try:
+        with Session(engine) as session:
+            stmt = select(Chambre).where(Chambre.numero_chambre == no_chambre)
+            result = session.execute(stmt)
 
-        for chambre in result.scalars():
-            return ChambreDTO (chambre)
+            for chambre in result.scalars():
+                return ChambreDTO (chambre)
+
+    except InterfaceError as e:
+        print(f"Erreur de connexion à la base de données : {e}")
+        raise
+
+    except SQLAlchemyError as e:
+        print(f"Une erreur est survenue avec la base de données : {e}")
+        raise
+
+    except ValueError as e:
+        print(e)
+        raise
+
+    # Aucun Finally nécessaire
 
 
 def modifierChambre(chambre: ChambreDTO):
-    #TODO: Ajouter gestion des erreurs. On va voir un exemple au prochain cours.
-    
-    with Session(engine) as session:
-        
-        stmt = select(Chambre).where(Chambre.id_chambre == chambre.idChambre)
-        
-        # one_or_none() retourne la chambre si elle existe, sinon retourne None.
-        chambreAModifier = session.execute(stmt).scalars().one_or_none()
-        
-        # Vérifier que la chambre existe déjà dans la base de données avant de la modifier
-        if chambreAModifier is None:
-            raise ValueError("La chambre n'existe pas")
 
-        # Met à jour le numéro de la chambre
-        chambreAModifier.numero_chambre = chambre.numero_chambre
-        
-        # Met à jour la disponibilité de la chambre pour les réservations
-        chambreAModifier.disponible_reservation = chambre.disponible_reservation
+    try:
 
-        # Vérifie si de nouvelles informations ont été fournies avant de les modifier.
-        # Si autre_informations=None, on conserve la valeur déjà présente dans la base de données.
-        if chambre.autre_informations is not None:
-            chambreAModifier.autre_informations = chambre.autre_informations
+        with Session(engine) as session:
 
-        # Recherche le type de chambre dans la base de données à partir de l'id fourni dans le DTO.
-        typeChambre = session.execute(
-            select(TypeChambre).where(TypeChambre.id_type_chambre == chambre.type_chambre.id_type_chambre)
-        ).scalars().one()
-        chambreAModifier.type_chambre = typeChambre
+            stmt = select(Chambre).where(Chambre.id_chambre == chambre.idChambre)
 
-        session.commit()
+            # one_or_none() retourne la chambre si elle existe, sinon retourne None.
+            chambreAModifier = session.execute(stmt).scalars().one_or_none()
+
+            # Vérifier que la chambre existe déjà dans la base de données avant de la modifier
+            if chambreAModifier is None:
+                raise ValueError("La chambre n'existe pas")
+
+            # Met à jour le numéro de la chambre
+            chambreAModifier.numero_chambre = chambre.numero_chambre
+
+            # Met à jour la disponibilité de la chambre pour les réservations
+            chambreAModifier.disponible_reservation = chambre.disponible_reservation
+
+            # Vérifie si de nouvelles informations ont été fournies avant de les modifier.
+            # Si autre_informations=None, on conserve la valeur déjà présente dans la base de données.
+            if chambre.autre_informations is not None:
+                chambreAModifier.autre_informations = chambre.autre_informations
+
+            # Recherche le type de chambre dans la base de données à partir de l'id fourni dans le DTO.
+            typeChambre = session.execute(
+                select(TypeChambre).where(TypeChambre.id_type_chambre == chambre.type_chambre.id_type_chambre)
+            ).scalars().one()
+            chambreAModifier.type_chambre = typeChambre
+
+            session.commit()
+
+    except InterfaceError as e:
+        print(f"Erreur de connexion à la base de données : {e}")
+        raise
+
+    except SQLAlchemyError as e:
+        print(f"Une erreur est survenue avec la base de données : {e}")
+        raise
+
+    except ValueError as e:
+        print(e)
+        raise
+
+    # Aucun Finally nécessaire
+
 
 def supprimerChambre(id_chambre):
     # Vérifier qu'un identifiant a été fourni
