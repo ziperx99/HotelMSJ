@@ -1,3 +1,4 @@
+# Modules et librairies
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError, InterfaceError
 from sqlalchemy import create_engine, select
@@ -7,8 +8,8 @@ from modele.usager import Usager
 from modele.chambre import Chambre
 from modele.reservation import Reservation
 from uuid import uuid4
-from datetime import datetime
 
+# Configuration du moteur de base de données
 engine = create_engine(
     'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',
     connect_args={
@@ -56,7 +57,6 @@ def creerReservation(reservation: ReservationDTO):
         print("Réservation créée sans problème")
 
 
-
 def rechercherReservation(criteres: RechercherReservationDTO):
 
     try:
@@ -97,28 +97,20 @@ def rechercherReservation(criteres: RechercherReservationDTO):
         return reservations 
 
     except ValueError as e:
-
         # Gestion des erreurs de validation
         raise Exception(
             f"Erreur de validation : {str(e)}"
         )
 
     except InterfaceError as e:
-
         # Gestion des erreurs de connexion à la base de données
         print(f"Erreur de connexion à la base de données : {e}")
         raise
 
     except SQLAlchemyError as e:
-
         # Gestion des erreurs SQLAlchemy
         print(f"Une erreur est survenue avec la base de données : {e}")
         raise
-
-    finally:
-
-        # Confirmation de la fin du traitement
-        print("Tentative de recherche de réservations terminée.")
 
 
 def supprimerReservation(id_reservation):
@@ -150,4 +142,46 @@ def supprimerReservation(id_reservation):
         raise
     except SQLAlchemyError as e:
         print(f"Une erreur est survenue avec la base de données : {e}")
+        raise
+    
+    
+def modifierReservation(reservation: ReservationDTO):
+        
+    try:
+        
+        # Ouverture d'une session SQLAlchemy
+        with Session(engine) as session:
+            
+            # Recherche de la réservation existante
+            stmt = select(Reservation).where(
+                Reservation.id_reservation == reservation.id_reservation
+            )
+            reservation_existante = session.execute(stmt).scalar_one_or_none()
+
+            # Vérifier que la réservation existe
+            if reservation_existante is None:
+                raise ValueError("La réservation n'existe pas.")
+
+            # Mettre à jour les champs de la réservation existante avec les nouvelles valeurs
+            reservation_existante.date_debut_reservation = reservation.date_debut_reservation
+            reservation_existante.date_fin_reservation = reservation.date_fin_reservation
+            reservation_existante.prix_jour = reservation.prix_jour
+            reservation_existante.info_reservation = reservation.info_reservation
+
+            # Enregistrer les modifications dans la BD
+            session.commit()
+
+    except InterfaceError as e:
+        # Gestion des erreurs de connexion à la base de données
+        print(f"Erreur de connexion à la base de données : {e}")
+        raise
+    
+    except SQLAlchemyError as e:
+        # Gestion des erreurs SQLAlchemy
+        print(f"Une erreur est survenue avec la base de données : {e}")
+        raise
+    
+    except ValueError as e:
+        # Gestion des erreurs de valeur
+        print(e)
         raise
