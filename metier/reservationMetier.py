@@ -7,7 +7,6 @@ from modele.usager import Usager
 from modele.chambre import Chambre
 from modele.reservation import Reservation
 from uuid import uuid4
-from datetime import datetime
 
 engine = create_engine(
     'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',

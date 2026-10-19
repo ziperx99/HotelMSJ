@@ -1,11 +1,11 @@
 import unittest
-from modele.chambre import Chambre
 from modele.TypeChambre import TypeChambre
 from metier.chambreMetier import creerTypeChambre
-from DTO.chambreDTO import ChambreDTO, TypeChambreDTO
+from DTO.chambreDTO import TypeChambreDTO
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, delete, select
 from uuid import uuid4, UUID
+from pydantic import ValidationError
 
 import logging
 logging.basicConfig()
@@ -38,7 +38,7 @@ class test_creerTypeChambre(unittest.TestCase):
         self.assertIsNone(typeChambreDTOCree.prix_plafond)
         self.assertEqual(typeChambreDTOCree.description_chambre, 'Test unitaire')
 
-        #TODO: Supprimer la chambre nouvellement créée:
+        #Supprimer la chambre nouvellement créée:
         #importer create_engine et delete de SQLAlchemy. Créer une session et exécuter
         # un statement qui vient deleter la chambre nouvellement créé par le test précédent.
         with Session(engine) as session:
@@ -52,3 +52,55 @@ class test_creerTypeChambre(unittest.TestCase):
             session.execute(stmt2)
             session.commit()
             session.close()
+
+    def test_creerTypeChambreSansId(self):
+            
+        with self.assertRaises(ValidationError):
+            TypeChambreDTO(
+                TypeChambre(
+                    id_type_chambre = None,
+                    nom_type = 'Test', 
+                    prix_plancher = 229.0,
+                    prix_plafond = None,
+                    description_chambre = "Test unitaire"
+                )
+            )
+
+    def test_creerTypeChambreSansNom(self):
+            
+        with self.assertRaises(ValidationError):
+            TypeChambreDTO(
+                TypeChambre(
+                    id_type_chambre = uuid4(),
+                    nom_type = None, 
+                    prix_plancher = 229.0,
+                    prix_plafond = None,
+                    description_chambre = "Test unitaire"
+                )
+            )
+
+    def test_creerTypeChambreSansPrixPlancher(self):
+            
+        with self.assertRaises(ValidationError):
+            TypeChambreDTO(
+                TypeChambre(
+                    id_type_chambre = uuid4(),
+                    nom_type = 'Test', 
+                    prix_plancher = None,
+                    prix_plafond = 300,
+                    description_chambre = "Test unitaire"
+                )
+            )
+
+    def test_creerTypeChambrePrixPlancherSuperieurPrixPlafond(self):
+            
+        with self.assertRaises(ValueError):
+            TypeChambreDTO(
+                TypeChambre(
+                    id_type_chambre = uuid4(),
+                    nom_type = 'Test', 
+                    prix_plancher = 300,
+                    prix_plafond = 200,
+                    description_chambre = "Test unitaire"
+                )
+            )
