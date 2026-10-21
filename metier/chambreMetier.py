@@ -5,7 +5,7 @@ from sqlalchemy import create_engine, select
 from DTO.chambreDTO import ChambreDTO, TypeChambreDTO
 from modele.chambre import Chambre
 from modele.TypeChambre import TypeChambre
-from uuid import uuid4
+from uuid import uuid4, UUID
 
 # Configuration du moteur de base de données
 engine = create_engine(
@@ -245,6 +245,81 @@ def supprimerTypeChambre(id_type_chambre):
     except InterfaceError as e:
         print(f"Erreur de connexion à la base de données : {e}")
         raise
+    except SQLAlchemyError as e:
+        print(f"Une erreur est survenue avec la base de données : {e}")
+        raise
+
+def rechercherTypeChambre(id_type_chambre):
+    # Vérifier qu'un identifiant a été fourni
+    if id_type_chambre is None:
+        raise ValueError("L'identifiant du type de chambre doit exister.")
+    # Vérifier le format de l'identifiant
+    try:
+        id_type_chambre = UUID(str(id_type_chambre))
+    except (ValueError, TypeError, AttributeError):
+        raise ValueError("L'identifiant du type de chambre doit être un UUID valide.")
+    
+    try:
+        with Session(engine) as session:
+            # Rechercher le type de chambre dans la BD
+            stmt = select(TypeChambre).where(
+                TypeChambre.id_type_chambre == id_type_chambre
+            )
+
+            typeChambre = session.execute(stmt).scalar_one_or_none()
+
+            # Vérifier que le type de chambre existe
+            if typeChambre is None:
+                raise ValueError("Le type de chambre n'existe pas.")
+            
+            # Retourner le résultat sous forme de DTO
+            return TypeChambreDTO(typeChambre)
+
+    except InterfaceError as e:
+        print(f"Erreur de connexion à la base de données : {e}")
+        raise
+    except SQLAlchemyError as e:
+        print(f"Une erreur est survenue avec la base de données : {e}")
+        raise
+
+def modifierTypeChambre(typeChambre: TypeChambreDTO):
+    # Vérifier qu'un identifiant a été fourni
+    if typeChambre.id_type_chambre is None:
+        raise ValueError("L'identifiant du type de chambre doit exister.")
+    
+    # Vérifier que le nom est valide
+    if typeChambre.nom_type is None or typeChambre.nom_type.strip() == "":
+        raise ValueError("Le nom du type de chambre doit exister.")
+    
+    try:
+        with Session(engine) as session:
+            # Rechercher le type de chambre dans la BD
+            stmt = select(TypeChambre).where(
+                TypeChambre.id_type_chambre == typeChambre.id_type_chambre
+            )
+
+            typeChambreAModifier = session.execute(
+                stmt).scalar_one_or_none()
+            
+            # Vérifier que le type existe
+            if typeChambreAModifier is None:
+                raise ValueError("Le type de chambre n'existe pas.")
+            
+            # Modifier les informations
+            typeChambreAModifier.nom_type = typeChambre.nom_type
+            typeChambreAModifier.prix_plancher = typeChambre.prix_plancher
+            typeChambreAModifier.prix_plafond = typeChambre.prix_plafond
+            typeChambreAModifier.description_chambre = typeChambre.description_chambre
+
+            # Enregistrer les modifications
+            session.commit()
+            session.refresh(typeChambreAModifier)
+            return TypeChambreDTO(typeChambreAModifier)
+    
+    except InterfaceError as e:
+        print(f"Erreur de connexion à la base de données : {e}")
+        raise
+    
     except SQLAlchemyError as e:
         print(f"Une erreur est survenue avec la base de données : {e}")
         raise
