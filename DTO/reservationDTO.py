@@ -10,7 +10,7 @@ class ReservationDTO(BaseModel):
     id_reservation : UUID = Field(custom_error='id_reservation doit être un UUID comportant 36 caractères')
     date_debut_reservation : datetime = Field(custom_error='date_debut_reservation doit avoir un format datetime')
     date_fin_reservation : datetime = Field(custom_error='date_fin_reservation doit avoir un format datetime')
-    prix_jour : float = Field(ge=0, custom_error='prix_jour doit être une valeur positive')
+    prix_jour : float = Field(gt=0, custom_error='prix_jour doit être une valeur strictement positive')
     info_reservation : Optional[str] = Field(default=None, custom_error='info_reservation doit être un string valide')
     usager : UsagerDTO
     chambre : Optional[ChambreDTO]

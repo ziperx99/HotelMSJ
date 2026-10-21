@@ -5,9 +5,9 @@ from sqlalchemy.orm import Session
 from modele.usager import Usager
 from metier.usagerMetier import getUsagerParNom, engine
 
-class TestGetUsagerParNom(unittest.TestCase):
+class Test_rechercherUsagerParNom(unittest.TestCase):
     
-    def test_getUsagerParNom(self):
+    def test_rechercherUsagerParNom(self):
         # Créer un usager temporaire pour notre recherche
         id_usager = uuid4()
         nom_test = "TestRechercheNom"
@@ -46,17 +46,17 @@ class TestGetUsagerParNom(unittest.TestCase):
                     session.commit()
 
 
-    def test_getUsagerParNomNull(self):
+    def test_rechercherUsagerParNomNull(self):
         # Aucun nom fourni
         with self.assertRaises(ValueError):
             getUsagerParNom(None)
     
-    def test_getUsagerParNomVide(self):
+    def test_rechercherUsagerParNomVide(self):
         # Un nom composé d'espaces est invalide
         with self.assertRaises(ValueError):
             getUsagerParNom("    ")
     
-    def test_getUsagerParNomInexistant(self):
+    def test_rechercherUsagerParNomInexistant(self):
         # Recherche un nom inexistant dans la BD
         with self.assertRaises(ValueError):
             getUsagerParNom("NomInexistant_" + str(uuid4()))

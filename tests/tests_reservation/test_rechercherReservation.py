@@ -540,3 +540,18 @@ class TestRechercherReservation(unittest.TestCase):
                         )
             
             rechercherReservation(criteres)
+
+    # Vérifier que le DTO accepte un nom et un prénom fournis ensemble
+    def test_validationNomEtPrenomValides(self):
+        criteres = RechercherReservationDTO(
+            nom="Chapdelaine",
+            prenom="Melissa"
+        )
+        self.assertEqual(criteres.nom, "Chapdelaine")
+        self.assertEqual(criteres.prenom, "Melissa")
+
+    # Vérifier que le DTO accepte une recherche sans nom ni prénom puisque les deux champs sont facultatifs
+    def test_validationNomEtPrenomAbsents(self):
+        criteres = RechercherReservationDTO()
+        self.assertIsNone(criteres.nom)
+        self.assertIsNone(criteres.prenom)
