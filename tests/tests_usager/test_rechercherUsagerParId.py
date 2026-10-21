@@ -1,13 +1,9 @@
 import unittest
-
 from uuid import uuid4
-
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, delete
-
 from modele.usager import Usager
 from DTO.usagerDTO import UsagerDTO
-
 from metier.usagerMetier import (
     creerUsager,
     getUsagerParId
@@ -23,9 +19,9 @@ engine = create_engine(
 )
 
 
-class test_getUsagerParId(unittest.TestCase):
+class test_rechercherUsagerParId(unittest.TestCase):
 
-    def test_getUsagerParId(self):
+    def test_rechercherUsagerParId(self):
 
         usager = Usager(
             id_usager=uuid4(),
@@ -85,13 +81,13 @@ class test_getUsagerParId(unittest.TestCase):
             session.commit()
 
 
-    def test_getUsagerParIdNone(self):
+    def test_rechercherUsagerParIdNone(self):
 
         with self.assertRaises(ValueError):
             getUsagerParId(None)
 
 
-    def test_getUsagerParIdInexistant(self):
+    def test_rechercherUsagerParIdInexistant(self):
 
         with self.assertRaises(ValueError):
             getUsagerParId(uuid4())
