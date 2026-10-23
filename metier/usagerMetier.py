@@ -179,4 +179,39 @@ def modifierUsager(usager: UsagerDTO):
     
     except SQLAlchemyError as e:
         print(f"Une erreur est survenue avec la base de données : {e}")
-        raise e    
+        raise e
+    
+    
+def supprimerUsager(id_usager):
+
+    # Vérification de l'identifiant reçu
+    if id_usager is None:
+        raise ValueError("L'identifiant de l'usager doit exister.")
+
+    try:
+
+        # Ouverture d'une session SQLAlchemy
+        with Session(engine) as session:
+
+            # Recherche de l'usager à supprimer
+            stmt = select(Usager).where(Usager.id_usager == id_usager)
+            usagerASupprimer = session.execute(stmt).scalar_one_or_none()
+
+            # Vérification que l'usager existe
+            if usagerASupprimer is None:
+                raise ValueError("L'usager n'existe pas.")
+
+            # Suppression de l'usager
+            session.delete(usagerASupprimer)
+
+            # Sauvegarde des modifications dans la base de données
+            session.commit()
+
+    except InterfaceError as e:
+        # Gestion des erreurs de connexion à la base de données
+        print(f"Erreur de connexion à la base de données. Vérifier l'URL du pilote de connexion.: {e}")
+
+    except SQLAlchemyError as e:
+        # Gestion des erreurs SQLAlchemy
+        print(f"Une erreur est survenue avec la base de données : {e}")
+        raise e
