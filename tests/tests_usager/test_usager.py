@@ -127,13 +127,13 @@ class TestUsager(unittest.TestCase):
         with self.assertRaises(ValidationError):
             UsagerDTO(usager)
         
-    
-    def test_prenom_espaces_seulement(self):
+        
+    def test_nom_espaces_seulement(self):
 
         usager = Usager(
             id_usager=uuid4(),
-            prenom="   ",
-            nom="TestNom",
+            prenom="TestPrenom",
+            nom="   ",
             adresse="123 rue Test",
             mobile="514-555-1234",
             mot_de_passe="test123"
@@ -141,7 +141,7 @@ class TestUsager(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             UsagerDTO(usager)
-        
+            
     
     def test_adresse_vide(self):
 
