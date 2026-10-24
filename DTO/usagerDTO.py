@@ -1,6 +1,8 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from modele.usager import Usager
 from uuid import UUID
+import re
+
 
 class UsagerDTO(BaseModel):
     id_usager: UUID = Field(custom_error='id_usager doit être un UUID comportant 36 caractères')
@@ -9,6 +11,28 @@ class UsagerDTO(BaseModel):
     adresse: str = Field(max_length=100, custom_error='adresse a une limite de 100 caractères')
     mobile: str = Field(max_length=15, custom_error='mobile a une limite de 15 caractères')
     mot_de_passe: str = Field(max_length=60, custom_error='mot_de_passe a une limite de 60 caractères')
+
+    @field_validator("prenom", "nom", "adresse", "mobile", "mot_de_passe", mode="before")
+    @classmethod
+    def validerChampObligatoire(cls, valeur):
+        if valeur is None or str(valeur).strip() == "":
+            raise ValueError("Ce champ ne peut pas être vide.")
+        return valeur
+
+    @field_validator("mot_de_passe")
+    @classmethod
+    def validerMotDePasse(cls, valeur):
+        if len(valeur) < 8:
+            raise ValueError("Le mot de passe doit contenir au moins 8 caractères.")
+        return valeur
+
+    @field_validator("mobile")
+    @classmethod
+    def validerMobile(cls, valeur):
+        chiffres = valeur.replace("-", "").replace(" ", "")
+        if len(chiffres) != 10:
+            raise ValueError("Le numéro de téléphone doit contenir 10 chiffres.")
+        return valeur
 
     def __init__(self, usager: Usager = None):
         super().__init__(
