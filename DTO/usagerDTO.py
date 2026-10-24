@@ -1,7 +1,7 @@
+# Modules et librairies
+from uuid import UUID
 from pydantic import BaseModel, Field, field_validator
 from modele.usager import Usager
-from uuid import UUID
-import re
 
 
 class UsagerDTO(BaseModel):

@@ -1,13 +1,14 @@
 # Modules et librairies
-import unittest
 import logging
-from sqlalchemy.orm import Session
+import unittest
+from uuid import uuid4
 from sqlalchemy import create_engine, select
+from sqlalchemy.orm import Session
+from modele.TypeChambre import TypeChambre
+from modele.chambre import Chambre
 from DTO.chambreDTO import ChambreDTO
 from metier.chambreMetier import modifierChambre
-from modele.chambre import Chambre
-from modele.TypeChambre import TypeChambre
-from uuid import uuid4
+
 
 # Configuration de base
 logging.basicConfig()
@@ -17,7 +18,8 @@ logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 # Configuration du moteur de base de données
 engine = create_engine(
     'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+17+for+SQL+Server',
-    use_setinputsizes=False)
+    use_setinputsizes=False
+)
 
 
 class TestChambre(unittest.TestCase):

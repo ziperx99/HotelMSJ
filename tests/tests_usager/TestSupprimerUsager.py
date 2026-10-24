@@ -1,15 +1,16 @@
 # Modules et librairies
 import unittest
 from uuid import uuid4
-from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, delete
+from sqlalchemy.orm import Session
 from modele.usager import Usager
 from DTO.usagerDTO import UsagerDTO
 from metier.usagerMetier import (
     creerUsager,
+    getUsagerParId,
     supprimerUsager,
-    getUsagerParId
 )
+
 
 # Configuration du moteur de base de données
 engine = create_engine(

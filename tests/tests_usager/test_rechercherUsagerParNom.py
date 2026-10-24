@@ -1,9 +1,10 @@
+# Modules et librairies
 import unittest
 from uuid import uuid4
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 from modele.usager import Usager
-from metier.usagerMetier import getUsagerParNom, engine
+from metier.usagerMetier import engine, getUsagerParNom
+
 
 class Test_rechercherUsagerParNom(unittest.TestCase):
     

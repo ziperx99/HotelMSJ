@@ -20,9 +20,12 @@ from metier.reservationMetier import (
     rechercherReservation
 )
 
+
 # Configuration du moteur de base de données
-engine = create_engine('mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',
-    connect_args={"TrustServerCertificate": "yes"}, use_setinputsizes=False
+engine = create_engine(
+    'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',
+    connect_args={"TrustServerCertificate": "yes"},
+    use_setinputsizes=False
 )
 
 

@@ -1,9 +1,11 @@
+# Modules et librairies
 import unittest
 from uuid import uuid4
 from sqlalchemy.orm import Session
-from metier.chambreMetier import rechercherTypeChambre, engine
 from modele.TypeChambre import TypeChambre
 from DTO.chambreDTO import TypeChambreDTO
+from metier.chambreMetier import engine, rechercherTypeChambre
+
 
 class TestRechercherTypeChambre(unittest.TestCase):
 

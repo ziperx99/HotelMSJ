@@ -1,10 +1,12 @@
+# Modules et librairies
+from datetime import datetime
 from typing import Optional
+from uuid import UUID
 from pydantic import BaseModel, Field, model_validator
 from modele.reservation import Reservation
-from datetime import datetime
 from DTO.chambreDTO import ChambreDTO
 from DTO.usagerDTO import UsagerDTO
-from uuid import UUID
+
 
 class ReservationDTO(BaseModel):
     id_reservation : UUID = Field(custom_error='id_reservation doit être un UUID comportant 36 caractères')
@@ -33,4 +35,3 @@ class ReservationDTO(BaseModel):
                         info_reservation = reservation.info_reservation,
                         usager = UsagerDTO(reservation.usager),
                         chambre = ChambreDTO(reservation.chambre))
-                         

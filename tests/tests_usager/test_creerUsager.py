@@ -1,19 +1,17 @@
+# Modules et librairies
 import unittest
-
+from uuid import uuid4
+from sqlalchemy import create_engine, delete, select
 from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, select, delete
-
 from modele.usager import Usager
 from DTO.usagerDTO import UsagerDTO
 from metier.usagerMetier import creerUsager
-from uuid import uuid4
 
 
+# Configuration du moteur de base de données
 engine = create_engine(
     'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',
-    connect_args={
-        "TrustServerCertificate": "yes"
-    },
+    connect_args={"TrustServerCertificate": "yes"},
     use_setinputsizes=False
 )
 

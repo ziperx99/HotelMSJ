@@ -1,20 +1,21 @@
-import unittest
+# Modules et librairies
 import logging
-from uuid import uuid4
-from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, select
-from DTO.usagerDTO import UsagerDTO
-from modele.chambre import Chambre
-from modele.TypeChambre import TypeChambre
-from modele.usager import Usager
-from modele.reservation import Reservation
+import unittest
 from decimal import Decimal
+from uuid import uuid4
 from pydantic import ValidationError
+from sqlalchemy import create_engine, select
+from sqlalchemy.orm import Session
+from modele.usager import Usager
+from DTO.usagerDTO import UsagerDTO
 
 
+# Configuration de base
 logging.basicConfig()
+# Activation des logs SQLAlchemy
 logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 
+# Configuration du moteur de base de données
 engine = create_engine(
     'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+17+for+SQL+Server',
     use_setinputsizes=False

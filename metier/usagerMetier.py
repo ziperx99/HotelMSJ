@@ -1,9 +1,11 @@
-from sqlalchemy.exc import SQLAlchemyError, InterfaceError
-from sqlalchemy.orm import Session
+# Modules et librairies
+from uuid import uuid4
 from sqlalchemy import create_engine, select
+from sqlalchemy.exc import InterfaceError, SQLAlchemyError
+from sqlalchemy.orm import Session
 from DTO.usagerDTO import UsagerDTO
 from modele.usager import Usager
-from uuid import uuid4
+
 
 engine = create_engine(
     'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',

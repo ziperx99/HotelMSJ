@@ -1,28 +1,29 @@
+# Modules et librairies
 import unittest
-
-from sqlalchemy.orm import Session
+from datetime import datetime
+from uuid import uuid4
 from sqlalchemy import create_engine
-from modele.chambre import Chambre
-from modele.usager import Usager
+from sqlalchemy.orm import Session
 from modele.TypeChambre import TypeChambre
+from modele.chambre import Chambre
 from modele.reservation import Reservation
+from modele.usager import Usager
 from DTO.chambreDTO import ChambreDTO
-from DTO.usagerDTO import UsagerDTO
-from DTO.reservationDTO import ReservationDTO
 from DTO.rechercherReservationDTO import RechercherReservationDTO
+from DTO.reservationDTO import ReservationDTO
+from DTO.usagerDTO import UsagerDTO
+from metier.chambreMetier import creerChambre
 from metier.reservationMetier import creerReservation, rechercherReservation
 from metier.usagerMetier import creerUsager
-from metier.chambreMetier import creerChambre
-from uuid import uuid4
-from datetime import datetime
 
+
+# Configuration du moteur de base de données
 engine = create_engine(
     'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',
-    connect_args={
-        "TrustServerCertificate": "yes"
-    },
+    connect_args={"TrustServerCertificate": "yes"},
     use_setinputsizes=False
 )
+
 
 class TestRechercherReservation(unittest.TestCase):
 

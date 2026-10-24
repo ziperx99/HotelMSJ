@@ -4,25 +4,28 @@ from datetime import datetime
 from uuid import uuid4
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
+from modele.TypeChambre import TypeChambre
 from modele.chambre import Chambre
 from modele.reservation import Reservation
-from modele.TypeChambre import TypeChambre
 from modele.usager import Usager
 from DTO.chambreDTO import ChambreDTO
 from DTO.rechercherReservationDTO import RechercherReservationDTO
 from DTO.reservationDTO import ReservationDTO
 from DTO.usagerDTO import UsagerDTO
 from metier.chambreMetier import creerChambre
-from metier.usagerMetier import creerUsager
 from metier.reservationMetier import (
     creerReservation,
     modifierReservation,
-    rechercherReservation
+    rechercherReservation,
 )
+from metier.usagerMetier import creerUsager
+
 
 # Configuration du moteur de base de données
-engine = create_engine('mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',
-    connect_args={"TrustServerCertificate": "yes"}, use_setinputsizes=False
+engine = create_engine(
+    'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',
+    connect_args={"TrustServerCertificate": "yes"},
+    use_setinputsizes=False
 )
 
 

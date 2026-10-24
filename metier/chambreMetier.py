@@ -1,11 +1,12 @@
 # Modules et librairies
-from sqlalchemy.orm import Session
-from sqlalchemy.exc import SQLAlchemyError, InterfaceError
+from uuid import UUID, uuid4
 from sqlalchemy import create_engine, select
-from DTO.chambreDTO import ChambreDTO, TypeChambreDTO
+from sqlalchemy.exc import InterfaceError, SQLAlchemyError
+from sqlalchemy.orm import Session
 from modele.chambre import Chambre
 from modele.TypeChambre import TypeChambre
-from uuid import uuid4, UUID
+from DTO.chambreDTO import ChambreDTO, TypeChambreDTO
+
 
 # Configuration du moteur de base de données
 engine = create_engine(
@@ -15,6 +16,7 @@ engine = create_engine(
             "TrustServerCertificate": "yes"
         },
     use_setinputsizes=False)
+
 
 def creerChambre(chambre: ChambreDTO):
     try:

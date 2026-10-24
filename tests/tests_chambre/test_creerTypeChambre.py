@@ -1,23 +1,27 @@
-import unittest
-from modele.TypeChambre import TypeChambre
-from metier.chambreMetier import creerTypeChambre
-from DTO.chambreDTO import TypeChambreDTO
-from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, delete, select
-from uuid import uuid4, UUID
-from pydantic import ValidationError
-
+# Modules et librairies
 import logging
+import unittest
+from uuid import UUID, uuid4
+from pydantic import ValidationError
+from sqlalchemy import create_engine, delete, select
+from sqlalchemy.orm import Session
+from modele.TypeChambre import TypeChambre
+from DTO.chambreDTO import TypeChambreDTO
+from metier.chambreMetier import creerTypeChambre
+
+
+# Configuration de base
 logging.basicConfig()
+# Activation des logs SQLAlchemy
 logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 
+# Configuration du moteur de base de données
 engine = create_engine(
     'mssql+pyodbc://localhost\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',
-    connect_args=
-        {
-            "TrustServerCertificate": "yes"
-        },
-    use_setinputsizes=False)
+    connect_args={"TrustServerCertificate": "yes"},
+    use_setinputsizes=False
+)
+
 
 class test_creerTypeChambre(unittest.TestCase):
     def test_creerTypeChambre(self):

@@ -1,10 +1,12 @@
+# Modules et librairies
 import unittest
 from uuid import uuid4
-from sqlalchemy.orm import Session
 from pydantic import ValidationError
-from metier.chambreMetier import modifierTypeChambre, engine
+from sqlalchemy.orm import Session
 from modele.TypeChambre import TypeChambre
 from DTO.chambreDTO import TypeChambreDTO
+from metier.chambreMetier import engine, modifierTypeChambre
+
 
 class TestModifierTypeChambre(unittest.TestCase):
     # Créer un type de chambre temporaire dans la BD

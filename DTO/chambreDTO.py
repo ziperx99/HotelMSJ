@@ -1,8 +1,12 @@
+# Modules et librairies
 from typing import Optional
-from pydantic import BaseModel, Field, model_validator, field_validator
-from modele.chambre import Chambre
-from modele.TypeChambre import TypeChambre
 from uuid import UUID
+from pydantic import BaseModel, Field, field_validator, model_validator
+from modele.TypeChambre import TypeChambre
+from modele.chambre import Chambre
+
+
+# Commentaires de l'enseignant gardés en exemple pour ce type de classe.
 
 # Data Transfer Object : pydantic BaseModel pour intégration facile avec FastAPI
 # Facilite aussi grandement la sérialization et la validation des données contenues dans les DTOs

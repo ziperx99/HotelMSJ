@@ -1,13 +1,14 @@
 # Modules et librairies
-from sqlalchemy.orm import Session
-from sqlalchemy.exc import SQLAlchemyError, InterfaceError
+from uuid import uuid4
 from sqlalchemy import create_engine, select
-from DTO.reservationDTO import ReservationDTO
-from DTO.rechercherReservationDTO import RechercherReservationDTO
-from modele.usager import Usager
+from sqlalchemy.exc import InterfaceError, SQLAlchemyError
+from sqlalchemy.orm import Session
 from modele.chambre import Chambre
 from modele.reservation import Reservation
-from uuid import uuid4
+from modele.usager import Usager
+from DTO.rechercherReservationDTO import RechercherReservationDTO
+from DTO.reservationDTO import ReservationDTO
+
 
 # Configuration du moteur de base de données
 engine = create_engine(

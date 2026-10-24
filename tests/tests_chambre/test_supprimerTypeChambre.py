@@ -1,10 +1,12 @@
+# Modules et librairies
 import unittest
 from uuid import uuid4
-from sqlalchemy.orm import Session
 from sqlalchemy import select
-from modele.chambre import Chambre
+from sqlalchemy.orm import Session
 from modele.TypeChambre import TypeChambre
-from metier.chambreMetier import supprimerTypeChambre, engine
+from modele.chambre import Chambre
+from metier.chambreMetier import engine, supprimerTypeChambre
+
 
 class TestSupprimerTypeChambre(unittest.TestCase):
 
