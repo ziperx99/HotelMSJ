@@ -24,7 +24,7 @@ engine = create_engine(
 
 class TestUsager(unittest.TestCase):
 
-    def test_getUsager(self):
+    def test_get_usager(self):
 
         with Session(engine) as session:
 

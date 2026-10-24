@@ -5,7 +5,7 @@ from sqlalchemy import create_engine, delete, select
 from sqlalchemy.orm import Session
 from modele.usager import Usager
 from DTO.usager_dto import UsagerDTO
-from metier.usager_metier import creerUsager
+from metier.usager_metier import creer_usager
 
 
 # Configuration du moteur de base de données
@@ -16,9 +16,9 @@ engine = create_engine(
 )
 
 
-class test_creerUsager(unittest.TestCase):
+class TestCreerUsager(unittest.TestCase):
 
-    def test_creerUsager(self):
+    def test_creer_usager(self):
 
         usager = Usager(
             id_usager=uuid4(),
@@ -31,7 +31,7 @@ class test_creerUsager(unittest.TestCase):
 
         usagerDTO = UsagerDTO(usager)
 
-        usagerDTOCree = creerUsager(usagerDTO)
+        usagerDTOCree = creer_usager(usagerDTO)
 
         self.assertIsNotNone(
             usagerDTOCree.id_usager
@@ -86,7 +86,7 @@ class test_creerUsager(unittest.TestCase):
             session.commit()
 
 
-    def test_creerUsagerPrenomVide(self):
+    def test_creer_usager_prenom_vide(self):
 
         usager = Usager(
             id_usager=uuid4(),
@@ -98,10 +98,10 @@ class test_creerUsager(unittest.TestCase):
         )
 
         with self.assertRaises(ValueError):
-            creerUsager(UsagerDTO(usager))
+            creer_usager(UsagerDTO(usager))
 
 
-    def test_creerUsagerNomVide(self):
+    def test_creer_usager_nom_vide(self):
 
         usager = Usager(
             id_usager=uuid4(),
@@ -113,10 +113,10 @@ class test_creerUsager(unittest.TestCase):
         )
 
         with self.assertRaises(ValueError):
-            creerUsager(UsagerDTO(usager))
+            creer_usager(UsagerDTO(usager))
 
 
-    def test_creerUsagerAdresseVide(self):
+    def test_creer_usager_adresse_vide(self):
 
         usager = Usager(
             id_usager=uuid4(),
@@ -128,10 +128,10 @@ class test_creerUsager(unittest.TestCase):
         )
 
         with self.assertRaises(ValueError):
-            creerUsager(UsagerDTO(usager))
+            creer_usager(UsagerDTO(usager))
 
 
-    def test_creerUsagerMobileVide(self):
+    def test_creer_usager_mobile_vide(self):
 
         usager = Usager(
             id_usager=uuid4(),
@@ -143,10 +143,10 @@ class test_creerUsager(unittest.TestCase):
         )
 
         with self.assertRaises(ValueError):
-            creerUsager(UsagerDTO(usager))
+            creer_usager(UsagerDTO(usager))
 
 
-    def test_creerUsagerMotDePasseVide(self):
+    def test_creer_usager_mot_de_passe_vide(self):
 
         usager = Usager(
             id_usager=uuid4(),
@@ -158,7 +158,7 @@ class test_creerUsager(unittest.TestCase):
         )
 
         with self.assertRaises(ValueError):
-            creerUsager(UsagerDTO(usager))
+            creer_usager(UsagerDTO(usager))
 
 
 if __name__ == "__main__":

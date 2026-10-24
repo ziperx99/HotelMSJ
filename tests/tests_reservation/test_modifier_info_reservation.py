@@ -12,12 +12,12 @@ from DTO.chambre_dto import ChambreDTO
 from DTO.rechercher_reservation_dto import RechercherReservationDTO
 from DTO.reservation_dto import ReservationDTO
 from DTO.usager_dto import UsagerDTO
-from metier.chambre_metier import creerChambre
-from metier.usager_metier import creerUsager
+from metier.chambre_metier import creer_chambre
+from metier.usager_metier import creer_usager
 from metier.reservation_metier import (
-    creerReservation,
-    modifierReservation,
-    rechercherReservation
+    creer_reservation,
+    modifier_reservation,
+    rechercher_reservation
 )
 
 
@@ -31,7 +31,7 @@ engine = create_engine(
 
 class TestModifierInfoReservation(unittest.TestCase):
 
-    def test_modifierInfoReservation(self):
+    def test_modifier_info_reservation(self):
 
         # Variables utilisées pour le nettoyage des données de test
         reservationDTOCree = None
@@ -69,8 +69,8 @@ class TestModifierInfoReservation(unittest.TestCase):
             )
 
             # Création de l'usager et de la chambre dans la base de données
-            usagerCree = creerUsager(UsagerDTO(usager))
-            chambreCree = creerChambre(ChambreDTO(chambre))
+            usagerCree = creer_usager(UsagerDTO(usager))
+            chambreCree = creer_chambre(ChambreDTO(chambre))
 
             # Ouverture d'une session SQLAlchemy
             with Session(engine) as session:
@@ -91,7 +91,7 @@ class TestModifierInfoReservation(unittest.TestCase):
                 )
 
                 # Création de la réservation dans la base de données
-                reservationDTOCree = creerReservation(ReservationDTO(reservation))
+                reservationDTOCree = creer_reservation(ReservationDTO(reservation))
 
             # Nouvelle information de réservation
             nouvelleInfoReservation = "Réservation modifiée"
@@ -101,12 +101,12 @@ class TestModifierInfoReservation(unittest.TestCase):
             reservationModifiee.info_reservation = nouvelleInfoReservation
 
             # Fonction métier
-            modifierReservation(reservationModifiee)
+            modifier_reservation(reservationModifiee)
 
             # Recherche de la réservation modifiée
             criteres = RechercherReservationDTO(id_reservation=reservationDTOCree.id_reservation)
 
-            reservations = rechercherReservation(criteres)
+            reservations = rechercher_reservation(criteres)
 
             # Vérification des résultats de recherche
             self.assertIsNotNone(reservations)

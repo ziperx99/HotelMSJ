@@ -12,9 +12,9 @@ from modele.usager import Usager
 from DTO.chambre_dto import ChambreDTO
 from DTO.reservation_dto import ReservationDTO
 from DTO.usager_dto import UsagerDTO
-from metier.chambre_metier import creerChambre
-from metier.reservation_metier import creerReservation
-from metier.usager_metier import creerUsager
+from metier.chambre_metier import creer_chambre
+from metier.reservation_metier import creer_reservation
+from metier.usager_metier import creer_usager
 
 
 # Configuration du moteur de base de données
@@ -25,9 +25,9 @@ engine = create_engine(
 )
 
 
-class test_creerReservation(unittest.TestCase):
+class TestCreerReservation(unittest.TestCase):
 
-    def test_creerReservation(self):
+    def test_creer_reservation(self):
 
         try:
 
@@ -56,8 +56,8 @@ class test_creerReservation(unittest.TestCase):
                 type_chambre = typeChambre
             )
 
-            usagerCree = creerUsager(UsagerDTO(usager))
-            chambreCree = creerChambre(ChambreDTO(chambre))
+            usagerCree = creer_usager(UsagerDTO(usager))
+            chambreCree = creer_chambre(ChambreDTO(chambre))
 
             with Session(engine) as session:
                 usagerDB = session.get(Usager, usagerCree.id_usager)
@@ -74,7 +74,7 @@ class test_creerReservation(unittest.TestCase):
                 )
 
                 reservationDTO = ReservationDTO(reservation)
-                reservationDTOCree = creerReservation(reservationDTO)
+                reservationDTOCree = creer_reservation(reservationDTO)
 
             # Tests
             self.assertIsNotNone(
@@ -141,7 +141,7 @@ class test_creerReservation(unittest.TestCase):
                         session.delete(chambreDB)
                         session.commit()
 
-    def test_creerReservationDateDebutVide(self):
+    def test_creer_reservation_date_debut_vide(self):
 
         with self.assertRaises(ValidationError):
 
@@ -181,7 +181,7 @@ class test_creerReservation(unittest.TestCase):
                     chambre = chambre)
             )
 
-    def test_creerReservationDateFinVide(self):
+    def test_creer_reservation_date_fin_vide(self):
     
         with self.assertRaises(ValidationError):
 
@@ -222,7 +222,7 @@ class test_creerReservation(unittest.TestCase):
             )
 
 
-    def test_creerReservationPrixJourVide(self):
+    def test_creer_reservation_prix_jour_vide(self):
     
         with self.assertRaises(ValidationError):
 
@@ -262,7 +262,7 @@ class test_creerReservation(unittest.TestCase):
                     chambre = chambre)
             )
 
-    def test_creerReservationInfoReservationMauvaisType(self):
+    def test_creer_reservation_info_reservation_mauvais_type(self):
 
         with self.assertRaises(ValidationError):
 
@@ -303,7 +303,7 @@ class test_creerReservation(unittest.TestCase):
             )
 
 
-    def test_creerReservationUsagerVide(self):
+    def test_creer_reservation_usager_vide(self):
     
         with self.assertRaises(ValueError):
     
@@ -334,7 +334,7 @@ class test_creerReservation(unittest.TestCase):
                     chambre = chambre)
             )
 
-    def test_creerReservationDateDebutUlterieure(self):
+    def test_creer_reservation_date_debut_ulterieure(self):
 
         with self.assertRaises(ValueError):
 

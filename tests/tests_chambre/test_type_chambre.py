@@ -21,7 +21,7 @@ engine = create_engine(
 
 class TestTypeChambre(unittest.TestCase):
 
-    def test_getTypeChambre(self):
+    def test_get_type_chambre(self):
 
         with Session(engine) as session:
 
@@ -71,7 +71,7 @@ class TestTypeChambre(unittest.TestCase):
                 )
             )
     
-    def test_prixPlafondInferieurPrixPlancher(self):
+    def test_prix_plafond_inferieur_prix_plancher(self):
         # Création d'un TypeChambre uniquement pour tester
         type_chambre = TypeChambre()
 

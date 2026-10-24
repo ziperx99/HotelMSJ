@@ -8,9 +8,9 @@ from modele.usager import Usager
 from modele.type_chambre import TypeChambre
 from DTO.usager_dto import UsagerDTO
 from metier.usager_metier import (
-    creerUsager,
-    getUsagerParId,
-    supprimerUsager,
+    creer_usager,
+    get_usager_par_id,
+    supprimer_usager,
 )
 
 
@@ -37,16 +37,16 @@ class TestSupprimerUsager(unittest.TestCase):
         )
 
         # Création de l'usager dans la base de données
-        usagerCree = creerUsager(UsagerDTO(usager))
+        usagerCree = creer_usager(UsagerDTO(usager))
 
         try:
 
             # Fonction métier
-            supprimerUsager(usagerCree.id_usager)
+            supprimer_usager(usagerCree.id_usager)
 
             # Vérification que l'usager n'existe plus dans la base de données
             with self.assertRaises(ValueError):
-                getUsagerParId(usagerCree.id_usager)
+                get_usager_par_id(usagerCree.id_usager)
 
         finally:
 
@@ -67,7 +67,7 @@ class TestSupprimerUsager(unittest.TestCase):
 
         # Vérification qu'un identifiant nul déclenche une erreur
         with self.assertRaises(ValueError):
-            supprimerUsager(None)
+            supprimer_usager(None)
 
 
     def test_supprimer_usager_inexistant(self):
@@ -77,4 +77,4 @@ class TestSupprimerUsager(unittest.TestCase):
 
         # Vérification que la suppression d'un usager inexistant déclenche une erreur
         with self.assertRaises(ValueError):
-            supprimerUsager(id_inexistant)
+            supprimer_usager(id_inexistant)

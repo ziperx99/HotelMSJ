@@ -20,9 +20,9 @@ engine = create_engine(
 )
 
 
-class TestChambre(unittest.TestCase):
+class TestRechercherChambreParNumero(unittest.TestCase):
 
-    def test_getChambreParNumero(self):
+    def test_rechercher_chambre_par_numero(self):
 
         id_chambre_test = None
 

@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 from modele.usager import Usager
 from DTO.usager_dto import UsagerDTO
 from metier.usager_metier import (
-    creerUsager,
-    modifierUsager,
+    creer_usager,
+    modifier_usager,
 )
 
 
@@ -19,9 +19,9 @@ engine = create_engine(
 )
 
 
-class test_modifierUsager(unittest.TestCase):
+class TestModifierUsager(unittest.TestCase):
 
-    def test_modifierUsager(self):
+    def test_modifier_usager(self):
 
         # Créer l'usager
         usager = Usager(
@@ -33,9 +33,7 @@ class test_modifierUsager(unittest.TestCase):
             mot_de_passe="test123"
         )
 
-        usagerCree = creerUsager(
-            UsagerDTO(usager)
-        )
+        usagerCree = creer_usager(UsagerDTO(usager))
 
         # Modifier les informations
         usagerModifie = Usager(
@@ -47,9 +45,7 @@ class test_modifierUsager(unittest.TestCase):
             mot_de_passe="nouveau123"
         )
 
-        resultat = modifierUsager(
-            UsagerDTO(usagerModifie)
-        )
+        resultat = modifier_usager(UsagerDTO(usagerModifie))
 
         self.assertEqual(
             resultat.id_usager,
@@ -92,7 +88,7 @@ class test_modifierUsager(unittest.TestCase):
             session.commit()
 
 
-    def test_modifierUsagerIdVide(self):
+    def test_modifier_usager_id_vide(self):
 
         usager = Usager(
             id_usager=None,
@@ -104,10 +100,10 @@ class test_modifierUsager(unittest.TestCase):
         )
 
         with self.assertRaises(ValueError):
-            modifierUsager(UsagerDTO(usager))
+            modifier_usager(UsagerDTO(usager))
 
 
-    def test_modifierUsagerPrenomVide(self):
+    def test_modifier_usager_prenom_vide(self):
 
         usager = Usager(
             id_usager=uuid4(),
@@ -119,10 +115,10 @@ class test_modifierUsager(unittest.TestCase):
         )
 
         with self.assertRaises(ValueError):
-            modifierUsager(UsagerDTO(usager))
+            modifier_usager(UsagerDTO(usager))
 
 
-    def test_modifierUsagerNomVide(self):
+    def test_modifier_usager_nom_vide(self):
 
         usager = Usager(
             id_usager=uuid4(),
@@ -134,10 +130,10 @@ class test_modifierUsager(unittest.TestCase):
         )
 
         with self.assertRaises(ValueError):
-            modifierUsager(UsagerDTO(usager))
+            modifier_usager(UsagerDTO(usager))
 
 
-    def test_modifierUsagerAdresseVide(self):
+    def test_modifier_usager_adresse_vide(self):
 
         usager = Usager(
             id_usager=uuid4(),
@@ -149,10 +145,10 @@ class test_modifierUsager(unittest.TestCase):
         )
 
         with self.assertRaises(ValueError):
-            modifierUsager(UsagerDTO(usager))
+            modifier_usager(UsagerDTO(usager))
 
 
-    def test_modifierUsagerMobileVide(self):
+    def test_modifier_usager_mobile_vide(self):
 
         usager = Usager(
             id_usager=uuid4(),
@@ -164,10 +160,10 @@ class test_modifierUsager(unittest.TestCase):
         )
 
         with self.assertRaises(ValueError):
-            modifierUsager(UsagerDTO(usager))
+            modifier_usager(UsagerDTO(usager))
 
 
-    def test_modifierUsagerMotDePasseVide(self):
+    def test_modifier_usager_mot_de_passe_vide(self):
 
         usager = Usager(
             id_usager=uuid4(),
@@ -179,10 +175,10 @@ class test_modifierUsager(unittest.TestCase):
         )
 
         with self.assertRaises(ValueError):
-            modifierUsager(UsagerDTO(usager))
+            modifier_usager(UsagerDTO(usager))
 
 
-    def test_modifierUsagerInexistant(self):
+    def test_modifier_usager_inexistant(self):
 
         usager = Usager(
             id_usager=uuid4(),
@@ -194,7 +190,7 @@ class test_modifierUsager(unittest.TestCase):
         )
 
         with self.assertRaises(ValueError):
-            modifierUsager(UsagerDTO(usager))
+            modifier_usager(UsagerDTO(usager))
 
 
 if __name__ == "__main__":

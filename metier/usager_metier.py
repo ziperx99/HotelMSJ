@@ -7,16 +7,15 @@ from DTO.usager_dto import UsagerDTO
 from modele.usager import Usager
 
 
+# Configuration du moteur de base de données
 engine = create_engine(
     'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',
-    connect_args={
-        "TrustServerCertificate": "yes"
-    },
+    connect_args={"TrustServerCertificate": "yes"},
     use_setinputsizes=False
 )
 
 
-def creerUsager(usager: UsagerDTO):
+def creer_usager(usager: UsagerDTO):
 
     try:
         # Validations
@@ -61,7 +60,7 @@ def creerUsager(usager: UsagerDTO):
         print("Usager créée sans problème")
 
 
-def getUsagerParId(id_usager):
+def get_usager_par_id(id_usager):
 
     try:
         if id_usager is None:
@@ -92,7 +91,7 @@ def getUsagerParId(id_usager):
         print(f"Une erreur est survenue avec la base de données : {e}")    
         raise e  
 
-def getUsagerParNom(nom: str):
+def get_usager_par_nom(nom: str):
     
     # Vérifie qu'un nom a été donné. On refuse None, un chaîne vide ou juste des espaces
     if nom is None or nom.strip() == "":
@@ -125,7 +124,7 @@ def getUsagerParNom(nom: str):
     
 
 
-def modifierUsager(usager: UsagerDTO):
+def modifier_usager(usager: UsagerDTO):
 
     if usager.id_usager is None:
         raise ValueError(
@@ -184,7 +183,7 @@ def modifierUsager(usager: UsagerDTO):
         raise e
     
     
-def supprimerUsager(id_usager):
+def supprimer_usager(id_usager):
 
     # Vérification de l'identifiant reçu
     if id_usager is None:

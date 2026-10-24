@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 from modele.usager import Usager
 from DTO.usager_dto import UsagerDTO
 from metier.usager_metier import (
-    creerUsager,
-    getUsagerParId,
+    creer_usager,
+    get_usager_par_id,
 )
 
 
@@ -19,9 +19,9 @@ engine = create_engine(
 )
 
 
-class test_rechercherUsagerParId(unittest.TestCase):
+class TestRechercherUsagerParId(unittest.TestCase):
 
-    def test_rechercherUsagerParId(self):
+    def test_rechercher_usager_par_id(self):
 
         usager = Usager(
             id_usager=uuid4(),
@@ -32,13 +32,9 @@ class test_rechercherUsagerParId(unittest.TestCase):
             mot_de_passe="test123"
         )
 
-        usagerCree = creerUsager(
-            UsagerDTO(usager)
-        )
+        usagerCree = creer_usager(UsagerDTO(usager))
 
-        usagerTrouve = getUsagerParId(
-            usagerCree.id_usager
-        )
+        usagerTrouve = get_usager_par_id(usagerCree.id_usager)
 
         self.assertEqual(
             usagerTrouve.id_usager,
@@ -81,16 +77,16 @@ class test_rechercherUsagerParId(unittest.TestCase):
             session.commit()
 
 
-    def test_rechercherUsagerParIdNone(self):
+    def test_rechercher_usager_par_id_none(self):
 
         with self.assertRaises(ValueError):
-            getUsagerParId(None)
+            get_usager_par_id(None)
 
 
-    def test_rechercherUsagerParIdInexistant(self):
+    def test_rechercher_usager_par_id_inexistant(self):
 
         with self.assertRaises(ValueError):
-            getUsagerParId(uuid4())
+            get_usager_par_id(uuid4())
 
 
 if __name__ == "__main__":

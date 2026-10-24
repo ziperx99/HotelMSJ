@@ -14,14 +14,14 @@ class UsagerDTO(BaseModel):
 
     @field_validator("prenom", "nom", "adresse", "mobile", "mot_de_passe", mode="before")
     @classmethod
-    def validerChampObligatoire(cls, valeur):
+    def valider_champs_obligatoires(cls, valeur):
         if valeur is None or str(valeur).strip() == "":
             raise ValueError("Ce champ ne peut pas être vide.")
         return valeur
 
     @field_validator("mobile")
     @classmethod
-    def validerMobile(cls, valeur):
+    def valider_mobile(cls, valeur):
         chiffres = valeur.replace("-", "").replace(" ", "")
         if len(chiffres) != 10:
             raise ValueError("Le numéro de téléphone doit contenir 10 chiffres.")

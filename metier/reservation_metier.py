@@ -13,13 +13,12 @@ from DTO.reservation_dto import ReservationDTO
 # Configuration du moteur de base de données
 engine = create_engine(
     'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',
-    connect_args={
-        "TrustServerCertificate": "yes"
-    },
+    connect_args={"TrustServerCertificate": "yes"},
     use_setinputsizes=False
 )
 
-def creerReservation(reservation: ReservationDTO):
+
+def creer_reservation(reservation: ReservationDTO):
     try:
         with Session(engine) as session:
             stmt1 = select(Usager).where(Usager.id_usager == reservation.usager.id_usager)
@@ -58,7 +57,7 @@ def creerReservation(reservation: ReservationDTO):
         print("Réservation créée sans problème")
 
 
-def rechercherReservation(criteres: RechercherReservationDTO):
+def rechercher_reservation(criteres: RechercherReservationDTO):
 
     try:
 
@@ -114,7 +113,7 @@ def rechercherReservation(criteres: RechercherReservationDTO):
         raise
 
 
-def supprimerReservation(id_reservation):
+def supprimer_reservation(id_reservation):
 
     # Vérification qu'on a bien un ID
     if id_reservation is None:
@@ -146,7 +145,7 @@ def supprimerReservation(id_reservation):
         raise
     
     
-def modifierReservation(reservation: ReservationDTO):
+def modifier_reservation(reservation: ReservationDTO):
         
     try:
         

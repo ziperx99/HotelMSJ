@@ -22,7 +22,7 @@ engine = create_engine(
 
 class TestChambre(unittest.TestCase):
 
-    def test_getChambreParNumero(self):
+    def test_get_chambre_par_numero(self):
 
         with Session(engine) as session:
 
@@ -61,7 +61,7 @@ class TestChambre(unittest.TestCase):
                 'Reservation test'
             )
 
-    def test_numeroChambreNonNul(self):
+    def test_numero_chambre_non_null(self):
         # Création d'une Chambre pour tester donc pas enregistrée dans la BD
         chambre = Chambre()
 

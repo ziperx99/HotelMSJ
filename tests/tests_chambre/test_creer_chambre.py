@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from modele.type_chambre import TypeChambre
 from modele.chambre import Chambre
 from DTO.chambre_dto import ChambreDTO
-from metier.chambre_metier import creerChambre
+from metier.chambre_metier import creer_chambre
 
 
 # Configuration de base
@@ -25,8 +25,8 @@ engine = create_engine(
 )
 
 
-class test_creerChambre(unittest.TestCase):
-    def test_creerChambre(self):
+class TestCreerChambre(unittest.TestCase):
+    def test_creer_chambre(self):
         chambreDTO = ChambreDTO(
                     Chambre(
                         id_chambre = uuid4(),
@@ -44,7 +44,7 @@ class test_creerChambre(unittest.TestCase):
                     )
                 )
 
-        chambreDTOCree = creerChambre(chambreDTO)
+        chambreDTOCree = creer_chambre(chambreDTO)
 
         self.assertEqual(chambreDTOCree.numero_chambre,9000)
         self.assertTrue(chambreDTOCree.disponible_reservation)
@@ -69,7 +69,7 @@ class test_creerChambre(unittest.TestCase):
             session.close()
 
 
-    def test_creerChambreSansNumero(self):
+    def test_creer_chambre_sans_numero(self):
         
         with self.assertRaises(ValidationError):
 
@@ -90,7 +90,7 @@ class test_creerChambre(unittest.TestCase):
                 )
             )
 
-    def test_creerChambreSansDisponibilite(self):
+    def test_creer_chambre_sans_disponibilite(self):
             
         with self.assertRaises(ValidationError):
 
@@ -111,7 +111,7 @@ class test_creerChambre(unittest.TestCase):
                 )
             )
 
-    def test_creerChambreSansId(self):
+    def test_creer_chambre_sans_id(self):
             
         with self.assertRaises(ValidationError):
 
@@ -132,7 +132,7 @@ class test_creerChambre(unittest.TestCase):
                 )
             )
 
-    def test_creerChambreInfosMauvaisType(self):
+    def test_creer_chambre_info_mauvais_type(self):
             
         with self.assertRaises(ValidationError):
 

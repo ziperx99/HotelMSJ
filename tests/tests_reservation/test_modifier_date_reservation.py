@@ -12,13 +12,13 @@ from DTO.chambre_dto import ChambreDTO
 from DTO.rechercher_reservation_dto import RechercherReservationDTO
 from DTO.reservation_dto import ReservationDTO
 from DTO.usager_dto import UsagerDTO
-from metier.chambre_metier import creerChambre
+from metier.chambre_metier import creer_chambre
 from metier.reservation_metier import (
-    creerReservation,
-    modifierReservation,
-    rechercherReservation,
+    creer_reservation,
+    modifier_reservation,
+    rechercher_reservation,
 )
-from metier.usager_metier import creerUsager
+from metier.usager_metier import creer_usager
 
 
 # Configuration du moteur de base de données
@@ -31,7 +31,7 @@ engine = create_engine(
 
 class TestModifierDateReservation(unittest.TestCase):
 
-    def test_modifierDateDebutReservation(self):
+    def test_modifier_date_debut_reservation(self):
 
         # Variables utilisées pour le nettoyage des données de test
         reservationDTOCree = None
@@ -69,8 +69,8 @@ class TestModifierDateReservation(unittest.TestCase):
             )
 
             # Création de l'usager et de la chambre dans la base de données
-            usagerCree = creerUsager(UsagerDTO(usager))
-            chambreCree = creerChambre(ChambreDTO(chambre))
+            usagerCree = creer_usager(UsagerDTO(usager))
+            chambreCree = creer_chambre(ChambreDTO(chambre))
 
             # Ouverture d'une session SQLAlchemy
             with Session(engine) as session:
@@ -91,7 +91,7 @@ class TestModifierDateReservation(unittest.TestCase):
                 )
 
                 # Création de la réservation dans la base de données
-                reservationDTOCree = creerReservation(ReservationDTO(reservation))
+                reservationDTOCree = creer_reservation(ReservationDTO(reservation))
 
             # Nouvelle date de début à appliquer à la réservation
             nouvelleDateDebut = datetime(2030, 11, 1)
@@ -101,12 +101,12 @@ class TestModifierDateReservation(unittest.TestCase):
             reservationModifiee.date_debut_reservation = nouvelleDateDebut
 
             # Fonction métier
-            modifierReservation(reservationModifiee)
+            modifier_reservation(reservationModifiee)
 
             # Recherche de la réservation modifiée
             criteres = RechercherReservationDTO(id_reservation=reservationDTOCree.id_reservation)
 
-            reservations = rechercherReservation(criteres)
+            reservations = rechercher_reservation(criteres)
 
             # Vérification des résultats de recherche
             self.assertIsNotNone(reservations)
@@ -164,7 +164,7 @@ class TestModifierDateReservation(unittest.TestCase):
                             session.commit()
         
         
-    def test_modifierDateFinReservation(self):
+    def test_modifier_date_fin_reservation(self):
         
         # Variables utilisées pour le nettoyage des données de test
         reservationDTOCree = None
@@ -202,8 +202,8 @@ class TestModifierDateReservation(unittest.TestCase):
             )
 
             # Création de l'usager et de la chambre dans la base de données
-            usagerCree = creerUsager(UsagerDTO(usager))
-            chambreCree = creerChambre(ChambreDTO(chambre))
+            usagerCree = creer_usager(UsagerDTO(usager))
+            chambreCree = creer_chambre(ChambreDTO(chambre))
 
             # Ouverture d'une session SQLAlchemy
             with Session(engine) as session:
@@ -224,7 +224,7 @@ class TestModifierDateReservation(unittest.TestCase):
                 )
 
                 # Création de la réservation dans la base de données
-                reservationDTOCree = creerReservation(ReservationDTO(reservation))
+                reservationDTOCree = creer_reservation(ReservationDTO(reservation))
 
             # Nouvelle date de fin à appliquer à la réservation
             nouvelleDateFin = datetime(2030, 11, 10)
@@ -234,12 +234,12 @@ class TestModifierDateReservation(unittest.TestCase):
             reservationModifiee.date_fin_reservation = nouvelleDateFin
 
             # Fonction métier
-            modifierReservation(reservationModifiee)
+            modifier_reservation(reservationModifiee)
 
             # Recherche de la réservation modifiée
             criteres = RechercherReservationDTO(id_reservation=reservationDTOCree.id_reservation)
 
-            reservations = rechercherReservation(criteres)
+            reservations = rechercher_reservation(criteres)
 
             # Vérification des résultats de recherche
             self.assertIsNotNone(reservations)
@@ -297,7 +297,7 @@ class TestModifierDateReservation(unittest.TestCase):
                             session.commit()
         
     
-    def test_modifierDatesDebutEtFinReservation(self):
+    def test_modifier_date_debut_et_fin_reservation(self):
         
         # Variables utilisées pour le nettoyage des données de test
         reservationDTOCree = None
@@ -335,8 +335,8 @@ class TestModifierDateReservation(unittest.TestCase):
             )
 
             # Création de l'usager et de la chambre dans la base de données
-            usagerCree = creerUsager(UsagerDTO(usager))
-            chambreCree = creerChambre(ChambreDTO(chambre))
+            usagerCree = creer_usager(UsagerDTO(usager))
+            chambreCree = creer_chambre(ChambreDTO(chambre))
 
             # Ouverture d'une session SQLAlchemy
             with Session(engine) as session:
@@ -357,7 +357,7 @@ class TestModifierDateReservation(unittest.TestCase):
                 )
 
                 # Création de la réservation dans la base de données
-                reservationDTOCree = creerReservation(ReservationDTO(reservation))
+                reservationDTOCree = creer_reservation(ReservationDTO(reservation))
 
             # Nouvelles dates à appliquer à la réservation
             nouvelleDateDebut = datetime(2030, 11, 1)
@@ -369,11 +369,11 @@ class TestModifierDateReservation(unittest.TestCase):
             reservationModifiee.date_fin_reservation = nouvelleDateFin
 
             # Fonction métier
-            modifierReservation(reservationModifiee)
+            modifier_reservation(reservationModifiee)
 
             # Recherche de la réservation modifiée
             criteres = RechercherReservationDTO(id_reservation=reservationDTOCree.id_reservation)
-            reservations = rechercherReservation(criteres)
+            reservations = rechercher_reservation(criteres)
 
             # Vérification des résultats de recherche
             self.assertIsNotNone(reservations)

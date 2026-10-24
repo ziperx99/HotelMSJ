@@ -11,9 +11,9 @@ from modele.usager import Usager
 from DTO.chambre_dto import ChambreDTO
 from DTO.reservation_dto import ReservationDTO
 from DTO.usager_dto import UsagerDTO
-from metier.chambre_metier import creerChambre
-from metier.reservation_metier import creerReservation, supprimerReservation
-from metier.usager_metier import creerUsager
+from metier.chambre_metier import creer_chambre
+from metier.reservation_metier import creer_reservation, supprimer_reservation
+from metier.usager_metier import creer_usager
 
 engine = create_engine(
     'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',
@@ -24,7 +24,7 @@ engine = create_engine(
 
 class TestSupprimerReservation(unittest.TestCase):
 
-    def test_supprimerReservation(self):
+    def test_supprimer_reservation(self):
 
         try:
             #Création d'une réservation pour le test
@@ -53,8 +53,8 @@ class TestSupprimerReservation(unittest.TestCase):
                 type_chambre = typeChambre
             )
 
-            usagerCree = creerUsager(UsagerDTO(usager))
-            chambreCree = creerChambre(ChambreDTO(chambre))
+            usagerCree = creer_usager(UsagerDTO(usager))
+            chambreCree = creer_chambre(ChambreDTO(chambre))
             
             with Session(engine) as session:
                 usagerDB = session.get(Usager, usagerCree.id_usager)
@@ -71,7 +71,7 @@ class TestSupprimerReservation(unittest.TestCase):
                 )
 
                 reservationDTO = ReservationDTO(reservation)
-                reservationDTOCree = creerReservation(reservationDTO)
+                reservationDTOCree = creer_reservation(reservationDTO)
 
 
             # Vérifier que la réservation est dans la BD
@@ -89,7 +89,7 @@ class TestSupprimerReservation(unittest.TestCase):
 
             
                 # Suppression de la réservation
-                supprimerReservation(reservationDTOCree.id_reservation)
+                supprimer_reservation(reservationDTOCree.id_reservation)
 
             # On vérifie que la réservation n'existe plus
             with Session(engine) as session:
@@ -116,14 +116,14 @@ class TestSupprimerReservation(unittest.TestCase):
                         session.delete(chambreDB)
                         session.commit()
 
-    def test_supprimerReservationIdNull(self):
+    def test_supprimer_reservation_id_null(self):
         with self.assertRaises(ValueError):
-            supprimerReservation(None)
+            supprimer_reservation(None)
     
-    def test_supprimerReservationInexistante(self):
+    def test_supprimer_reservation_inexistante(self):
         # On génère un ID aléatoire
         # Il devrait pas être un ID existant dans la BD
         id_inexistant = uuid4()
         # On tente de supprimer une réservation qui n'existe pas. Doit déclencher un ValueError, si aucun valueerror, le test échoue
         with self.assertRaises(ValueError):
-            supprimerReservation(id_inexistant)
+            supprimer_reservation(id_inexistant)

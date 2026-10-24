@@ -3,12 +3,12 @@ import unittest
 from uuid import uuid4
 from sqlalchemy.orm import Session
 from modele.usager import Usager
-from metier.usager_metier import engine, getUsagerParNom
+from metier.usager_metier import engine, get_usager_par_nom
 
 
-class Test_rechercherUsagerParNom(unittest.TestCase):
+class TestRechercherUsagerParNom(unittest.TestCase):
     
-    def test_rechercherUsagerParNom(self):
+    def test_rechercher_usager_par_nom(self):
         # Créer un usager temporaire pour notre recherche
         id_usager = uuid4()
         nom_test = "TestRechercheNom"
@@ -28,7 +28,7 @@ class Test_rechercherUsagerParNom(unittest.TestCase):
 
         try:
             # Recherche l'usager par son nom
-            resultats = getUsagerParNom(nom_test)
+            resultats = get_usager_par_nom(nom_test)
             # Vérifie qu'une liste est retournée
             self.assertIsInstance(resultats, list)
             # Vérifie que l'usager est dedans
@@ -47,17 +47,17 @@ class Test_rechercherUsagerParNom(unittest.TestCase):
                     session.commit()
 
 
-    def test_rechercherUsagerParNomNull(self):
+    def test_rechercher_usager_par_nom_null(self):
         # Aucun nom fourni
         with self.assertRaises(ValueError):
-            getUsagerParNom(None)
+            get_usager_par_nom(None)
     
-    def test_rechercherUsagerParNomVide(self):
+    def test_rechercher_usager_par_nom_vide(self):
         # Un nom composé d'espaces est invalide
         with self.assertRaises(ValueError):
-            getUsagerParNom("    ")
+            get_usager_par_nom("    ")
     
-    def test_rechercherUsagerParNomInexistant(self):
+    def test_rechercher_usager_par_nom_inexistant(self):
         # Recherche un nom inexistant dans la BD
         with self.assertRaises(ValueError):
-            getUsagerParNom("NomInexistant_" + str(uuid4()))
+            get_usager_par_nom("NomInexistant_" + str(uuid4()))

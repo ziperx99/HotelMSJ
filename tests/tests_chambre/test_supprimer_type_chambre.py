@@ -5,12 +5,12 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from modele.type_chambre import TypeChambre
 from modele.chambre import Chambre
-from metier.chambre_metier import engine, supprimerTypeChambre
+from metier.chambre_metier import engine, supprimer_type_chambre
 
 
 class TestSupprimerTypeChambre(unittest.TestCase):
 
-    def test_supprimerTypeChambre(self):
+    def test_supprimer_type_chambre(self):
         # Créer un type de chambre temporaire
         id_type = uuid4()
 
@@ -28,7 +28,7 @@ class TestSupprimerTypeChambre(unittest.TestCase):
 
         try:
             # Supprimer le type de chambre
-            supprimerTypeChambre(id_type)
+            supprimer_type_chambre(id_type)
             # Vérifier que y'existe plus
             with Session(engine) as session:
                 resultat = session.execute(
@@ -46,18 +46,18 @@ class TestSupprimerTypeChambre(unittest.TestCase):
                     session.delete(type_restant)
                     session.commit()
     
-    def test_supprimerTypeChambreIdNull(self):
+    def test_supprimer_type_chambre_id_null(self):
         # Aucun ID fourni
         with self.assertRaises(ValueError):
-            supprimerTypeChambre(None)
+            supprimer_type_chambre(None)
     
-    def test_supprimerTypeChambreInexistant(self):
+    def test_supprimer_type_chambre_inexistant(self):
         # ID aléatoire inexistant
         id_inexistant = uuid4()
         with self.assertRaises(ValueError):
-            supprimerTypeChambre(id_inexistant)
+            supprimer_type_chambre(id_inexistant)
     
-    def test_supprimerTypeChambreUtilise(self):
+    def test_supprimer_type_chambre_utilise(self):
         # Créer un type de chambre et une chambre associée
         id_type = uuid4()
         id_chambre = uuid4()
@@ -85,7 +85,7 @@ class TestSupprimerTypeChambre(unittest.TestCase):
         try:
             # La suppression doit être refusée
             with self.assertRaises(ValueError):
-                supprimerTypeChambre(id_type)
+                supprimer_type_chambre(id_type)
             # Vérifier que le type existe toujours
             with Session(engine) as session:
                 resultat = session.get(TypeChambre, id_type)
