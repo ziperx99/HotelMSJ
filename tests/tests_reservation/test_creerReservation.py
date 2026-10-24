@@ -2,7 +2,8 @@
 import unittest
 from datetime import datetime
 from uuid import uuid4
-from sqlalchemy import create_engine
+from pydantic import BaseModel, ValidationError
+from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
 from modele.TypeChambre import TypeChambre
 from modele.chambre import Chambre

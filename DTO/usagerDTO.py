@@ -19,13 +19,6 @@ class UsagerDTO(BaseModel):
             raise ValueError("Ce champ ne peut pas être vide.")
         return valeur
 
-    @field_validator("mot_de_passe")
-    @classmethod
-    def validerMotDePasse(cls, valeur):
-        if len(valeur) < 8:
-            raise ValueError("Le mot de passe doit contenir au moins 8 caractères.")
-        return valeur
-
     @field_validator("mobile")
     @classmethod
     def validerMobile(cls, valeur):

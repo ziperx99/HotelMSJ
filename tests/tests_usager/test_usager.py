@@ -292,19 +292,4 @@ class TestUsager(unittest.TestCase):
         )
 
         with self.assertRaises(ValidationError):
-            UsagerDTO(usager)
-            
-          
-    def test_mot_de_passe_trop_court(self):
-
-        usager = Usager(
-            id_usager=uuid4(),
-            prenom="Jean",
-            nom="Tremblay",
-            adresse="123 rue Test",
-            mobile="514-555-1234",
-            mot_de_passe="abc"
-        )
-
-        with self.assertRaises(ValidationError):
             UsagerDTO(usager)        
