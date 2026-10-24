@@ -3,9 +3,9 @@ import unittest
 from uuid import uuid4
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
-from modele.TypeChambre import TypeChambre
-from DTO.chambreDTO import TypeChambreDTO
-from metier.chambreMetier import engine, modifierTypeChambre
+from modele.type_chambre import TypeChambre
+from DTO.chambre_dto import TypeChambreDTO
+from metier.chambre_metier import engine, modifierTypeChambre
 
 
 class TestModifierTypeChambre(unittest.TestCase):

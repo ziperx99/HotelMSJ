@@ -2,9 +2,9 @@
 import unittest
 from uuid import uuid4
 from sqlalchemy.orm import Session
-from modele.TypeChambre import TypeChambre
-from DTO.chambreDTO import TypeChambreDTO
-from metier.chambreMetier import engine, rechercherTypeChambre
+from modele.type_chambre import TypeChambre
+from DTO.chambre_dto import TypeChambreDTO
+from metier.chambre_metier import engine, rechercherTypeChambre
 
 
 class TestRechercherTypeChambre(unittest.TestCase):

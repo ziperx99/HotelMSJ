@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 from modele.chambre import Chambre
 from modele.reservation import Reservation
 from modele.usager import Usager
-from DTO.rechercherReservationDTO import RechercherReservationDTO
-from DTO.reservationDTO import ReservationDTO
+from DTO.rechercher_reservation_dto import RechercherReservationDTO
+from DTO.reservation_dto import ReservationDTO
 
 
 # Configuration du moteur de base de données

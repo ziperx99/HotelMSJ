@@ -4,8 +4,8 @@ from uuid import uuid4
 from sqlalchemy import create_engine, delete, select
 from sqlalchemy.orm import Session
 from modele.usager import Usager
-from DTO.usagerDTO import UsagerDTO
-from metier.usagerMetier import creerUsager
+from DTO.usager_dto import UsagerDTO
+from metier.usager_metier import creerUsager
 
 
 # Configuration du moteur de base de données

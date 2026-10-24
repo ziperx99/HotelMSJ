@@ -5,7 +5,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 if TYPE_CHECKING:
     from modele.reservation import Reservation
-    from modele.TypeChambre import TypeChambre
+    from modele.type_chambre import TypeChambre
 
 
 class Base(DeclarativeBase):

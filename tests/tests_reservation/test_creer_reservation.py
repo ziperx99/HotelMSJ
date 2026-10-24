@@ -5,16 +5,16 @@ from uuid import uuid4
 from pydantic import BaseModel, ValidationError
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
-from modele.TypeChambre import TypeChambre
+from modele.type_chambre import TypeChambre
 from modele.chambre import Chambre
 from modele.reservation import Reservation
 from modele.usager import Usager
-from DTO.chambreDTO import ChambreDTO
-from DTO.reservationDTO import ReservationDTO
-from DTO.usagerDTO import UsagerDTO
-from metier.chambreMetier import creerChambre
-from metier.reservationMetier import creerReservation
-from metier.usagerMetier import creerUsager
+from DTO.chambre_dto import ChambreDTO
+from DTO.reservation_dto import ReservationDTO
+from DTO.usager_dto import UsagerDTO
+from metier.chambre_metier import creerChambre
+from metier.reservation_metier import creerReservation
+from metier.usager_metier import creerUsager
 
 
 # Configuration du moteur de base de données

@@ -6,10 +6,10 @@ from uuid import uuid4
 from pydantic import ValidationError
 from sqlalchemy import create_engine, delete, select
 from sqlalchemy.orm import Session
-from modele.TypeChambre import TypeChambre
+from modele.type_chambre import TypeChambre
 from modele.chambre import Chambre
-from DTO.chambreDTO import ChambreDTO
-from metier.chambreMetier import creerChambre
+from DTO.chambre_dto import ChambreDTO
+from metier.chambre_metier import creerChambre
 
 
 # Configuration de base

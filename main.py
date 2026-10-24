@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 # On importe les 4 classes pour que SQLAlchemy connaisse
 # tous les modèles et toutes les relations.
 from modele.chambre import Chambre
-from modele.TypeChambre import TypeChambre
+from modele.type_chambre import TypeChambre
 from modele.usager import Usager
 from modele.reservation import Reservation
 

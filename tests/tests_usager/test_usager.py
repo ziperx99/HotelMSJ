@@ -7,7 +7,7 @@ from pydantic import ValidationError
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
 from modele.usager import Usager
-from DTO.usagerDTO import UsagerDTO
+from DTO.usager_dto import UsagerDTO
 
 
 # Configuration de base

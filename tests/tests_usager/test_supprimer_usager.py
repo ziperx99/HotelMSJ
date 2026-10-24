@@ -5,9 +5,9 @@ from pydantic import field_validator
 from sqlalchemy import create_engine, delete
 from sqlalchemy.orm import Session
 from modele.usager import Usager
-from modele.TypeChambre import TypeChambre
-from DTO.usagerDTO import UsagerDTO
-from metier.usagerMetier import (
+from modele.type_chambre import TypeChambre
+from DTO.usager_dto import UsagerDTO
+from metier.usager_metier import (
     creerUsager,
     getUsagerParId,
     supprimerUsager,

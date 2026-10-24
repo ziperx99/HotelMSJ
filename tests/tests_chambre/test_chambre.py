@@ -3,9 +3,9 @@ import logging
 import unittest
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
-from modele.TypeChambre import TypeChambre
+from modele.type_chambre import TypeChambre
 from modele.chambre import Chambre
-from DTO.chambreDTO import ChambreDTO
+from DTO.chambre_dto import ChambreDTO
 
 
 # Configuration de base

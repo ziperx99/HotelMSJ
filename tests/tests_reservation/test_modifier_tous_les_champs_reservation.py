@@ -4,21 +4,21 @@ from datetime import datetime
 from uuid import uuid4
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
+from modele.type_chambre import TypeChambre
 from modele.chambre import Chambre
 from modele.reservation import Reservation
-from modele.TypeChambre import TypeChambre
 from modele.usager import Usager
-from DTO.chambreDTO import ChambreDTO
-from DTO.rechercherReservationDTO import RechercherReservationDTO
-from DTO.reservationDTO import ReservationDTO
-from DTO.usagerDTO import UsagerDTO
-from metier.chambreMetier import creerChambre
-from metier.usagerMetier import creerUsager
-from metier.reservationMetier import (
+from DTO.chambre_dto import ChambreDTO
+from DTO.rechercher_reservation_dto import RechercherReservationDTO
+from DTO.reservation_dto import ReservationDTO
+from DTO.usager_dto import UsagerDTO
+from metier.chambre_metier import creerChambre
+from metier.reservation_metier import (
     creerReservation,
     modifierReservation,
-    rechercherReservation
+    rechercherReservation,
 )
+from metier.usager_metier import creerUsager
 
 
 # Configuration du moteur de base de données
@@ -29,9 +29,9 @@ engine = create_engine(
 )
 
 
-class TestModifierInfoReservation(unittest.TestCase):
+class TestModifierTousLesChampsReservation(unittest.TestCase):
 
-    def test_modifierInfoReservation(self):
+    def test_modifierTousLesChampsReservation(self):
 
         # Variables utilisées pour le nettoyage des données de test
         reservationDTOCree = None
@@ -93,19 +93,19 @@ class TestModifierInfoReservation(unittest.TestCase):
                 # Création de la réservation dans la base de données
                 reservationDTOCree = creerReservation(ReservationDTO(reservation))
 
-            # Nouvelle information de réservation
-            nouvelleInfoReservation = "Réservation modifiée"
-
-            # Modification des informations de réservation uniquement
+            # Modification de tous les champs de la réservation
             reservationModifiee = reservationDTOCree
-            reservationModifiee.info_reservation = nouvelleInfoReservation
+
+            reservationModifiee.date_debut_reservation = datetime(2031, 1, 10)
+            reservationModifiee.date_fin_reservation = datetime(2031, 1, 20)
+            reservationModifiee.prix_jour = 199.0
+            reservationModifiee.info_reservation = "Réservation modifiée"
 
             # Fonction métier
             modifierReservation(reservationModifiee)
 
             # Recherche de la réservation modifiée
             criteres = RechercherReservationDTO(id_reservation=reservationDTOCree.id_reservation)
-
             reservations = rechercherReservation(criteres)
 
             # Vérification des résultats de recherche
@@ -115,17 +115,17 @@ class TestModifierInfoReservation(unittest.TestCase):
             # Récupération de la réservation trouvée
             reservationTrouvee = reservations[0]
 
-            # Vérification que les informations de réservation ont été modifiées
-            self.assertEqual(reservationTrouvee.info_reservation, nouvelleInfoReservation)
+            # Vérification de la date de début
+            self.assertEqual(reservationTrouvee.date_debut_reservation, datetime(2031, 1, 10))
 
-            # Vérification que le prix par jour est demeuré inchangé
-            self.assertEqual(reservationTrouvee.prix_jour, 299.0)
+            # Vérification de la date de fin
+            self.assertEqual(reservationTrouvee.date_fin_reservation, datetime(2031, 1, 20))
 
-            # Vérification que la date de début est demeurée inchangée
-            self.assertEqual(reservationTrouvee.date_debut_reservation, datetime(2030, 10, 30))
+            # Vérification du prix par jour
+            self.assertEqual(reservationTrouvee.prix_jour, 199.0)
 
-            # Vérification que la date de fin est demeurée inchangée
-            self.assertEqual(reservationTrouvee.date_fin_reservation, datetime(2030, 11, 5))
+            # Vérification des informations de réservation
+            self.assertEqual(reservationTrouvee.info_reservation, "Réservation modifiée")
 
         finally:
 
@@ -135,30 +135,27 @@ class TestModifierInfoReservation(unittest.TestCase):
                 try:
 
                     # Récupération de la réservation créée pour le test
-                    if reservationDTOCree is not None:
-                        reservation = session.get(Reservation, reservationDTOCree.id_reservation)
+                    reservation = session.get(Reservation, reservationDTOCree.id_reservation)
 
-                        # Suppression de la réservation de test
-                        if reservation is not None:
-                            session.delete(reservation)
-                            session.commit()
+                    # Suppression de la réservation de test
+                    if reservationDTOCree is not None:
+                        session.delete(reservation)
+                        session.commit()
 
                 finally:
 
                     # Récupération de l'usager de test
-                    if usagerCree is not None:
-                        usagerDB = session.get(Usager, usagerCree.id_usager)
+                    usagerDB = session.get(Usager, usagerCree.id_usager)
 
-                        # Suppression de l'usager de test
-                        if usagerDB is not None:
-                            session.delete(usagerDB)
-                            session.commit()
+                    # Suppression de l'usager de test
+                    if usagerDB is not None:
+                        session.delete(usagerDB)
+                        session.commit()
 
                     # Récupération de la chambre de test
-                    if chambreCree is not None:
-                        chambreDB = session.get(Chambre, chambreCree.idChambre)
+                    chambreDB = session.get(Chambre, chambreCree.idChambre)
 
-                        # Suppression de la chambre de test
-                        if chambreDB is not None:
-                            session.delete(chambreDB)
-                            session.commit()
+                    # Suppression de la chambre de test
+                    if chambreDB is not None:
+                        session.delete(chambreDB)
+                        session.commit()

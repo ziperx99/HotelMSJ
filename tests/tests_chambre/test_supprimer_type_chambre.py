@@ -3,9 +3,9 @@ import unittest
 from uuid import uuid4
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from modele.TypeChambre import TypeChambre
+from modele.type_chambre import TypeChambre
 from modele.chambre import Chambre
-from metier.chambreMetier import engine, supprimerTypeChambre
+from metier.chambre_metier import engine, supprimerTypeChambre
 
 
 class TestSupprimerTypeChambre(unittest.TestCase):

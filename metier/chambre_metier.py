@@ -4,8 +4,8 @@ from sqlalchemy import create_engine, select
 from sqlalchemy.exc import InterfaceError, SQLAlchemyError
 from sqlalchemy.orm import Session
 from modele.chambre import Chambre
-from modele.TypeChambre import TypeChambre
-from DTO.chambreDTO import ChambreDTO, TypeChambreDTO
+from modele.type_chambre import TypeChambre
+from DTO.chambre_dto import ChambreDTO, TypeChambreDTO
 
 
 # Configuration du moteur de base de données

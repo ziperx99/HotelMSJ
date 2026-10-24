@@ -4,21 +4,21 @@ from datetime import datetime
 from uuid import uuid4
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-from modele.TypeChambre import TypeChambre
 from modele.chambre import Chambre
 from modele.reservation import Reservation
+from modele.type_chambre import TypeChambre
 from modele.usager import Usager
-from DTO.chambreDTO import ChambreDTO
-from DTO.rechercherReservationDTO import RechercherReservationDTO
-from DTO.reservationDTO import ReservationDTO
-from DTO.usagerDTO import UsagerDTO
-from metier.chambreMetier import creerChambre
-from metier.reservationMetier import (
+from DTO.chambre_dto import ChambreDTO
+from DTO.rechercher_reservation_dto import RechercherReservationDTO
+from DTO.reservation_dto import ReservationDTO
+from DTO.usager_dto import UsagerDTO
+from metier.chambre_metier import creerChambre
+from metier.usager_metier import creerUsager
+from metier.reservation_metier import (
     creerReservation,
     modifierReservation,
-    rechercherReservation,
+    rechercherReservation
 )
-from metier.usagerMetier import creerUsager
 
 
 # Configuration du moteur de base de données
@@ -29,9 +29,9 @@ engine = create_engine(
 )
 
 
-class TestModifierPrixJourReservation(unittest.TestCase):
+class TestModifierInfoReservation(unittest.TestCase):
 
-    def test_modifierPrixJourReservation(self):
+    def test_modifierInfoReservation(self):
 
         # Variables utilisées pour le nettoyage des données de test
         reservationDTOCree = None
@@ -93,12 +93,12 @@ class TestModifierPrixJourReservation(unittest.TestCase):
                 # Création de la réservation dans la base de données
                 reservationDTOCree = creerReservation(ReservationDTO(reservation))
 
-            # Nouveau prix à appliquer à la réservation
-            nouveauPrix = 199.0
+            # Nouvelle information de réservation
+            nouvelleInfoReservation = "Réservation modifiée"
 
-            # Modification du prix par jour uniquement
+            # Modification des informations de réservation uniquement
             reservationModifiee = reservationDTOCree
-            reservationModifiee.prix_jour = nouveauPrix
+            reservationModifiee.info_reservation = nouvelleInfoReservation
 
             # Fonction métier
             modifierReservation(reservationModifiee)
@@ -115,17 +115,17 @@ class TestModifierPrixJourReservation(unittest.TestCase):
             # Récupération de la réservation trouvée
             reservationTrouvee = reservations[0]
 
-            # Vérification du prix par jour modifié
-            self.assertEqual(reservationTrouvee.prix_jour, nouveauPrix)
+            # Vérification que les informations de réservation ont été modifiées
+            self.assertEqual(reservationTrouvee.info_reservation, nouvelleInfoReservation)
+
+            # Vérification que le prix par jour est demeuré inchangé
+            self.assertEqual(reservationTrouvee.prix_jour, 299.0)
 
             # Vérification que la date de début est demeurée inchangée
             self.assertEqual(reservationTrouvee.date_debut_reservation, datetime(2030, 10, 30))
 
             # Vérification que la date de fin est demeurée inchangée
             self.assertEqual(reservationTrouvee.date_fin_reservation, datetime(2030, 11, 5))
-
-            # Vérification que les informations de réservation sont demeurées inchangées
-            self.assertEqual(reservationTrouvee.info_reservation, "Test création de réservation")
 
         finally:
 

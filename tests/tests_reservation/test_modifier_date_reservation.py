@@ -4,21 +4,21 @@ from datetime import datetime
 from uuid import uuid4
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-from modele.TypeChambre import TypeChambre
+from modele.type_chambre import TypeChambre
 from modele.chambre import Chambre
 from modele.reservation import Reservation
 from modele.usager import Usager
-from DTO.chambreDTO import ChambreDTO
-from DTO.rechercherReservationDTO import RechercherReservationDTO
-from DTO.reservationDTO import ReservationDTO
-from DTO.usagerDTO import UsagerDTO
-from metier.chambreMetier import creerChambre
-from metier.reservationMetier import (
+from DTO.chambre_dto import ChambreDTO
+from DTO.rechercher_reservation_dto import RechercherReservationDTO
+from DTO.reservation_dto import ReservationDTO
+from DTO.usager_dto import UsagerDTO
+from metier.chambre_metier import creerChambre
+from metier.reservation_metier import (
     creerReservation,
     modifierReservation,
     rechercherReservation,
 )
-from metier.usagerMetier import creerUsager
+from metier.usager_metier import creerUsager
 
 
 # Configuration du moteur de base de données

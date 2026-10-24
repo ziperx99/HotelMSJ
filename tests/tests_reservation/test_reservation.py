@@ -7,11 +7,11 @@ from uuid import uuid4
 from pydantic import ValidationError
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
-from modele.TypeChambre import TypeChambre
+from modele.type_chambre import TypeChambre
 from modele.chambre import Chambre
 from modele.reservation import Reservation
 from modele.usager import Usager
-from DTO.reservationDTO import ReservationDTO
+from DTO.reservation_dto import ReservationDTO
 
 
 # Configuration de base

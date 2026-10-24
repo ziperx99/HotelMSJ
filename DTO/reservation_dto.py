@@ -4,8 +4,8 @@ from typing import Optional
 from uuid import UUID
 from pydantic import BaseModel, Field, model_validator
 from modele.reservation import Reservation
-from DTO.chambreDTO import ChambreDTO
-from DTO.usagerDTO import UsagerDTO
+from DTO.chambre_dto import ChambreDTO
+from DTO.usager_dto import UsagerDTO
 
 
 class ReservationDTO(BaseModel):

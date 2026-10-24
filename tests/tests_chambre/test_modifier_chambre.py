@@ -4,10 +4,10 @@ import unittest
 from uuid import uuid4
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
-from modele.TypeChambre import TypeChambre
+from modele.type_chambre import TypeChambre
 from modele.chambre import Chambre
-from DTO.chambreDTO import ChambreDTO
-from metier.chambreMetier import modifierChambre
+from DTO.chambre_dto import ChambreDTO
+from metier.chambre_metier import modifierChambre
 
 
 # Configuration de base

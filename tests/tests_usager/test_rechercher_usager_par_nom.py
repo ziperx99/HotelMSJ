@@ -3,7 +3,7 @@ import unittest
 from uuid import uuid4
 from sqlalchemy.orm import Session
 from modele.usager import Usager
-from metier.usagerMetier import engine, getUsagerParNom
+from metier.usager_metier import engine, getUsagerParNom
 
 
 class Test_rechercherUsagerParNom(unittest.TestCase):

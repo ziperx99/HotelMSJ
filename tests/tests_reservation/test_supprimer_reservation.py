@@ -4,16 +4,16 @@ from datetime import datetime
 from uuid import uuid4
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
-from modele.TypeChambre import TypeChambre
+from modele.type_chambre import TypeChambre
 from modele.chambre import Chambre
 from modele.reservation import Reservation
 from modele.usager import Usager
-from DTO.chambreDTO import ChambreDTO
-from DTO.reservationDTO import ReservationDTO
-from DTO.usagerDTO import UsagerDTO
-from metier.chambreMetier import creerChambre
-from metier.reservationMetier import creerReservation, supprimerReservation
-from metier.usagerMetier import creerUsager
+from DTO.chambre_dto import ChambreDTO
+from DTO.reservation_dto import ReservationDTO
+from DTO.usager_dto import UsagerDTO
+from metier.chambre_metier import creerChambre
+from metier.reservation_metier import creerReservation, supprimerReservation
+from metier.usager_metier import creerUsager
 
 engine = create_engine(
     'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',

@@ -2,7 +2,7 @@
 from typing import Optional
 from uuid import UUID
 from pydantic import BaseModel, Field, field_validator, model_validator
-from modele.TypeChambre import TypeChambre
+from modele.type_chambre import TypeChambre
 from modele.chambre import Chambre
 
 
