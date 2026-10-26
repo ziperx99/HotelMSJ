@@ -1,32 +1,33 @@
+# Modules et librairies
 import unittest
-
-from sqlalchemy.orm import Session
-from sqlalchemy import create_engine
-from modele.chambre import Chambre
-from modele.usager import Usager
-from modele.TypeChambre import TypeChambre
-from modele.reservation import Reservation
-from DTO.chambreDTO import ChambreDTO
-from DTO.usagerDTO import UsagerDTO
-from DTO.reservationDTO import ReservationDTO
-from DTO.rechercherReservationDTO import RechercherReservationDTO
-from metier.reservationMetier import creerReservation, rechercherReservation
-from metier.usagerMetier import creerUsager
-from metier.chambreMetier import creerChambre
-from uuid import uuid4
 from datetime import datetime
+from uuid import uuid4
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+from modele.type_chambre import TypeChambre
+from modele.chambre import Chambre
+from modele.reservation import Reservation
+from modele.usager import Usager
+from DTO.chambre_dto import ChambreDTO
+from DTO.rechercher_reservation_dto import RechercherReservationDTO
+from DTO.reservation_dto import ReservationDTO
+from DTO.usager_dto import UsagerDTO
+from metier.chambre_metier import creer_chambre
+from metier.reservation_metier import creer_reservation, rechercher_reservation
+from metier.usager_metier import creer_usager
 
+
+# Configuration du moteur de base de données
 engine = create_engine(
     'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',
-    connect_args={
-        "TrustServerCertificate": "yes"
-    },
+    connect_args={"TrustServerCertificate": "yes"},
     use_setinputsizes=False
 )
 
+
 class TestRechercherReservation(unittest.TestCase):
 
-    def test_rechercherReservationParIdReservation(self):
+    def test_rechercher_reservation_par_id_reservation(self):
 
         try:
 
@@ -55,8 +56,8 @@ class TestRechercherReservation(unittest.TestCase):
                 type_chambre = typeChambre
             )
 
-            usagerCree = creerUsager(UsagerDTO(usager))
-            chambreCree = creerChambre(ChambreDTO(chambre))
+            usagerCree = creer_usager(UsagerDTO(usager))
+            chambreCree = creer_chambre(ChambreDTO(chambre))
 
             with Session(engine) as session:
                 usagerDB = session.get(Usager, usagerCree.id_usager)
@@ -73,14 +74,14 @@ class TestRechercherReservation(unittest.TestCase):
                 )
 
                 reservationDTO = ReservationDTO(reservation)
-                reservationDTOCree = creerReservation(reservationDTO)
+                reservationDTOCree = creer_reservation(reservationDTO)
 
 
             criteres = RechercherReservationDTO(
                 id_reservation=reservationDTOCree.id_reservation
             )
 
-            reservations = rechercherReservation(criteres)
+            reservations = rechercher_reservation(criteres)
 
             # Tests
             self.assertIsNotNone(reservations)
@@ -109,7 +110,7 @@ class TestRechercherReservation(unittest.TestCase):
                         session.commit()
 
 
-    def test_rechercherReservationParIdChambre(self):
+    def test_rechercher_reservation_par_id_chambre(self):
 
         try:
             usager = Usager(
@@ -137,8 +138,8 @@ class TestRechercherReservation(unittest.TestCase):
                 type_chambre = typeChambre
             )
 
-            usagerCree = creerUsager(UsagerDTO(usager))
-            chambreCree = creerChambre(ChambreDTO(chambre))
+            usagerCree = creer_usager(UsagerDTO(usager))
+            chambreCree = creer_chambre(ChambreDTO(chambre))
 
             with Session(engine) as session:
                 usagerDB = session.get(Usager, usagerCree.id_usager)
@@ -155,14 +156,14 @@ class TestRechercherReservation(unittest.TestCase):
                 )
 
                 reservationDTO = ReservationDTO(reservation)
-                reservationDTOCree = creerReservation(reservationDTO)
+                reservationDTOCree = creer_reservation(reservationDTO)
 
 
             criteres = RechercherReservationDTO(
                 id_chambre=reservationDTOCree.chambre.idChambre
             )
 
-            reservations = rechercherReservation(criteres)
+            reservations = rechercher_reservation(criteres)
 
             # Tests
             self.assertIsNotNone(reservations)
@@ -190,7 +191,7 @@ class TestRechercherReservation(unittest.TestCase):
                         session.delete(chambreDB)
                         session.commit()
 
-    def test_rechercherReservationParIdUsager(self):
+    def test_rechercher_reservation_par_id_usager(self):
 
         try:
             usager = Usager(
@@ -218,8 +219,8 @@ class TestRechercherReservation(unittest.TestCase):
                 type_chambre = typeChambre
             )
 
-            usagerCree = creerUsager(UsagerDTO(usager))
-            chambreCree = creerChambre(ChambreDTO(chambre))
+            usagerCree = creer_usager(UsagerDTO(usager))
+            chambreCree = creer_chambre(ChambreDTO(chambre))
 
             with Session(engine) as session:
                 usagerDB = session.get(Usager, usagerCree.id_usager)
@@ -236,14 +237,14 @@ class TestRechercherReservation(unittest.TestCase):
                 )
 
                 reservationDTO = ReservationDTO(reservation)
-                reservationDTOCree = creerReservation(reservationDTO)
+                reservationDTOCree = creer_reservation(reservationDTO)
 
 
             criteres = RechercherReservationDTO(
                 id_usager=reservationDTOCree.usager.id_usager
             )
 
-            reservations = rechercherReservation(criteres)
+            reservations = rechercher_reservation(criteres)
 
             # Tests
             self.assertIsNotNone(reservations)
@@ -272,7 +273,7 @@ class TestRechercherReservation(unittest.TestCase):
                         session.commit()
 
 
-    def test_rechercherReservationParNomEtPrenom(self):
+    def test_rechercher_reservation_par_nom_et_prenom(self):
 
         try:
             usager = Usager(
@@ -300,8 +301,8 @@ class TestRechercherReservation(unittest.TestCase):
                 type_chambre = typeChambre
             )
 
-            usagerCree = creerUsager(UsagerDTO(usager))
-            chambreCree = creerChambre(ChambreDTO(chambre))
+            usagerCree = creer_usager(UsagerDTO(usager))
+            chambreCree = creer_chambre(ChambreDTO(chambre))
 
             with Session(engine) as session:
                 usagerDB = session.get(Usager, usagerCree.id_usager)
@@ -318,14 +319,14 @@ class TestRechercherReservation(unittest.TestCase):
                 )
 
                 reservationDTO = ReservationDTO(reservation)
-                reservationDTOCree = creerReservation(reservationDTO)
+                reservationDTOCree = creer_reservation(reservationDTO)
 
             criteres = RechercherReservationDTO(
                                         nom = reservationDTOCree.usager.nom,
                                         prenom = reservationDTOCree.usager.prenom
                                     )
 
-            reservations = rechercherReservation(criteres)
+            reservations = rechercher_reservation(criteres)
 
             # Tests
             self.assertIsNotNone(reservations)
@@ -354,7 +355,7 @@ class TestRechercherReservation(unittest.TestCase):
                         session.delete(chambreDB)
                         session.commit()
 
-    def test_rechercherReservationParDisponibilite(self):
+    def test_rechercher_reservation_par_disponibilite(self):
 
         try:
             usager = Usager(
@@ -382,8 +383,8 @@ class TestRechercherReservation(unittest.TestCase):
                 type_chambre = typeChambre
             )
 
-            usagerCree = creerUsager(UsagerDTO(usager))
-            chambreCree = creerChambre(ChambreDTO(chambre))
+            usagerCree = creer_usager(UsagerDTO(usager))
+            chambreCree = creer_chambre(ChambreDTO(chambre))
 
             with Session(engine) as session:
                 usagerDB = session.get(Usager, usagerCree.id_usager)
@@ -400,13 +401,13 @@ class TestRechercherReservation(unittest.TestCase):
                 )
 
                 reservationDTO = ReservationDTO(reservation)
-                reservationDTOCree = creerReservation(reservationDTO)
+                reservationDTOCree = creer_reservation(reservationDTO)
 
             criteres = RechercherReservationDTO(
                                         disponible_reservation=True
                                     )
 
-            reservations = rechercherReservation(criteres)
+            reservations = rechercher_reservation(criteres)
 
             # Tests
             self.assertIsNotNone(reservations)
@@ -435,7 +436,7 @@ class TestRechercherReservation(unittest.TestCase):
                         session.commit()
 
 
-    def test_rechercherReservationParDate(self):
+    def test_rechercher_reservation_par_date(self):
 
         try:
             usager = Usager(
@@ -463,8 +464,8 @@ class TestRechercherReservation(unittest.TestCase):
                 type_chambre = typeChambre
             )
 
-            usagerCree = creerUsager(UsagerDTO(usager))
-            chambreCree = creerChambre(ChambreDTO(chambre))
+            usagerCree = creer_usager(UsagerDTO(usager))
+            chambreCree = creer_chambre(ChambreDTO(chambre))
 
             with Session(engine) as session:
                 usagerDB = session.get(Usager, usagerCree.id_usager)
@@ -481,13 +482,13 @@ class TestRechercherReservation(unittest.TestCase):
                 )
 
                 reservationDTO = ReservationDTO(reservation)
-                reservationDTOCree = creerReservation(reservationDTO)
+                reservationDTOCree = creer_reservation(reservationDTO)
 
             criteres = RechercherReservationDTO(
                                         date=datetime(2034, 10, 10)
                                     )
 
-            reservations = rechercherReservation(criteres)
+            reservations = rechercher_reservation(criteres)
 
             # Tests
             self.assertIsNotNone(reservations)
@@ -519,7 +520,7 @@ class TestRechercherReservation(unittest.TestCase):
                         session.commit()
 
 
-    def test_rechercherReservationParNomEtPrenomSansPrenom(self):
+    def test_rechercher_reservation_par_nom_et_prenom_sans_prenom(self):
 
         with self.assertRaises(ValueError):
 
@@ -527,10 +528,10 @@ class TestRechercherReservation(unittest.TestCase):
                             nom = "Test",
                             prenom = None
                         )
-            
-            rechercherReservation(criteres)
 
-    def test_rechercherReservationParNomEtPrenomSansNom(self):
+            rechercher_reservation(criteres)
+
+    def test_rechercher_reservation_par_nom_et_prenom_sans_nom(self):
     
         with self.assertRaises(ValueError):
 
@@ -538,11 +539,11 @@ class TestRechercherReservation(unittest.TestCase):
                             nom = None,
                             prenom = "Test"
                         )
-            
-            rechercherReservation(criteres)
+
+            rechercher_reservation(criteres)
 
     # Vérifier que le DTO accepte un nom et un prénom fournis ensemble
-    def test_validationNomEtPrenomValides(self):
+    def test_validation_nom_et_prenom_valides(self):
         criteres = RechercherReservationDTO(
             nom="Chapdelaine",
             prenom="Melissa"
@@ -551,7 +552,7 @@ class TestRechercherReservation(unittest.TestCase):
         self.assertEqual(criteres.prenom, "Melissa")
 
     # Vérifier que le DTO accepte une recherche sans nom ni prénom puisque les deux champs sont facultatifs
-    def test_validationNomEtPrenomAbsents(self):
+    def test_nom_et_prenom_absents(self):
         criteres = RechercherReservationDTO()
         self.assertIsNone(criteres.nom)
         self.assertIsNone(criteres.prenom)

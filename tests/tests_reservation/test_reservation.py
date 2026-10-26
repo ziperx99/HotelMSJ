@@ -1,21 +1,25 @@
-import unittest
+# Modules et librairies
 import logging
+import unittest
 from datetime import datetime
 from decimal import Decimal
 from uuid import uuid4
-from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, select
 from pydantic import ValidationError
-from modele.reservation import Reservation
-from DTO.reservationDTO import ReservationDTO
-from modele.usager import Usager
+from sqlalchemy import create_engine, select
+from sqlalchemy.orm import Session
+from modele.type_chambre import TypeChambre
 from modele.chambre import Chambre
-from modele.TypeChambre import TypeChambre
+from modele.reservation import Reservation
+from modele.usager import Usager
+from DTO.reservation_dto import ReservationDTO
 
 
+# Configuration de base
 logging.basicConfig()
+# Activation des logs SQLAlchemy
 logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 
+# Configuration du moteur de base de données
 engine = create_engine(
     'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+17+for+SQL+Server',
     use_setinputsizes=False
@@ -24,7 +28,7 @@ engine = create_engine(
 
 class TestReservation(unittest.TestCase):
 
-    def test_rechercherReservation(self):
+    def test_rechercher_reservation(self):
         # Tester la récupération d'une réservation dans la BD
         with Session(engine) as session:
             stmt = select(Reservation).where(
@@ -81,7 +85,7 @@ class TestReservation(unittest.TestCase):
             )
 
     # Vérifier que la date de fin est après la date de début
-    def test_validationDatesValides(self):
+    def test_validation_dates_valides(self):
         reservation = ReservationDTO.model_construct(
             id_reservation = uuid4(),
             date_debut_reservation = datetime(2034, 9, 11),
@@ -100,7 +104,7 @@ class TestReservation(unittest.TestCase):
         )
 
     # Vérifier qu'une date de fin antérieure est refusée
-    def test_validationDateFinAvantDebut(self):
+    def test_validation_date_fin_avant_debut(self):
         reservation = ReservationDTO.model_construct(
             id_reservation = uuid4(),
             date_debut_reservation = datetime(2034, 9, 15),
@@ -115,7 +119,7 @@ class TestReservation(unittest.TestCase):
             reservation.verifier_date_fin_ulterieure()
 
     # Vérifier que deux dates identiques sont refusées
-    def test_validationDatesIdentiques(self):
+    def test_validation_dates_identiques(self):
         reservation = ReservationDTO.model_construct(
             id_reservation = uuid4(),
             date_debut_reservation = datetime(2034, 9, 11),
@@ -130,18 +134,15 @@ class TestReservation(unittest.TestCase):
             reservation.verifier_date_fin_ulterieure()
 
     # Vérifier que Pydantic exécute automatiquement le model_validator
-    def test_validationAutomatiqueDatesInvalides(self):
-        reservation = self.creerReservationPourValidation(
-            prix = 150,
-            date_debut = datetime(2034, 9, 15),
-            date_fin = datetime(2034, 9, 11)
-        )
+    def test_validation_automatique_dates_invalides(self):
+        reservation = self.creer_reservation_pour_validation(prix=150, date_debut=datetime(2034, 9, 15),
+                                                             date_fin=datetime(2034, 9, 11))
 
         with self.assertRaises(ValidationError):
             ReservationDTO(reservation)
 
     # Méthode utilitaire pour créer une réservation sans utiliser la BD
-    def creerReservationPourValidation(
+    def creer_reservation_pour_validation(
         self,
         prix,
         date_debut = datetime(2034, 9, 11),
@@ -184,25 +185,19 @@ class TestReservation(unittest.TestCase):
 
 
     # Vérifier qu'un prix positif est accepté
-    def test_validationPrixPositif(self):
-        reservation = self.creerReservationPourValidation(
-            prix = 150
-        )
+    def test_validation_prix_positif(self):
+        reservation = self.creer_reservation_pour_validation(prix=150)
         dto = ReservationDTO(reservation)
         self.assertEqual(dto.prix_jour, 150)
     
     # Vérifier qu'un prix de zéro est refusé
-    def test_validationPrixZero(self):
-        reservation = self.creerReservationPourValidation(
-            prix = 0
-        )
+    def test_validation_prix_zero(self):
+        reservation = self.creer_reservation_pour_validation(prix=0)
         with self.assertRaises(ValidationError):
             ReservationDTO(reservation)
     
     # Vérifier qu'un prix négatif est refusé
-    def test_validationPrixNegatif(self):
-        reservation = self.creerReservationPourValidation(
-            prix = -50
-        )
+    def test_validation_prix_negatif(self):
+        reservation = self.creer_reservation_pour_validation(prix=-50)
         with self.assertRaises(ValidationError):
             ReservationDTO(reservation)

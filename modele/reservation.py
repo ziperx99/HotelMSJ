@@ -1,13 +1,11 @@
-from typing import TYPE_CHECKING
-from uuid import UUID
+# Modules et librairies
 from datetime import datetime
 from decimal import Decimal
-
+from typing import TYPE_CHECKING
+from uuid import UUID
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, relationship, mapped_column
-
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from modele.chambre import Base
-
 if TYPE_CHECKING:
     from modele.chambre import Chambre
     from modele.usager import Usager

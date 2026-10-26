@@ -1,10 +1,8 @@
-from typing import List, TYPE_CHECKING
+# Modules et librairies
+from typing import TYPE_CHECKING, List
 from uuid import UUID
-
-from sqlalchemy.orm import Mapped, relationship, mapped_column
-
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from modele.chambre import Base
-
 if TYPE_CHECKING:
     from modele.reservation import Reservation
 

@@ -1,26 +1,30 @@
-import unittest
-from modele.TypeChambre import TypeChambre
-from metier.chambreMetier import creerTypeChambre
-from DTO.chambreDTO import TypeChambreDTO
-from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, delete, select
-from uuid import uuid4, UUID
-from pydantic import ValidationError
-
+# Modules et librairies
 import logging
+import unittest
+from uuid import UUID, uuid4
+from pydantic import ValidationError
+from sqlalchemy import create_engine, delete, select
+from sqlalchemy.orm import Session
+from modele.type_chambre import TypeChambre
+from DTO.chambre_dto import TypeChambreDTO
+from metier.chambre_metier import creer_type_chambre
+
+
+# Configuration de base
 logging.basicConfig()
+# Activation des logs SQLAlchemy
 logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 
+# Configuration du moteur de base de données
 engine = create_engine(
     'mssql+pyodbc://localhost\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',
-    connect_args=
-        {
-            "TrustServerCertificate": "yes"
-        },
-    use_setinputsizes=False)
+    connect_args={"TrustServerCertificate": "yes"},
+    use_setinputsizes=False
+)
 
-class test_creerTypeChambre(unittest.TestCase):
-    def test_creerTypeChambre(self):
+
+class TestCreerTypeChambre(unittest.TestCase):
+    def test_creer_type_chambre(self):
         TypeChambreDTO = TypeChambre(
                             id_type_chambre = None,
                             nom_type = 'Test', 
@@ -29,7 +33,7 @@ class test_creerTypeChambre(unittest.TestCase):
                             description_chambre = "Test unitaire"
                         )
                     
-        typeChambreDTOCree = creerTypeChambre(TypeChambreDTO)
+        typeChambreDTOCree = creer_type_chambre(TypeChambreDTO)
 
         self.assertIsNotNone(typeChambreDTOCree.id_type_chambre)
         self.assertIsInstance(typeChambreDTOCree.id_type_chambre, UUID)
@@ -53,7 +57,7 @@ class test_creerTypeChambre(unittest.TestCase):
             session.commit()
             session.close()
 
-    def test_creerTypeChambreSansId(self):
+    def test_creer_type_chambre_sans_id(self):
             
         with self.assertRaises(ValidationError):
             TypeChambreDTO(
@@ -66,7 +70,7 @@ class test_creerTypeChambre(unittest.TestCase):
                 )
             )
 
-    def test_creerTypeChambreSansNom(self):
+    def test_creer_type_chambre_sans_nom(self):
             
         with self.assertRaises(ValidationError):
             TypeChambreDTO(
@@ -79,7 +83,7 @@ class test_creerTypeChambre(unittest.TestCase):
                 )
             )
 
-    def test_creerTypeChambreSansPrixPlancher(self):
+    def test_creer_type_chambre_sans_prix_plancher(self):
             
         with self.assertRaises(ValidationError):
             TypeChambreDTO(
@@ -92,7 +96,7 @@ class test_creerTypeChambre(unittest.TestCase):
                 )
             )
 
-    def test_creerTypeChambrePrixPlancherSuperieurPrixPlafond(self):
+    def test_creer_type_chambre_prix_plancher_superieur_prix_plafond(self):
             
         with self.assertRaises(ValueError):
             TypeChambreDTO(

@@ -1,30 +1,32 @@
+# Modules et librairies
+import logging
 import unittest
-from modele.chambre import Chambre
-from modele.TypeChambre import TypeChambre
-from metier.chambreMetier import creerChambre
-from DTO.chambreDTO import ChambreDTO
-from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, delete, select
+from datetime import datetime
 from uuid import uuid4
 from pydantic import ValidationError
-from datetime import datetime
+from sqlalchemy import create_engine, delete, select
+from sqlalchemy.orm import Session
+from modele.type_chambre import TypeChambre
+from modele.chambre import Chambre
+from DTO.chambre_dto import ChambreDTO
+from metier.chambre_metier import creer_chambre
 
 
-
-import logging
+# Configuration de base
 logging.basicConfig()
+# Activation des logs SQLAlchemy
 logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 
+# Configuration du moteur de base de données
 engine = create_engine(
     'mssql+pyodbc://localhost\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',
-    connect_args=
-        {
-            "TrustServerCertificate": "yes"
-        },
-    use_setinputsizes=False)
+    connect_args={"TrustServerCertificate": "yes"},
+    use_setinputsizes=False
+)
 
-class test_creerChambre(unittest.TestCase):
-    def test_creerChambre(self):
+
+class TestCreerChambre(unittest.TestCase):
+    def test_creer_chambre(self):
         chambreDTO = ChambreDTO(
                     Chambre(
                         id_chambre = uuid4(),
@@ -42,7 +44,7 @@ class test_creerChambre(unittest.TestCase):
                     )
                 )
 
-        chambreDTOCree = creerChambre(chambreDTO)
+        chambreDTOCree = creer_chambre(chambreDTO)
 
         self.assertEqual(chambreDTOCree.numero_chambre,9000)
         self.assertTrue(chambreDTOCree.disponible_reservation)
@@ -67,7 +69,7 @@ class test_creerChambre(unittest.TestCase):
             session.close()
 
 
-    def test_creerChambreSansNumero(self):
+    def test_creer_chambre_sans_numero(self):
         
         with self.assertRaises(ValidationError):
 
@@ -88,7 +90,7 @@ class test_creerChambre(unittest.TestCase):
                 )
             )
 
-    def test_creerChambreSansDisponibilite(self):
+    def test_creer_chambre_sans_disponibilite(self):
             
         with self.assertRaises(ValidationError):
 
@@ -109,7 +111,7 @@ class test_creerChambre(unittest.TestCase):
                 )
             )
 
-    def test_creerChambreSansId(self):
+    def test_creer_chambre_sans_id(self):
             
         with self.assertRaises(ValidationError):
 
@@ -130,7 +132,7 @@ class test_creerChambre(unittest.TestCase):
                 )
             )
 
-    def test_creerChambreInfosMauvaisType(self):
+    def test_creer_chambre_info_mauvais_type(self):
             
         with self.assertRaises(ValidationError):
 
@@ -150,7 +152,3 @@ class test_creerChambre(unittest.TestCase):
                     )
                 )
             )
-            
-        
-        
-

@@ -1,14 +1,19 @@
-import unittest
+# Modules et librairies
 import logging
-from sqlalchemy.orm import Session
+import unittest
 from sqlalchemy import create_engine, select
+from sqlalchemy.orm import Session
+from modele.type_chambre import TypeChambre
 from modele.chambre import Chambre
-from modele.TypeChambre import TypeChambre
-from DTO.chambreDTO import ChambreDTO
+from DTO.chambre_dto import ChambreDTO
 
+
+# Configuration de base
 logging.basicConfig()
+# Activation des logs SQLAlchemy
 logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 
+# Configuration du moteur de base de données
 engine = create_engine(
     'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+17+for+SQL+Server',
     use_setinputsizes=False
@@ -17,7 +22,7 @@ engine = create_engine(
 
 class TestChambre(unittest.TestCase):
 
-    def test_getChambreParNumero(self):
+    def test_get_chambre_par_numero(self):
 
         with Session(engine) as session:
 
@@ -56,7 +61,7 @@ class TestChambre(unittest.TestCase):
                 'Reservation test'
             )
 
-    def test_numeroChambreNonNul(self):
+    def test_numero_chambre_non_null(self):
         # Création d'une Chambre pour tester donc pas enregistrée dans la BD
         chambre = Chambre()
 

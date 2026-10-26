@@ -1,15 +1,18 @@
 # Modules et librairies
-import unittest
 import logging
-from sqlalchemy.orm import Session
+import unittest
 from sqlalchemy import create_engine, select
-from modele.TypeChambre import TypeChambre
-from DTO.chambreDTO import TypeChambreDTO
+from sqlalchemy.orm import Session
+from modele.type_chambre import TypeChambre
+from DTO.chambre_dto import TypeChambreDTO
 
 
+# Configuration de base
 logging.basicConfig()
+# Activation des logs SQLAlchemy
 logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 
+# Configuration du moteur de base de données
 engine = create_engine(
     'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+17+for+SQL+Server',
     use_setinputsizes=False
@@ -18,7 +21,7 @@ engine = create_engine(
 
 class TestTypeChambre(unittest.TestCase):
 
-    def test_getTypeChambre(self):
+    def test_get_type_chambre(self):
 
         with Session(engine) as session:
 
@@ -68,7 +71,7 @@ class TestTypeChambre(unittest.TestCase):
                 )
             )
     
-    def test_prixPlafondInferieurPrixPlancher(self):
+    def test_prix_plafond_inferieur_prix_plancher(self):
         # Création d'un TypeChambre uniquement pour tester
         type_chambre = TypeChambre()
 

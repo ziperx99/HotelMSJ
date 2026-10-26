@@ -1,14 +1,16 @@
+# Modules et librairies
 import unittest
 from uuid import uuid4
-from sqlalchemy.orm import Session
 from sqlalchemy import select
+from sqlalchemy.orm import Session
+from modele.type_chambre import TypeChambre
 from modele.chambre import Chambre
-from modele.TypeChambre import TypeChambre
-from metier.chambreMetier import supprimerChambre, engine
+from metier.chambre_metier import engine, supprimer_chambre
+
 
 class TestSupprimerChambre(unittest.TestCase):
 
-    def test_supprimerChambre(self):
+    def test_supprimer_chambre(self):
         # On crée une chambre temporaire uniquement pour ce test
         # On utilise un type de chambre déjà présent dans la BD
         with Session(engine) as session:
@@ -29,7 +31,7 @@ class TestSupprimerChambre(unittest.TestCase):
         
         try:
             # On appelle la méthode métier pour supprimer
-            supprimerChambre(id_chambre)
+            supprimer_chambre(id_chambre)
 
             # On vérifie que la chambre n'existe plus
             with Session(engine) as session:
@@ -43,21 +45,21 @@ class TestSupprimerChambre(unittest.TestCase):
                     session.delete(chambre)
                     session.commit()
 
-    def test_supprimerChambreIdNull(self):
+    def test_supprimer_chambre_id_null(self):
         # Une chambre ne peut pas être supprimée sans ID
         # On s'attend à une ValueError
         with self.assertRaises(ValueError):
-            supprimerChambre(None)
+            supprimer_chambre(None)
     
-    def test_supprimerChambreInexistante(self):
+    def test_supprimer_chambre_inexistante(self):
         # On génère un ID aléatoire
         # Il devrait pas être un ID existant dans la BD
         id_inexistant = uuid4()
         # On tente de supprimer une chambre qui n'existe pas. Doit déclencher un ValueError, si aucun valueerror, le test échoue
         with self.assertRaises(ValueError):
-            supprimerChambre(id_inexistant)
+            supprimer_chambre(id_inexistant)
 
-    def test_supprimerChambreAvecReservation(self):
+    def test_supprimer_chambre_avec_reservation(self):
         # On cherche une chambre qui a une réservation
         # On ne crée pas et on modifie pas dans la BD
         with Session(engine) as session:
@@ -76,7 +78,7 @@ class TestSupprimerChambre(unittest.TestCase):
         
         # On tente de supprimer la chambre et lever un ValueError
         with self.assertRaises(ValueError):
-            supprimerChambre(id_chambre)
+            supprimer_chambre(id_chambre)
         # On vérifie que la chambre est toujours dans la BD
         with Session(engine) as session:
             chambre = session.get(Chambre, id_chambre)

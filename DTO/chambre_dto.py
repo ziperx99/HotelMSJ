@@ -1,8 +1,12 @@
+# Modules et librairies
 from typing import Optional
-from pydantic import BaseModel, Field, model_validator, field_validator
-from modele.chambre import Chambre
-from modele.TypeChambre import TypeChambre
 from uuid import UUID
+from pydantic import BaseModel, Field, field_validator, model_validator
+from modele.type_chambre import TypeChambre
+from modele.chambre import Chambre
+
+
+# Commentaires de l'enseignant gardés en exemple pour ce type de classe.
 
 # Data Transfer Object : pydantic BaseModel pour intégration facile avec FastAPI
 # Facilite aussi grandement la sérialization et la validation des données contenues dans les DTOs
@@ -14,7 +18,7 @@ class TypeChambreDTO(BaseModel):
     description_chambre : Optional[str] = Field(max_length=200, custom_error="description_chambre a une limite de 200 caractères")
 
     @model_validator(mode="after")
-    def validerPrix(self):
+    def valider_prix(self):
         # Le model_validator est exécuté après la validation invidividuelle des champs
         # Permet de comparer les prix entre eux
         # Le prix plafond peut être None, donc on le vérifie d'abord et si il existe, il doit être supérieur à plancher
@@ -39,7 +43,7 @@ class ChambreDTO(BaseModel):
 
     @field_validator("numero_chambre", mode="before")
     @classmethod
-    def validerNumeroChambre(cls, valeur):
+    def valider_numero_chambre(cls, valeur):
         # Ce field_validator s'applique uniquement au champ numero_chambre
         # Le mode "before" permet de vérifier la valeur avant que pydantic essaie de le convertir
         # Une chambre doit obligatoirement avoir un numéro

@@ -1,20 +1,21 @@
-from sqlalchemy.exc import SQLAlchemyError, InterfaceError
-from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, select
-from DTO.usagerDTO import UsagerDTO
-from modele.usager import Usager
+# Modules et librairies
 from uuid import uuid4
+from sqlalchemy import create_engine, select
+from sqlalchemy.exc import InterfaceError, SQLAlchemyError
+from sqlalchemy.orm import Session
+from DTO.usager_dto import UsagerDTO
+from modele.usager import Usager
 
+
+# Configuration du moteur de base de données
 engine = create_engine(
     'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',
-    connect_args={
-        "TrustServerCertificate": "yes"
-    },
+    connect_args={"TrustServerCertificate": "yes"},
     use_setinputsizes=False
 )
 
 
-def creerUsager(usager: UsagerDTO):
+def creer_usager(usager: UsagerDTO):
 
     try:
         # Validations
@@ -59,7 +60,7 @@ def creerUsager(usager: UsagerDTO):
         print("Usager créée sans problème")
 
 
-def getUsagerParId(id_usager):
+def get_usager_par_id(id_usager):
 
     try:
         if id_usager is None:
@@ -90,7 +91,7 @@ def getUsagerParId(id_usager):
         print(f"Une erreur est survenue avec la base de données : {e}")    
         raise e  
 
-def getUsagerParNom(nom: str):
+def get_usager_par_nom(nom: str):
     
     # Vérifie qu'un nom a été donné. On refuse None, un chaîne vide ou juste des espaces
     if nom is None or nom.strip() == "":
@@ -123,7 +124,7 @@ def getUsagerParNom(nom: str):
     
 
 
-def modifierUsager(usager: UsagerDTO):
+def modifier_usager(usager: UsagerDTO):
 
     if usager.id_usager is None:
         raise ValueError(
@@ -179,4 +180,39 @@ def modifierUsager(usager: UsagerDTO):
     
     except SQLAlchemyError as e:
         print(f"Une erreur est survenue avec la base de données : {e}")
-        raise e    
+        raise e
+    
+    
+def supprimer_usager(id_usager):
+
+    # Vérification de l'identifiant reçu
+    if id_usager is None:
+        raise ValueError("L'identifiant de l'usager doit exister.")
+
+    try:
+
+        # Ouverture d'une session SQLAlchemy
+        with Session(engine) as session:
+
+            # Recherche de l'usager à supprimer
+            stmt = select(Usager).where(Usager.id_usager == id_usager)
+            usagerASupprimer = session.execute(stmt).scalar_one_or_none()
+
+            # Vérification que l'usager existe
+            if usagerASupprimer is None:
+                raise ValueError("L'usager n'existe pas.")
+
+            # Suppression de l'usager
+            session.delete(usagerASupprimer)
+
+            # Sauvegarde des modifications dans la base de données
+            session.commit()
+
+    except InterfaceError as e:
+        # Gestion des erreurs de connexion à la base de données
+        print(f"Erreur de connexion à la base de données. Vérifier l'URL du pilote de connexion.: {e}")
+
+    except SQLAlchemyError as e:
+        # Gestion des erreurs SQLAlchemy
+        print(f"Une erreur est survenue avec la base de données : {e}")
+        raise e

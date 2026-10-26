@@ -1,11 +1,12 @@
 # Modules et librairies
-from sqlalchemy.orm import Session
-from sqlalchemy.exc import SQLAlchemyError, InterfaceError
+from uuid import UUID, uuid4
 from sqlalchemy import create_engine, select
-from DTO.chambreDTO import ChambreDTO, TypeChambreDTO
+from sqlalchemy.exc import InterfaceError, SQLAlchemyError
+from sqlalchemy.orm import Session
 from modele.chambre import Chambre
-from modele.TypeChambre import TypeChambre
-from uuid import uuid4, UUID
+from modele.type_chambre import TypeChambre
+from DTO.chambre_dto import ChambreDTO, TypeChambreDTO
+
 
 # Configuration du moteur de base de données
 engine = create_engine(
@@ -16,7 +17,8 @@ engine = create_engine(
         },
     use_setinputsizes=False)
 
-def creerChambre(chambre: ChambreDTO):
+
+def creer_chambre(chambre: ChambreDTO):
     try:
         with Session(engine) as session:
             stmt = select(TypeChambre).where(TypeChambre.nom_type == chambre.type_chambre.nom_type)
@@ -62,7 +64,7 @@ def creerChambre(chambre: ChambreDTO):
 
     
 
-def creerTypeChambre(typeChambre: TypeChambreDTO):
+def creer_type_chambre(typeChambre: TypeChambreDTO):
 
     try:
         with Session(engine) as session:
@@ -92,7 +94,7 @@ def creerTypeChambre(typeChambre: TypeChambreDTO):
 
     
 
-def getChambreParNumero(no_chambre: int):
+def get_chambre_par_numero(no_chambre: int):
     # Certaines validations se retrouvent dans la classe DTO.
     try:
         with Session(engine) as session:
@@ -117,7 +119,7 @@ def getChambreParNumero(no_chambre: int):
     # Aucun Finally nécessaire
 
 
-def modifierChambre(chambre: ChambreDTO):
+def modifier_chambre(chambre: ChambreDTO):
 
     try:
 
@@ -166,7 +168,7 @@ def modifierChambre(chambre: ChambreDTO):
     # Aucun Finally nécessaire
 
 
-def supprimerChambre(id_chambre):
+def supprimer_chambre(id_chambre):
     # Vérifier qu'un identifiant a été fourni
     # Sans ça, on peut pas savoir quelle chambre supprimer
     if id_chambre is None:
@@ -204,7 +206,7 @@ def supprimerChambre(id_chambre):
         print(f"Une erreur est survenue avec la base de données : {e}")
         raise
 
-def supprimerTypeChambre(id_type_chambre):
+def supprimer_type_chambre(id_type_chambre):
     # Vérifier qu'un identifiant a été fourni
     # Sans ça, on peut pas savoir quel type supprimer
     if id_type_chambre is None:
@@ -249,7 +251,7 @@ def supprimerTypeChambre(id_type_chambre):
         print(f"Une erreur est survenue avec la base de données : {e}")
         raise
 
-def rechercherTypeChambre(id_type_chambre):
+def rechercher_type_chambre(id_type_chambre):
     # Vérifier qu'un identifiant a été fourni
     if id_type_chambre is None:
         raise ValueError("L'identifiant du type de chambre doit exister.")
@@ -282,7 +284,7 @@ def rechercherTypeChambre(id_type_chambre):
         print(f"Une erreur est survenue avec la base de données : {e}")
         raise
 
-def modifierTypeChambre(typeChambre: TypeChambreDTO):
+def modifier_type_chambre(typeChambre: TypeChambreDTO):
     # Vérifier qu'un identifiant a été fourni
     if typeChambre.id_type_chambre is None:
         raise ValueError("L'identifiant du type de chambre doit exister.")

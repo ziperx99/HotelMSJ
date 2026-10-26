@@ -4,31 +4,34 @@ from datetime import datetime
 from uuid import uuid4
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
+from modele.type_chambre import TypeChambre
 from modele.chambre import Chambre
 from modele.reservation import Reservation
-from modele.TypeChambre import TypeChambre
 from modele.usager import Usager
-from DTO.chambreDTO import ChambreDTO
-from DTO.rechercherReservationDTO import RechercherReservationDTO
-from DTO.reservationDTO import ReservationDTO
-from DTO.usagerDTO import UsagerDTO
-from metier.chambreMetier import creerChambre
-from metier.usagerMetier import creerUsager
-from metier.reservationMetier import (
-    creerReservation,
-    modifierReservation,
-    rechercherReservation
+from DTO.chambre_dto import ChambreDTO
+from DTO.rechercher_reservation_dto import RechercherReservationDTO
+from DTO.reservation_dto import ReservationDTO
+from DTO.usager_dto import UsagerDTO
+from metier.chambre_metier import creer_chambre
+from metier.reservation_metier import (
+    creer_reservation,
+    modifier_reservation,
+    rechercher_reservation,
 )
+from metier.usager_metier import creer_usager
+
 
 # Configuration du moteur de base de données
-engine = create_engine('mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',
-    connect_args={"TrustServerCertificate": "yes"}, use_setinputsizes=False
+engine = create_engine(
+    'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+18+for+SQL+Server',
+    connect_args={"TrustServerCertificate": "yes"},
+    use_setinputsizes=False
 )
 
 
 class TestModifierPrixJourReservation(unittest.TestCase):
 
-    def test_modifierPrixJourReservation(self):
+    def test_modifier_prix_jour_reservation(self):
 
         # Variables utilisées pour le nettoyage des données de test
         reservationDTOCree = None
@@ -66,8 +69,8 @@ class TestModifierPrixJourReservation(unittest.TestCase):
             )
 
             # Création de l'usager et de la chambre dans la base de données
-            usagerCree = creerUsager(UsagerDTO(usager))
-            chambreCree = creerChambre(ChambreDTO(chambre))
+            usagerCree = creer_usager(UsagerDTO(usager))
+            chambreCree = creer_chambre(ChambreDTO(chambre))
 
             # Ouverture d'une session SQLAlchemy
             with Session(engine) as session:
@@ -88,7 +91,7 @@ class TestModifierPrixJourReservation(unittest.TestCase):
                 )
 
                 # Création de la réservation dans la base de données
-                reservationDTOCree = creerReservation(ReservationDTO(reservation))
+                reservationDTOCree = creer_reservation(ReservationDTO(reservation))
 
             # Nouveau prix à appliquer à la réservation
             nouveauPrix = 199.0
@@ -98,12 +101,12 @@ class TestModifierPrixJourReservation(unittest.TestCase):
             reservationModifiee.prix_jour = nouveauPrix
 
             # Fonction métier
-            modifierReservation(reservationModifiee)
+            modifier_reservation(reservationModifiee)
 
             # Recherche de la réservation modifiée
             criteres = RechercherReservationDTO(id_reservation=reservationDTOCree.id_reservation)
 
-            reservations = rechercherReservation(criteres)
+            reservations = rechercher_reservation(criteres)
 
             # Vérification des résultats de recherche
             self.assertIsNotNone(reservations)

@@ -1,13 +1,14 @@
 # Modules et librairies
-import unittest
 import logging
-from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, select
-from DTO.chambreDTO import ChambreDTO
-from metier.chambreMetier import modifierChambre
-from modele.chambre import Chambre
-from modele.TypeChambre import TypeChambre
+import unittest
 from uuid import uuid4
+from sqlalchemy import create_engine, select
+from sqlalchemy.orm import Session
+from modele.type_chambre import TypeChambre
+from modele.chambre import Chambre
+from DTO.chambre_dto import ChambreDTO
+from metier.chambre_metier import modifier_chambre
+
 
 # Configuration de base
 logging.basicConfig()
@@ -17,12 +18,13 @@ logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 # Configuration du moteur de base de données
 engine = create_engine(
     'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+17+for+SQL+Server',
-    use_setinputsizes=False)
+    use_setinputsizes=False
+)
 
 
-class TestChambre(unittest.TestCase):
+class TestModifierChambre(unittest.TestCase):
 
-    def test_modifierChambre(self):
+    def test_modifier_chambre(self):
 
         id_chambre_test = None
 
@@ -57,7 +59,7 @@ class TestChambre(unittest.TestCase):
                 chambreDTO.disponible_reservation = False
 
                 # Fonction métier
-                modifierChambre(chambreDTO)
+                modifier_chambre(chambreDTO)
 
                 # On vide le cache SQLAlchemy
                 session.expire_all()
@@ -87,7 +89,7 @@ class TestChambre(unittest.TestCase):
                         
                         
 
-    def test_modifierChambreInexistante(self):
+    def test_modifier_chambre_inexistante(self):
     
         # Création d'une chambre uniquement pour tester
         chambre = Chambre()
@@ -114,4 +116,4 @@ class TestChambre(unittest.TestCase):
 
         # Vérifier que la modification d'une chambre inexistante déclenche une erreur
         with self.assertRaises(ValueError):
-            modifierChambre(chambreDTO)
+            modifier_chambre(chambreDTO)

@@ -1,19 +1,21 @@
-import unittest
+# Modules et librairies
 import logging
-
-from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, select
-
-from modele.chambre import Chambre
-from modele.TypeChambre import TypeChambre
-from modele.usager import Usager
-from modele.reservation import Reservation
+import unittest
 from decimal import Decimal
+from uuid import uuid4
+from pydantic import ValidationError
+from sqlalchemy import create_engine, select
+from sqlalchemy.orm import Session
+from modele.usager import Usager
+from DTO.usager_dto import UsagerDTO
 
 
+# Configuration de base
 logging.basicConfig()
+# Activation des logs SQLAlchemy
 logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 
+# Configuration du moteur de base de données
 engine = create_engine(
     'mssql+pyodbc://localhost\\SQLEXPRESS/Hotel?driver=ODBC+Driver+17+for+SQL+Server',
     use_setinputsizes=False
@@ -22,7 +24,7 @@ engine = create_engine(
 
 class TestUsager(unittest.TestCase):
 
-    def test_getUsager(self):
+    def test_get_usager(self):
 
         with Session(engine) as session:
 
@@ -78,3 +80,216 @@ class TestUsager(unittest.TestCase):
                 usager.reservations[0].prix_jour,
                 Decimal('199.99')
             )
+     
+     # Section qui couvre les tests de validation des champs obligatoires
+    
+    def test_prenom_vide(self):
+
+        usager = Usager(
+            id_usager=uuid4(),
+            prenom="",
+            nom="TestNom",
+            adresse="123 rue Test",
+            mobile="514-555-1234",
+            mot_de_passe="test123"
+        )
+
+        with self.assertRaises(ValidationError):
+            UsagerDTO(usager)
+          
+                
+    def test_prenom_espaces_seulement(self):
+
+        usager = Usager(
+            id_usager=uuid4(),
+            prenom="   ",
+            nom="TestNom",
+            adresse="123 rue Test",
+            mobile="514-555-1234",
+            mot_de_passe="test123"
+        )
+
+        with self.assertRaises(ValidationError):
+            UsagerDTO(usager)
+          
+            
+    def test_nom_vide(self):
+
+        usager = Usager(
+            id_usager=uuid4(),
+            prenom="TestPrenom",
+            nom="",
+            adresse="123 rue Test",
+            mobile="514-555-1234",
+            mot_de_passe="test123"
+        )
+
+        with self.assertRaises(ValidationError):
+            UsagerDTO(usager)
+        
+        
+    def test_nom_espaces_seulement(self):
+
+        usager = Usager(
+            id_usager=uuid4(),
+            prenom="TestPrenom",
+            nom="   ",
+            adresse="123 rue Test",
+            mobile="514-555-1234",
+            mot_de_passe="test123"
+        )
+
+        with self.assertRaises(ValidationError):
+            UsagerDTO(usager)
+            
+    
+    def test_adresse_vide(self):
+
+        usager = Usager(
+            id_usager=uuid4(),
+            prenom="TestPrenom",
+            nom="TestNom",
+            adresse="",
+            mobile="514-555-1234",
+            mot_de_passe="test123"
+        )
+
+        with self.assertRaises(ValidationError):
+            UsagerDTO(usager)
+    
+    
+    def test_adresse_espaces_seulement(self):
+
+        usager = Usager(
+            id_usager=uuid4(),
+            prenom="TestPrenom",
+            nom="TestNom",
+            adresse="   ",
+            mobile="514-555-1234",
+            mot_de_passe="test123"
+        )
+
+        with self.assertRaises(ValidationError):
+            UsagerDTO(usager)
+        
+    
+    def test_mobile_vide(self):
+
+        usager = Usager(
+            id_usager=uuid4(),
+            prenom="TestPrenom",
+            nom="TestNom",
+            adresse="123 rue Test",
+            mobile="",
+            mot_de_passe="test123"
+        )
+
+        with self.assertRaises(ValidationError):
+            UsagerDTO(usager)
+    
+    
+    def test_mobile_espaces_seulement(self):
+
+        usager = Usager(
+            id_usager=uuid4(),
+            prenom="TestPrenom",
+            nom="TestNom",
+            adresse="123 rue Test",
+            mobile="   ",
+            mot_de_passe="test123"
+        )
+
+        with self.assertRaises(ValidationError):
+            UsagerDTO(usager)
+    
+    
+    def test_mobile_valide(self):
+
+        usager = Usager(
+            id_usager=uuid4(),
+            prenom="Jean",
+            nom="Tremblay",
+            adresse="123 rue Test",
+            mobile="514-555-1234",
+            mot_de_passe="secret"
+        )
+
+        dto = UsagerDTO(usager)
+
+        self.assertEqual(dto.mobile, "514-555-1234")
+            
+            
+    def test_mobile_null(self):
+        
+        usager = Usager(
+            id_usager=uuid4(),
+            prenom="Jean",
+            nom="Tremblay",
+            adresse="123 rue Test",
+            mobile=None,
+            mot_de_passe="secret"
+        )
+
+        with self.assertRaises(ValueError):
+            UsagerDTO(usager)
+
+
+    def test_mobile_trop_court(self):
+        
+        usager = Usager(
+            id_usager=uuid4(),
+            prenom="Jean",
+            nom="Tremblay",
+            adresse="123 rue Test",
+            mobile="12345",
+            mot_de_passe="secret"
+        )
+
+        with self.assertRaises(ValueError) as context:
+            UsagerDTO(usager)
+
+
+    def test_mobile_trop_long(self):
+        
+        usager = Usager(
+            id_usager=uuid4(),
+            prenom="Jean",
+            nom="Tremblay",
+            adresse="123 rue Test",
+            mobile="12345678901234567890",
+            mot_de_passe="secret"
+        )
+
+        with self.assertRaises(ValueError):
+            UsagerDTO(usager)
+            
+         
+    def test_mot_de_passe_valide(self):
+
+        usager = Usager(
+            id_usager=uuid4(),
+            prenom="Jean",
+            nom="Tremblay",
+            adresse="123 rue Test",
+            mobile="514-555-1234",
+            mot_de_passe="motdepasse123"
+        )
+
+        dto = UsagerDTO(usager)
+
+        self.assertIsInstance(dto, UsagerDTO)
+         
+            
+    def test_mot_de_passe_espaces_seulement(self):
+
+        usager = Usager(
+            id_usager=uuid4(),
+            prenom="Jean",
+            nom="Tremblay",
+            adresse="123 rue Test",
+            mobile="514-555-1234",
+            mot_de_passe="     "
+        )
+
+        with self.assertRaises(ValidationError):
+            UsagerDTO(usager)        

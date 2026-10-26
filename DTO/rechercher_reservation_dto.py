@@ -1,7 +1,9 @@
-from typing import Optional
-from pydantic import BaseModel, Field, model_validator
-from uuid import UUID
+# Modules et librairies
 from datetime import datetime
+from typing import Optional
+from uuid import UUID
+from pydantic import BaseModel, Field, model_validator
+
 
 class RechercherReservationDTO(BaseModel):
     id_reservation: Optional[UUID] = Field(default = None, custom_error='id_reservation doit être un UUID comportant 36 caractères')

@@ -1,10 +1,12 @@
+# Modules et librairies
 import unittest
 from uuid import uuid4
-from sqlalchemy.orm import Session
 from pydantic import ValidationError
-from metier.chambreMetier import modifierTypeChambre, engine
-from modele.TypeChambre import TypeChambre
-from DTO.chambreDTO import TypeChambreDTO
+from sqlalchemy.orm import Session
+from modele.type_chambre import TypeChambre
+from DTO.chambre_dto import TypeChambreDTO
+from metier.chambre_metier import engine, modifier_type_chambre
+
 
 class TestModifierTypeChambre(unittest.TestCase):
     # Créer un type de chambre temporaire dans la BD
@@ -33,7 +35,7 @@ class TestModifierTypeChambre(unittest.TestCase):
                 session.commit()
     
     # Créer un DTO à partir d'un modèle SQLAlchemy
-    def creerDTO(self, id_type = None, nom = "TestModifie", prix_plancher = 120, prix_plafond = 250):
+    def creer_dto(self, id_type = None, nom = "TestModifie", prix_plancher = 120, prix_plafond = 250):
         typeChambre = TypeChambre(
             id_type_chambre = id_type if id_type is not None else self.id_type,
             nom_type = nom,
@@ -45,9 +47,9 @@ class TestModifierTypeChambre(unittest.TestCase):
         return TypeChambreDTO(typeChambre)
     
     # Vérifier qu'on peut modifier un type existant
-    def test_modifierTypeChambreValide(self):
-        dto = self.creerDTO()
-        resultat = modifierTypeChambre(dto)
+    def test_modifier_type_chambre_valide(self):
+        dto = self.creer_dto()
+        resultat = modifier_type_chambre(dto)
 
         self.assertIsInstance(resultat, TypeChambreDTO)
         self.assertEqual(resultat.nom_type, "TestModifie")
@@ -62,29 +64,29 @@ class TestModifierTypeChambre(unittest.TestCase):
             self.assertEqual(typeChambre.prix_plafond, 250)
 
     # Vérifier qu'un type inexistant est refusé
-    def test_modifierTypeChambreInexistant(self):
-        dto = self.creerDTO(id_type = uuid4())
+    def test_modifier_type_chambre_inexistant(self):
+        dto = self.creer_dto(id_type=uuid4())
         with self.assertRaises(ValueError):
-            modifierTypeChambre(dto)
+            modifier_type_chambre(dto)
     
     # Vérifier qu'un identifiant manquant est refusé
-    def test_modifierTypeChambreSansId(self):
-        dto = self.creerDTO()
+    def test_modifier_type_chambre_sans_id(self):
+        dto = self.creer_dto()
 
         # model_copy permet de tester la validation métier sans repasser par le constructeur pydantic
         dto = dto.model_copy(update={"id_type_chambre": None})
         with self.assertRaises(ValueError):
-            modifierTypeChambre(dto)
+            modifier_type_chambre(dto)
     
     # Vérifier qu'un nom vide est refusé
-    def test_modifierTypeChambreNomVide(self):
-        dto = self.creerDTO(nom="")
+    def test_modifier_type_chambre_nom_vide(self):
+        dto = self.creer_dto(nom="")
         with self.assertRaises(ValueError):
-            modifierTypeChambre(dto)
+            modifier_type_chambre(dto)
     
     # Vérifier qu'un prix plafond inférieur au plancher est refusé
-    # Peut-être too much vu qu'on l'a déjà dans test_typeChambre.py et test_creerTypeChambre.py ?
-    def test_modifierTypeChambrePrixInvalides(self):
+    # Peut-être too much vu qu'on l'a déjà dans test_typeChambre.py et TestCreerTypeChambre.py ?
+    def test_modifier_type_chambre_prix_invalides(self):
         typeChambre = TypeChambre(
             id_type_chambre = self.id_type,
             nom_type = "TestPrix",
@@ -98,9 +100,9 @@ class TestModifierTypeChambre(unittest.TestCase):
             TypeChambreDTO(typeChambre)
 
     # Vérifier qu'on peut modifier un type sans prix plafond
-    def test_modifierTypeChambreSansPrixPlafond(self):
-        dto = self.creerDTO(prix_plafond = None)
-        resultat = modifierTypeChambre(dto)
+    def test_modifier_type_chambre_sans_prix_plafond(self):
+        dto = self.creer_dto(prix_plafond=None)
+        resultat = modifier_type_chambre(dto)
         self.assertIsNone(resultat.prix_plafond)
         self.assertEqual(resultat.prix_plancher, 120)
         
