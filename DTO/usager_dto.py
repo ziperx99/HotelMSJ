@@ -27,12 +27,17 @@ class UsagerDTO(BaseModel):
             raise ValueError("Le numéro de téléphone doit contenir 10 chiffres.")
         return valeur
 
-    def __init__(self, usager: Usager = None):
-        super().__init__(
-            id_usager=usager.id_usager,
-            prenom=usager.prenom,
-            nom=usager.nom,
-            adresse=usager.adresse,
-            mobile=usager.mobile,
-            mot_de_passe=usager.mot_de_passe
-        )
+    def __init__(self, usager: Usager = None, **kwargs):
+
+        if usager is not None:
+            super().__init__(
+                id_usager=usager.id_usager,
+                prenom=usager.prenom,
+                nom=usager.nom,
+                adresse=usager.adresse,
+                mobile=usager.mobile,
+                mot_de_passe=usager.mot_de_passe
+            )
+
+        else:
+            super().__init__(**kwargs)
