@@ -23,15 +23,18 @@ class ReservationDTO(BaseModel):
             raise ValueError("La date de fin de la réservation ne peut pas être avant son début")
         return self
 
-    def __init__(self, reservation: Reservation = None):
+    def __init__(self, reservation: Reservation = None, **kwargs):
 
         if reservation.usager is None:
             raise ValueError("Usager manquant.")
-        
-        super().__init__(id_reservation = reservation.id_reservation,
-                        date_debut_reservation = reservation.date_debut_reservation,
-                        date_fin_reservation = reservation.date_fin_reservation,
-                        prix_jour = reservation.prix_jour,
-                        info_reservation = reservation.info_reservation,
-                        usager = UsagerDTO(reservation.usager),
-                        chambre = ChambreDTO(reservation.chambre))
+
+        if reservation is not None:
+            super().__init__(id_reservation = reservation.id_reservation,
+                            date_debut_reservation = reservation.date_debut_reservation,
+                            date_fin_reservation = reservation.date_fin_reservation,
+                            prix_jour = reservation.prix_jour,
+                            info_reservation = reservation.info_reservation,
+                            usager = UsagerDTO(reservation.usager),
+                            chambre = ChambreDTO(reservation.chambre))
+        else:
+                    super().__init__(**kwargs)

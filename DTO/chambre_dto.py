@@ -26,12 +26,15 @@ class TypeChambreDTO(BaseModel):
             raise ValueError("Le prix plafond doit être supérieur au prix plancher.")
         # Si les prix sont valides, pydantic continuer la création du DTO
         return self
-    def __init__(self, typeChambre: TypeChambre = None): 
-        super().__init__(id_type_chambre = typeChambre.id_type_chambre,
-                         nom_type = typeChambre.nom_type,
-                         prix_plafond = typeChambre.prix_plafond,
-                         prix_plancher = typeChambre.prix_plancher,
-                         description_chambre = typeChambre.description_chambre)
+    def __init__(self, typeChambre: TypeChambre = None, **kwargs): 
+        if typeChambre is not None:
+            super().__init__(id_type_chambre = typeChambre.id_type_chambre,
+                            nom_type = typeChambre.nom_type,
+                            prix_plafond = typeChambre.prix_plafond,
+                            prix_plancher = typeChambre.prix_plancher,
+                            description_chambre = typeChambre.description_chambre)
+        else:
+            super().__init__(**kwargs)
 
         
 class ChambreDTO(BaseModel):
@@ -52,9 +55,12 @@ class ChambreDTO(BaseModel):
             raise ValueError("Le numéro de chambre ne peut pas être nul.")
         # Si le numéro n'est pas nul, on retourne la valeur que pydantic puisse continuer ses autres validations
         return valeur
-    def __init__(self, chambre: Chambre = None):
-        super().__init__(idChambre = chambre.id_chambre,
-                         numero_chambre = chambre.numero_chambre,
-                         disponible_reservation = chambre.disponible_reservation,
-                         autre_informations = chambre.autre_informations,
-                         type_chambre = TypeChambreDTO(chambre.type_chambre))
+    def __init__(self, chambre: Chambre = None, **kwargs):
+        if chambre is not None:
+            super().__init__(idChambre = chambre.id_chambre,
+                            numero_chambre = chambre.numero_chambre,
+                            disponible_reservation = chambre.disponible_reservation,
+                            autre_informations = chambre.autre_informations,
+                            type_chambre = TypeChambreDTO(chambre.type_chambre))
+        else:
+            super().__init__(**kwargs)
