@@ -8,6 +8,7 @@ from modele.reservation import Reservation
 from modele.usager import Usager
 from DTO.rechercher_reservation_dto import RechercherReservationDTO
 from DTO.reservation_dto import ReservationDTO
+from DTO.creer_reservation_dto import CreerReservationDTO
 
 
 # Configuration du moteur de base de données
@@ -18,18 +19,29 @@ engine = create_engine(
 )
 
 
-def creer_reservation(reservation: ReservationDTO):
+def creer_reservation(reservation: CreerReservationDTO | ReservationDTO):
     try:
+        if isinstance(reservation, CreerReservationDTO):
+            id_usager = reservation.id_usager
+            numero_chambre = reservation.numero_chambre
+        else:
+            id_usager = reservation.usager.id_usager
+            numero_chambre = reservation.chambre.numero_chambre
+
         with Session(engine) as session:
-            stmt1 = select(Usager).where(Usager.id_usager == reservation.usager.id_usager)
+            stmt1 = select(Usager).where(Usager.id_usager == id_usager)
             usagerSelect = session.execute(stmt1).scalar_one_or_none()
 
             #Validation de l'existence de l'usager
             if usagerSelect is None:
                 raise ValueError("L'usager n'existe pas.")
 
-            stmt2 = select(Chambre).where(Chambre.numero_chambre == reservation.chambre.numero_chambre)
+            stmt2 = select(Chambre).where(Chambre.numero_chambre == numero_chambre)
             chambreSelect = session.execute(stmt2).scalar_one_or_none()
+
+            # Validation si la chambre existe pas
+            if chambreSelect is None:
+                raise ValueError("La chambre n'existe pas.")
 
             nouvelleReservation = Reservation(
                 id_reservation = uuid4(),
@@ -47,15 +59,12 @@ def creer_reservation(reservation: ReservationDTO):
             return ReservationDTO(nouvelleReservation)
 
     except InterfaceError as e:
-            print(f"Erreur de connexion à la base de données. Vérifier l'URL du pilote de connexion.: {e}")    
+            print(f"Erreur de connexion à la base de données. Vérifier l'URL du pilote de connexion.: {e}")
+            raise
 
     except SQLAlchemyError as e:
             print(f"Une erreur est survenue avec la base de données : {e}")    
             raise e
-    
-    else:
-        print("Réservation créée sans problème")
-
 
 def rechercher_reservation(criteres: RechercherReservationDTO):
 
@@ -80,7 +89,7 @@ def rechercher_reservation(criteres: RechercherReservationDTO):
             stmt = stmt.join(Usager).where(Usager.nom == criteres.nom)
             stmt = stmt.where(Usager.prenom == criteres.prenom)
 
-        if(criteres.disponible_reservation):
+        if(criteres.disponible_reservation is not None):
             stmt = stmt.join(Chambre).where(Chambre.disponible_reservation == criteres.disponible_reservation)
 
         if(criteres.date):
@@ -98,9 +107,7 @@ def rechercher_reservation(criteres: RechercherReservationDTO):
 
     except ValueError as e:
         # Gestion des erreurs de validation
-        raise Exception(
-            f"Erreur de validation : {str(e)}"
-        )
+        raise
 
     except InterfaceError as e:
         # Gestion des erreurs de connexion à la base de données

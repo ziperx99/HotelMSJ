@@ -2,11 +2,19 @@ from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException
 from metier.chambre_metier import ChambreDTO, TypeChambreDTO, creer_chambre, get_chambre_par_numero, modifier_chambre, supprimer_chambre, creer_type_chambre, rechercher_type_chambre, modifier_type_chambre, supprimer_type_chambre
 from DTO.chambre_dto import TypeChambreDTO
-from metier.reservation_metier import rechercher_reservation
 from DTO.rechercher_reservation_dto import RechercherReservationDTO
+from DTO.creer_reservation_dto import CreerReservationDTO
 from fastapi.middleware.cors import CORSMiddleware
 from uuid import UUID
 import uvicorn
+
+from metier.reservation_metier import (
+    creer_reservation,
+    rechercher_reservation,
+    modifier_reservation,
+    supprimer_reservation
+)
+from DTO.reservation_dto import ReservationDTO
 
 app = FastAPI()
 
@@ -94,18 +102,40 @@ def read_item(id_type_chambre: UUID):
 
 
 # Créer Réservation
+@app.post("/creerReservation")
+def creer_reservation_api(reservation: CreerReservationDTO):
+     try:
+          return creer_reservation(reservation)
+     except ValueError as e:
+          raise HTTPException(status_code=400, detail=str(e))
 
-# Rechercher Réservation  #Exemple du prof que j'ai recopié mais pas touché du tout, à checker
+# Rechercher Réservation  #Exemple du prof que j'ai recopié mais pas touché du tout, à checker 
+# Yo Jo! J'ai modifié un peu pour fit ma façon d'écrire mon code mais ça revient au même que read_item, juste plus facile pour débuggé ;)
 @app.post("/rechercherReservation")
-def read_item(critere: RechercherReservationDTO):
+def rechercher_reservation_api(critere: RechercherReservationDTO):
      try:
           return rechercher_reservation(critere)
      except ValueError as e:
-             return HTTPException(status_code=404, detail=str(e))
+             raise HTTPException(status_code=404, detail=str(e))
 
 # Modifier Réservation
+@app.put("/modifierReservation")
+def modifier_reservation_api(reservation: ReservationDTO):
+     try:
+          modifier_reservation(reservation)
 
+          return {"message": "Réservation modifiée avec succès."}
+     except ValueError as e:
+          raise HTTPException(status_code=404, detail=str(e))
+     
 # Supprimer Réservation
+@app.delete("/supprimerReservation/{id_reservation}")
+def supprimer_reservation_api(id_reservation: UUID):
+     try:
+          supprimer_reservation(id_reservation)
+          return{"message": "Réservation supprimée avec succès."}
+     except ValueError as e:
+          raise HTTPException(status_code=404, detail=str(e))
 
-
-uvicorn.run(app, host="127.0.0.1", port=8000)
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)

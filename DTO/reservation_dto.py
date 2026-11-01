@@ -25,16 +25,18 @@ class ReservationDTO(BaseModel):
 
     def __init__(self, reservation: Reservation = None, **kwargs):
 
-        if reservation.usager is None:
-            raise ValueError("Usager manquant.")
-
         if reservation is not None:
+
+            if reservation.usager is None:
+                raise ValueError("Usager manquant.")
+
             super().__init__(id_reservation = reservation.id_reservation,
                             date_debut_reservation = reservation.date_debut_reservation,
                             date_fin_reservation = reservation.date_fin_reservation,
                             prix_jour = reservation.prix_jour,
                             info_reservation = reservation.info_reservation,
                             usager = UsagerDTO(reservation.usager),
-                            chambre = ChambreDTO(reservation.chambre))
+                            chambre = ChambreDTO(reservation.chambre) if reservation.chambre is not None else None
+                            )
         else:
                     super().__init__(**kwargs)
