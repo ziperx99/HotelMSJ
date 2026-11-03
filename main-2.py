@@ -1,5 +1,7 @@
+from typing import Annotated
 from pydantic import BaseModel
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from metier.chambre_metier import ChambreDTO, TypeChambreDTO, creer_chambre, get_chambre_par_numero, modifier_chambre, supprimer_chambre, creer_type_chambre, rechercher_type_chambre, modifier_type_chambre, supprimer_type_chambre
 from DTO.chambre_dto import TypeChambreDTO
 from DTO.rechercher_reservation_dto import RechercherReservationDTO
@@ -16,6 +18,22 @@ from metier.reservation_metier import (
 )
 from DTO.reservation_dto import ReservationDTO
 
+#Exemples du prof
+fake_users_db = {
+     "johndoe": {
+          "username": "johndoe",
+          "full_name": "John Doe",
+          "email": "johndoe@example.com",
+          "hashed_password": "fakehashedsecret"
+     },
+     "alice": {
+          "username": "alice",
+          "full_name": "Alice Wonderson",
+          "email": "alice@example.com",
+          "hashed_password": "fakehashedsecret2"
+     }
+}
+
 app = FastAPI()
 
 app.add_middleware(
@@ -26,9 +44,54 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+@app.post("/token")
+async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
+     user_dict = fake_users_db.get(form_data.username)
+     if not user_dict:
+          raise HTTPException(status_code=400, detail="Incorrect username or password")
+     user = UserInDB(**user_dict)
+     hashed_password = fake_hash_password(form_data.password)
+     if not hashed_password:
+          raise HTTPException(status_code=400, detail="Incorrect username or password")
+
+     return {"access_token": user.username, "token_type": "bearer"}
+
+def fake_hash_password(password:str):
+     return "fakehashed" + password
+
+def fake_decode_token(token):
+     user = get_user(fake_users_db, token)
+     return user
+
+def get_user(db, username: str):
+     if username in db:
+          user_dict = db[username]
+          return UserInDB(**user_dict)
+
+class User(BaseModel):
+     username: str
+     email: str | None = None
+     full_name: str | None = None
+
+class UserInDB(User):
+     hashed_password: str
+
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+     user = fake_decode_token(token)
+     if not user:
+          raise HTTPException(
+               status_code=status.HTTP_401_UNAUTHORIZED,
+               detail="Invalid authentication credentials",
+               headers={"WWW-Authenticate": "Bearer"},
+          )
+     return user
+     
+
 # Créer Chambre
 @app.post("/creerChambre")
-def read_item(chambre: ChambreDTO):
+def read_item(chambre: ChambreDTO, current_user: Annotated[User, Depends(get_current_user)]):
     try:
         return creer_chambre(chambre)
     except ValueError as e:
