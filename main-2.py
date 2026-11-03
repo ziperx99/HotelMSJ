@@ -99,7 +99,7 @@ def read_item(chambre: ChambreDTO, current_user: Annotated[User, Depends(get_cur
 
 # Get Chambre par numéro
 @app.get("/chambres/{no_chambre}")
-def read_item(no_chambre: int):
+def read_item(no_chambre: int, current_user: Annotated[User, Depends(get_current_user)]):
     try:
         return get_chambre_par_numero(no_chambre)
     except ValueError as e:
@@ -107,7 +107,7 @@ def read_item(no_chambre: int):
 
 # Modifier Chambre
 @app.post("/modifierChambre")
-def read_item(chambre: ChambreDTO):
+def read_item(chambre: ChambreDTO, current_user: Annotated[User, Depends(get_current_user)]):
     try:
         return modifier_chambre(chambre)
     except ValueError as e:
@@ -115,7 +115,7 @@ def read_item(chambre: ChambreDTO):
 
 # Supprimer Chambre
 @app.delete("/supprimerChambre/{id_chambre}")
-def read_item(id_chambre: UUID):
+def read_item(id_chambre: UUID, current_user: Annotated[User, Depends(get_current_user)]):
     try:
         return supprimer_chambre(id_chambre)
     except ValueError as e:
@@ -123,7 +123,7 @@ def read_item(id_chambre: UUID):
 
 # Créer Type Chambre
 @app.post("/creerTypeChambre")
-def read_item(type: TypeChambreDTO):
+def read_item(type: TypeChambreDTO, current_user: Annotated[User, Depends(get_current_user)]):
     try:
         return creer_type_chambre(type)
     except ValueError as e:
@@ -131,7 +131,7 @@ def read_item(type: TypeChambreDTO):
 
 # Rechercher Type Chambre
 @app.get("/rechercherTypeChambre/{id_type_chambre}")
-def read_item(id_type_chambre: UUID):
+def read_item(id_type_chambre: UUID, current_user: Annotated[User, Depends(get_current_user)]):
     try:
         return rechercher_type_chambre(id_type_chambre)
     except ValueError as e:
@@ -139,7 +139,7 @@ def read_item(id_type_chambre: UUID):
 
 # Modifier Type Chambre
 @app.post("/modifierTypeChambre")
-def read_item(type_chambre: TypeChambreDTO):
+def read_item(type_chambre: TypeChambreDTO, current_user: Annotated[User, Depends(get_current_user)]):
     try:
         return modifier_type_chambre(type_chambre)
     except ValueError as e:
@@ -147,7 +147,7 @@ def read_item(type_chambre: TypeChambreDTO):
 
 # Supprimer Type Chambre
 @app.delete("/supprimerTypeChambre")
-def read_item(id_type_chambre: UUID):
+def read_item(id_type_chambre: UUID, current_user: Annotated[User, Depends(get_current_user)]):
     try: 
         return supprimer_type_chambre(id_type_chambre)
     except ValueError as e:
