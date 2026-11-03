@@ -166,7 +166,7 @@ def read_item(id_type_chambre: UUID, current_user: Annotated[User, Depends(get_c
 
 # Créer Réservation
 @app.post("/creerReservation")
-def creer_reservation_api(reservation: CreerReservationDTO):
+def creer_reservation_api(reservation: CreerReservationDTO, current_user: Annotated[User, Depends(get_current_user)]):
      try:
           return creer_reservation(reservation)
      except ValueError as e:
@@ -175,7 +175,7 @@ def creer_reservation_api(reservation: CreerReservationDTO):
 # Rechercher Réservation  #Exemple du prof que j'ai recopié mais pas touché du tout, à checker 
 # Yo Jo! J'ai modifié un peu pour fit ma façon d'écrire mon code mais ça revient au même que read_item, juste plus facile pour débuggé ;)
 @app.post("/rechercherReservation")
-def rechercher_reservation_api(critere: RechercherReservationDTO):
+def rechercher_reservation_api(critere: RechercherReservationDTO, current_user: Annotated[User, Depends(get_current_user)]):
      try:
           return rechercher_reservation(critere)
      except ValueError as e:
@@ -183,7 +183,7 @@ def rechercher_reservation_api(critere: RechercherReservationDTO):
 
 # Modifier Réservation
 @app.put("/modifierReservation")
-def modifier_reservation_api(reservation: ReservationDTO):
+def modifier_reservation_api(reservation: ReservationDTO, current_user: Annotated[User, Depends(get_current_user)]):
      try:
           modifier_reservation(reservation)
 
@@ -193,7 +193,7 @@ def modifier_reservation_api(reservation: ReservationDTO):
      
 # Supprimer Réservation
 @app.delete("/supprimerReservation/{id_reservation}")
-def supprimer_reservation_api(id_reservation: UUID):
+def supprimer_reservation_api(id_reservation: UUID, current_user: Annotated[User, Depends(get_current_user)]):
      try:
           supprimer_reservation(id_reservation)
           return{"message": "Réservation supprimée avec succès."}
