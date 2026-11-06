@@ -195,12 +195,32 @@ def supprimer_usager(id_usager):
         with Session(engine) as session:
 
             # Recherche de l'usager à supprimer
-            stmt = select(Usager).where(Usager.id_usager == id_usager)
-            usagerASupprimer = session.execute(stmt).scalar_one_or_none()
+            stmt = select(Usager).where(
+                Usager.id_usager == id_usager
+            )
+            usagerASupprimer = (
+                session.execute(stmt)
+                .scalar_one_or_none()
+            )
 
             # Vérification que l'usager existe
             if usagerASupprimer is None:
                 raise ValueError("L'usager n'existe pas.")
+
+            # Vérification que l'usager ne possède aucune réservation
+            stmtReservation = select(Reservation).where(
+                Reservation.fk_id_usager == id_usager
+            )
+
+            reservationExistante = (
+                session.execute(stmtReservation)
+                .scalar_one_or_none()
+            )
+
+            if reservationExistante is not None:
+                raise ValueError(
+                    "Impossible de supprimer l'usager puisqu'il possède une ou plusieurs réservations."
+                )
 
             # Suppression de l'usager
             session.delete(usagerASupprimer)
@@ -210,7 +230,9 @@ def supprimer_usager(id_usager):
 
     except InterfaceError as e:
         # Gestion des erreurs de connexion à la base de données
-        print(f"Erreur de connexion à la base de données. Vérifier l'URL du pilote de connexion.: {e}")
+        print(
+            f"Erreur de connexion à la base de données. Vérifier l'URL du pilote de connexion.: {e}"
+        )
 
     except SQLAlchemyError as e:
         # Gestion des erreurs SQLAlchemy
