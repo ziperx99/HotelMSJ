@@ -171,7 +171,7 @@ def read_item(id_type_chambre: UUID, current_user: Annotated[User, Depends(get_c
     
 # Créer Usager (confirmé que ça fonctionne avec le Swagger UI)
 @app.post("/creerUsager")
-def read_item(usager: UsagerDTO):
+def read_item(usager: UsagerDTO, current_user: Annotated[User, Depends(get_current_user)]):
     try:
         return creer_usager(usager)
     except ValueError as e:
@@ -180,7 +180,7 @@ def read_item(usager: UsagerDTO):
 
 # Get Usager par Nom (confirmé que ça fonctionne avec le Swagger UI)
 @app.get("/usagers/nom/{nom}")
-def read_item(nom: str):
+def read_item(nom: str, current_user: Annotated[User, Depends(get_current_user)]):
     try:
         return get_usager_par_nom(nom)
     except ValueError as e:
@@ -189,7 +189,7 @@ def read_item(nom: str):
 
 # Get Usager par ID (confirmé que ça fonctionne avec le Swagger UI)
 @app.get("/usagers/{id_usager}")
-def read_item(id_usager: UUID):
+def read_item(id_usager: UUID, current_user: Annotated[User, Depends(get_current_user)]):
     try:
         return get_usager_par_id(id_usager)
     except ValueError as e:
@@ -198,7 +198,7 @@ def read_item(id_usager: UUID):
 
 # Modifier Usager (confirmé que ça fonctionne avec le Swagger UI)
 @app.post("/modifierUsager")
-def read_item(usager: UsagerDTO):
+def read_item(usager: UsagerDTO, current_user: Annotated[User, Depends(get_current_user)]):
     try:
         return modifier_usager(usager)
     except ValueError as e:
@@ -207,7 +207,7 @@ def read_item(usager: UsagerDTO):
 
 # Supprimer Usager (confirmé que ça fonctionne avec le Swagger UI)
 @app.delete("/supprimerUsager/{id_usager}")
-def read_item(id_usager: UUID):
+def read_item(id_usager: UUID, current_user: Annotated[User, Depends(get_current_user)]):
     try:
         return supprimer_usager(id_usager)
     except ValueError as e:
