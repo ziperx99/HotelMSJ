@@ -220,3 +220,13 @@ metier/chambreMetier.py
 .vscode/settings.json
 tests/__init__.py
 /.idea
+
+# React / Frontend
+frontend/node_modules/
+frontend/build/
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.production.local
+frontend/.env.test.local
+frontend/npm-debug.log*
