@@ -5,6 +5,7 @@ from sqlalchemy.exc import InterfaceError, SQLAlchemyError
 from sqlalchemy.orm import Session
 from DTO.usager_dto import UsagerDTO
 from modele.usager import Usager
+from modele.reservation import Reservation
 
 
 # Configuration du moteur de base de données
