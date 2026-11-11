@@ -219,7 +219,7 @@ __marimo__/
 metier/chambreMetier.py
 .vscode/settings.json
 tests/__init__.py
-/.idea
+backend/.idea
 
 # React / Frontend
 frontend/node_modules/
