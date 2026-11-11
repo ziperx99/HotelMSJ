@@ -4,12 +4,19 @@ from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from metier.chambre_metier import ChambreDTO, TypeChambreDTO, creer_chambre, get_chambre_par_numero, modifier_chambre, supprimer_chambre, creer_type_chambre, rechercher_type_chambre, modifier_type_chambre, supprimer_type_chambre
 from DTO.chambre_dto import TypeChambreDTO
+from DTO.usager_dto import UsagerDTO
 from DTO.rechercher_reservation_dto import RechercherReservationDTO
 from DTO.creer_reservation_dto import CreerReservationDTO
 from fastapi.middleware.cors import CORSMiddleware
 from uuid import UUID
 import uvicorn
-
+from metier.usager_metier import (
+    creer_usager, 
+    get_usager_par_nom, 
+    get_usager_par_id, 
+    modifier_usager, 
+    supprimer_usager
+)
 from metier.reservation_metier import (
     creer_reservation,
     rechercher_reservation,
@@ -43,6 +50,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -89,6 +97,8 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
      return user
      
 
+# -------------- SECTION CHAMBRE ----------------
+
 # Créer Chambre
 @app.post("/creerChambre")
 def read_item(chambre: ChambreDTO, current_user: Annotated[User, Depends(get_current_user)]):
@@ -121,6 +131,9 @@ def read_item(id_chambre: UUID, current_user: Annotated[User, Depends(get_curren
     except ValueError as e:
         return HTTPException(status_code=404, detail=str(e))
 
+
+# -------------- SECTION CHAMBRE ----------------
+
 # Créer Type Chambre
 @app.post("/creerTypeChambre")
 def read_item(type: TypeChambreDTO, current_user: Annotated[User, Depends(get_current_user)]):
@@ -152,17 +165,56 @@ def read_item(id_type_chambre: UUID, current_user: Annotated[User, Depends(get_c
         return supprimer_type_chambre(id_type_chambre)
     except ValueError as e:
         return HTTPException(status_code=404, detail=str(e))
+
     
-# Créer Usager
+# -------------- SECTION USAGER ----------------
+    
+# Créer Usager (confirmé que ça fonctionne avec le Swagger UI)
+@app.post("/creerUsager")
+def read_item(usager: UsagerDTO, current_user: Annotated[User, Depends(get_current_user)]):
+    try:
+        return creer_usager(usager)
+    except ValueError as e:
+        return HTTPException(status_code=404, detail=str(e))
 
-# Get Usager par Nom
 
-# Get Usager par ID
+# Get Usager par Nom (confirmé que ça fonctionne avec le Swagger UI)
+@app.get("/usagers/nom/{nom}")
+def read_item(nom: str, current_user: Annotated[User, Depends(get_current_user)]):
+    try:
+        return get_usager_par_nom(nom)
+    except ValueError as e:
+        return HTTPException(status_code=404, detail=str(e))
 
-# Modifier Usager
 
-# Supprimer Usager
+# Get Usager par ID (confirmé que ça fonctionne avec le Swagger UI)
+@app.get("/usagers/{id_usager}")
+def read_item(id_usager: UUID, current_user: Annotated[User, Depends(get_current_user)]):
+    try:
+        return get_usager_par_id(id_usager)
+    except ValueError as e:
+        return HTTPException(status_code=404, detail=str(e))
 
+
+# Modifier Usager (confirmé que ça fonctionne avec le Swagger UI)
+@app.post("/modifierUsager")
+def read_item(usager: UsagerDTO, current_user: Annotated[User, Depends(get_current_user)]):
+    try:
+        return modifier_usager(usager)
+    except ValueError as e:
+        return HTTPException(status_code=404, detail=str(e))
+
+
+# Supprimer Usager (confirmé que ça fonctionne avec le Swagger UI)
+@app.delete("/supprimerUsager/{id_usager}")
+def read_item(id_usager: UUID, current_user: Annotated[User, Depends(get_current_user)]):
+    try:
+        return supprimer_usager(id_usager)
+    except ValueError as e:
+        return HTTPException(status_code=404, detail=str(e))
+
+
+# -------------- SECTION RÉSERVATION ----------------
 
 # Créer Réservation
 @app.post("/creerReservation")
