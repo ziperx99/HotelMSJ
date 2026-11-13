@@ -1,6 +1,7 @@
 import Reservation from './components/reservation/ReservationFonction';
 import logo from './logo.svg';
 import './App.css';
+import RechercheReservation from './components/reservation/RechercheReservationFonction';
 
 const reservation1 = {
   du: "15 décembre 2024",
@@ -35,8 +36,7 @@ const reservation2 = {
 function App() {
   return (
     <>
-      <Reservation reservation={reservation1} />
-      <Reservation reservation={reservation2} />
+      <RechercheReservation/>
     </>
   );
 }
