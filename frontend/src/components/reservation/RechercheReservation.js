@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ListeReservation from "./ListeReservationFonction";
+import ListeReservation from "./ListeReservation";
 
 const RechercheReservation = () => {
     const [reservations, setReservations] = useState(undefined);
