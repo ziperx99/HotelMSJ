@@ -27,3 +27,62 @@ code {
   display: block;
   margin: 0 auto;
 }
+
+.container-fonct {
+  margin: 10px;
+  padding: 0px 0px 0px 0px;
+  color: #29232e;
+  background-color: rgb(250, 227, 227);
+  width: fit-content;
+  border-radius: 15px;
+  border: 2px solid #29232e;
+  overflow: hidden;
+}
+
+.header-fonct {
+  background-color: #5B3568;
+  padding: 0px 20px 8px 20px;
+  color: white;
+}
+
+.header-fonct h1 {
+  margin: 0px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  color: white;
+}
+
+.form-fonct {
+  background-color: #EFE7F3;
+  padding: 10px 10px 10px 10px;
+}
+
+.form-button {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0px 5px 0px;
+  gap: 10px;
+}
+
+.form-button button {
+  background-color: #b82f45;
+  color: #EFE7F3;
+  padding: 10px 15px 10px 15px;
+}
+
+.feedbackFormulaire{
+  width: fit-content;
+  margin: 10px;
+}
+
+.feedbackFormulaire.erreur p {
+  padding: 10px 30px 10px 30px;
+  background-color: rgb(238, 79, 79);
+  border-left: 10px solid red;
+}
+
+.feedbackFormulaire.succes p {
+  padding: 10px 30px 10px 30px;
+  background-color: rgb(87, 235, 136);
+  border-left: 10px solid green;
+}

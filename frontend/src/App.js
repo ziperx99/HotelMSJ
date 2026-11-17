@@ -1,4 +1,6 @@
 import RechercheReservation from "./components/reservation/RechercheReservation";
+import CreerReservation from "./components/reservation/CreerReservation";
+import SupprimerReservation from "./components/reservation/SupprimerReservation";
 import Client from "./components/client/Client";
 import Admin from "./components/admin/admin";
 import Menu from "./components/menu/menu";
@@ -16,6 +18,8 @@ function App() {
             <Route path="/" element={<Menu />} >
               <Route path="/login" index element={<Login />} />
               <Route path="/rechercherReservation" element={<RechercheReservation />} />
+              <Route path="/creerReservation" element={<CreerReservation />} />
+              <Route path="/supprimerReservation" element={<SupprimerReservation />} />
               <Route path="/chambre" element={<Chambre />} />
               <Route path="/client" element={<Client />} />
               <Route path="/admin" element={<Admin />} />

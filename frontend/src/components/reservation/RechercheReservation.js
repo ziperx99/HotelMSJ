@@ -10,11 +10,13 @@ const RechercheReservation = () => {
 
     const rechercherReservations = async () => {
         const requestData = {
-            idReservation: null,
-            idUsager: null,
-            idChambre: null,
+            id_reservation: null,
+            id_usager: null,
+            id_chambre: null,
             nom: nom,
-            prenom: prenom
+            prenom: prenom,
+            disponible_reservation: null,
+            date: null
         };
 
         try {
@@ -33,24 +35,36 @@ const RechercheReservation = () => {
 
     return (
         <>
-            <button onClick={rechercherReservations}>Rechercher</button>
-            <button onClick={effacerReservations}>Effacer</button>
-            <br />
-            <label htmlFor="nom">Nom:</label>
-            <input
-                type="text"
-                id="nom"
-                value={nom}
-                onChange={(e) => setNom(e.target.value)}
-            />
-            <label htmlFor="prenom">Prénom:</label>
-            <input
-                type="text"
-                id="prenom"
-                value={prenom}
-                onChange={(e) => setPrenom(e.target.value)}
-            />
+            <div className="container-fonct">
+                <div className="header-fonct">
+                    <h1>Rechercher une réservation</h1>
+                </div>
+                <div className="form-fonct">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td><label htmlFor="nom">Nom:</label></td>
+                                <td><input type="text" id="nom" value={nom} onChange={(e) => setNom(e.target.value)}/></td>
+                            </tr>
+                            <tr>
+                                <td><label htmlFor="prenom">Prénom:</label></td>
+                                <td><input type="text" id="prenom" value={prenom} onChange={(e) => setPrenom(e.target.value)}/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div className="form-button">
+                        <button onClick={rechercherReservations}>Rechercher</button>
+                        <button onClick={effacerReservations}>Effacer</button>
+                    </div>
+                </div>
+            </div>    
 
+
+
+
+
+            
+            
             {reservations !== undefined && (
                 <ListeReservation reservations={reservations} />
             )}
