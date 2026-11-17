@@ -1,119 +1,93 @@
 import { useState } from "react";
-
-var mockReservations = [
-    {
-        du: "15 décembre 2024",
-        au: "24 décembre 2024",
-        prix: "129.99",
-        client: {
-            prenom: "Jean",
-            nom: "Saisrien",
-            adresse: "1234 rue Des Tulipes, Gaspé",
-            mobile: "418-123-4567"
-        },
-        chambre: {
-            numero: "12"
-        }
-    },
-    {
-        du: "25 décembre 2024",
-        au: "31 décembre 2024",
-        prix: "159.99",
-        client: {
-            prenom: "Paul",
-            nom: "Therrien",
-            adresse: "6789 rue Des Érables, Matane",
-            mobile: "418-456-1234"
-        },
-        chambre: {
-            numero: "324"
-        }
-    }
-]
+import instance from "../../axiosConfig";
+import withAuthentication from "../login/withAuthentication";
 
 const CreerReservation = () => {
-    const [reservations, setReservations] = useState(mockReservations);
-    
-    const ajouterReservation = (e) => {
 
-        // TODO: VRAIE INTÉGRATION BACKEND (Et non ajout à une liste "mock")
-        // À voir avec le cours du 17 novembre.
+    const [feedbackFormulaire, setfeedbackFormulaire] = useState("");
+    const [erreur, setErreur] = useState(false);
+    
+    const ajouterReservation = async (e) => {
 
         e.preventDefault();
+
+        setfeedbackFormulaire("");
+        setErreur(false);
 
         const form = new FormData(e.target);
 
         const nouvelleReservation = {
-            du: form.get("du"),
-            au: form.get("au"),
-            prix: form.get("prix"),
-            client: {
-                prenom: form.get("prenom"),
-                nom: form.get("nom"),
-                adresse: form.get("adresse"),
-                mobile: form.get("mobile"),
-            },
-            chambre:{
-                numero: form.get("noChambre")
+            date_debut_reservation: new Date(form.get("date_debut_reservation")).toISOString(),
+            date_fin_reservation: new Date(form.get("date_fin_reservation")).toISOString(),
+            prix_jour: Number(form.get("prix_jour")),
+            info_reservation: form.get("info_reservation"),
+            id_usager: form.get("id_usager"),
+            numero_chambre: form.get("noChambre")
             }
-        };
 
-        setReservations([...reservations, nouvelleReservation]);
-
-        e.target.reset();
+        try {
+            const response = await instance.post("/creerReservation", nouvelleReservation);
+            setfeedbackFormulaire("Réservation créée avec succès!")
+            setErreur(false);
+            e.target.reset();
+        } catch (error) {
+            console.log(error);
+            setfeedbackFormulaire("Erreur lors de l'ajout de la réservation. Veuillez réessayer.");
+            setErreur(true);
+        }
     };
 
     return (
-        <>
-            <h1>Ajouter une réservation</h1>
-
-            <form onSubmit={ajouterReservation}>
-                <label for="du">Date de début:</label>
-                <input type="date" id="du" name="du"></input>
-                <br></br>
-                <label for="au">Date de fin:</label>
-                <input type="date" id="au" name="au"></input>
-                <br></br>
-                <label for="prix">Prix:</label>
-                <input type="text" id="prix" name="prix"></input>
-                <br></br>
-                <label for="noChambre">Numéro de chambre:</label>
-                <input type="number" id="noChambre" name="noChambre"></input>
-                <br></br>
-                <label for="nom">Nom:</label>
-                <input type="text" id="nom" name="nom"></input>
-                <br></br>
-                <label for="prenom">Prenom:</label>
-                <input type="text" id="prenom" name="prenom"></input>
-                <br></br>
-                <label for="adresse">Adresse:</label>
-                <input type="text" id="adresse" name="adresse"></input>
-                <br></br>
-                <label for="mobile">Mobile:</label>
-                <input type="text" id="mobile" name="mobile"></input>
-                <br></br>
-                <button type="submit">Ajouter</button>
-            </form>
-
-            {/* Affichage temporaire test */}
-            {reservations.map((reservation,index) => (
-                <div key={index}>
-                    <p>Du: {reservation.du}</p>
-                    <p>Au: {reservation.au}</p>
-                    <p>Prix: {reservation.prix}</p>
-                    <p>No. chambre: {reservation.chambre.numero}</p>
-                    <p>Nom: {reservation.client.nom}</p>
-                    <p>Prénom: {reservation.client.prenom}</p>
-                    <p>Adresse: {reservation.client.adresse}</p>
-                    <p>Mobile: {reservation.client.mobile}</p>
-                    <br></br>
-
+        <> 
+            <div className="container-fonct">
+                <div className="header-fonct">
+                    <h1>Ajouter une réservation</h1>
                 </div>
-            ))}
+                <div className="form-fonct">
+                    <form onSubmit={ajouterReservation}>
+                        <table>
+                            <tbody>
+                                <tr>
+                                <td><label htmlFor="date_debut_reservation">Date de début:</label></td>
+                                <td><input type="date" id="date_debut_reservation" name="date_debut_reservation" required></input></td>
+                                </tr>
+                                <tr>
+                                <td><label htmlFor="date_fin_reservation">Date de fin:</label></td>
+                                <td><input type="date" id="date_fin_reservation" name="date_fin_reservation" required></input></td>
+                                </tr>
+                                <tr>
+                                <td><label htmlFor="prix_jour">Prix par jour:</label></td>
+                                <td><input type="text" id="prix_jour" name="prix_jour" required></input></td>
+                                </tr>
+                                <tr>
+                                <td><label htmlFor="noChambre">Numéro de chambre:</label></td>
+                                <td><input type="number" id="noChambre" name="noChambre" required></input></td>
+                                </tr>
+                                <tr>
+                                <td><label htmlFor="id_usager">ID Usager:</label></td>
+                                <td><input type="text" id="id_usager" name="id_usager" required></input></td>
+                                </tr>
+                                <tr>
+                                <td><label htmlFor="info_reservation">Informations supplémentaires:</label></td>
+                                <td><textarea id="info_reservation" name="info_reservation" rows="4" cols="50"></textarea></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div className="form-button">
+                            <button type="submit">Ajouter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {feedbackFormulaire && (
+                <div className={`feedbackFormulaire ${erreur ? "erreur" : "succes"}`}>
+                    <p>{feedbackFormulaire}</p>
+                </div>
+            )}
         </>
     );
 };
 
-export default CreerReservation;
+export default withAuthentication(CreerReservation);
 
 

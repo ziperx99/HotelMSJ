@@ -6,8 +6,8 @@ function Reservation({ reservation }) {
 
   return (
     <>    
-      <h4>{reservation.dateDebut} au {reservation.dateFin}</h4>
-      <p>{reservation.prixParJour} par jour</p>
+      <h4>Du {reservation.date_debut_reservation}. au {reservation.date_fin_reservation}</h4>
+      <p>{reservation.prix_jour}$ par jour</p>
       <div>
         <button 
           className="button-info" 
@@ -30,6 +30,10 @@ function Reservation({ reservation }) {
         </button>
         <p hidden={!isChambreVisible}>
           <img src={`chambre${reservation.chambre.type_chambre.nom_type}.jpeg`} alt={"Chambre" + reservation.chambre.numero_chambre} />
+          <br />
+          {reservation.chambre.disponible_reservation}
+          <br />
+          {reservation.chambre.autre_informations}
         </p>
         {/* TODO:  Ajouter un bouton afin de basculer en mode edition ou lecture seul */}
       </div>

@@ -13,7 +13,11 @@ const Menu = () => {
             <br />
             <Link to="/admin">Administration</Link>
             <br />
-            <Link to="/rechercherReservation">Réservations</Link>
+            <Link to="/rechercherReservation">Rechercher Réservations</Link>
+            <br />
+            <Link to="/creerReservation">Créer Réservation</Link>
+            <br />
+            <Link to="/supprimerReservation">Supprimer Réservation</Link>
             <br />
             <Link to="/login">Connexion</Link>
             <br />
