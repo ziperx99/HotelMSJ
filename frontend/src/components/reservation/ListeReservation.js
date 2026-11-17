@@ -1,15 +1,15 @@
 import Reservation from "./Reservation";
 
 const ListeReservation = ({ reservations }) => {
-    const ListeReservation = reservations.map(
+    const listeReservation = reservations.map(
         (reservation) => (
-            <Reservation key = {reservation.id} reservation={reservation} />
+            <Reservation key={reservation.id} reservation={reservation} />
         )
     );
 
     return (
         <>
-            {ListeReservation}
+            {listeReservation}
         </>
     );
 };

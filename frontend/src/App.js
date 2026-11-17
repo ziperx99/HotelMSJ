@@ -1,49 +1,32 @@
-import Reservation from './components/reservation/Reservation';
-import logo from './logo.svg';
-import './App.css';
-import RechercheReservation from './components/reservation/RechercheReservation';
-import CreerReservation from './components/reservation/CreerReservation';
-
-const reservation1 = {
-  du: "15 décembre 2024",
-  au: "24 décembre 2024",
-  prix: "129.99",
-  client: {
-    prenom: "Jean",
-    nom: "Saisrien",
-    adresse: "1234 rue Des Tulipes, Gaspé",
-    mobile: "418-123-4567"
-  },
-  chambre: {
-    numero: "12"
-  }
-}
-
-const reservation2 = {
-  du: "25 décembre 2024",
-  au: "31 décembre 2024",
-  prix: "159.99",
-  client: {
-    prenom: "Paul",
-    nom: "Therrien",
-    adresse: "6789 rue Des Érables, Matane",
-    mobile: "418-456-1234"
-  },
-  chambre: {
-    numero: "324"
-  }
-}
+import RechercheReservation from "./components/reservation/RechercheReservation";
+import Client from "./components/client/Client";
+import Admin from "./components/admin/admin";
+import Menu from "./components/menu/menu";
+import Chambre from "./components/chambre/Chambre";
+import Login from "./components/login/Login";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import logo from "./hotel_logo2.png";
 
 function App() {
-  return (
-    <>
-      <RechercheReservation/>
-      <CreerReservation/>
-    </>
+  return (    
+     <BrowserRouter>        
+        <ApplicationLogo/>
+        <br/>
+          <Routes>
+            <Route path="/" element={<Menu />} >
+              <Route path="/login" index element={<Login />} />
+              <Route path="/rechercherReservation" element={<RechercheReservation />} />
+              <Route path="/chambre" element={<Chambre />} />
+              <Route path="/client" element={<Client />} />
+              <Route path="/admin" element={<Admin />} />
+            </Route>
+          </Routes>
+      </BrowserRouter>
   );
 }
 
+function ApplicationLogo() {
+  return <img src={logo} alt="Logo de l'hotel" className="centre" />
+}
+
 export default App;
-
-
-
