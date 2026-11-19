@@ -1,6 +1,5 @@
 import RechercheReservation from "./components/reservation/RechercheReservation";
 import CreerReservation from "./components/reservation/CreerReservation";
-import ModifierReservation from "./components/reservation/ModifierReservation";
 import SupprimerReservation from "./components/reservation/SupprimerReservation";
 import Client from "./components/client/Client";
 import Admin from "./components/admin/admin";
@@ -20,7 +19,6 @@ function App() {
               <Route path="/login" index element={<Login />} />
               <Route path="/rechercherReservation" element={<RechercheReservation />} />
               <Route path="/creerReservation" element={<CreerReservation />} />
-              <Route path="/modifierReservation" element={<ModifierReservation />} />
               <Route path="/supprimerReservation" element={<SupprimerReservation />} />
               <Route path="/chambre" element={<Chambre />} />
               <Route path="/client" element={<Client />} />

@@ -175,6 +175,28 @@ def modifier_reservation(reservation: ReservationDTO):
             reservation_existante.prix_jour = reservation.prix_jour
             reservation_existante.info_reservation = reservation.info_reservation
 
+            # Modification de la chambre
+            if reservation.chambre is not None:
+
+                stmt_chambre = select(Chambre).where(Chambre.numero_chambre == reservation.chambre.numero_chambre)
+                nouvelle_chambre = session.execute(stmt_chambre).scalar_one_or_none()
+
+                if nouvelle_chambre is None:
+                    raise ValueError("La chambre demandée n'existe pas.")
+
+                reservation_existante.chambre = nouvelle_chambre
+
+            # Modification de l'usager
+            if reservation.usager is not None:
+
+                stmt_usager = select(Usager).where(Usager.id_usager == reservation.usager.id_usager)
+                nouvel_usager = session.execute(stmt_usager).scalar_one_or_none()
+
+                if nouvel_usager is None:
+                    raise ValueError("L'usager demandé n'existe pas.")
+
+                reservation_existante.usager = nouvel_usager
+
             # Enregistrer les modifications dans la BD
             session.commit()
 

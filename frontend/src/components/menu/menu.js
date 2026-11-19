@@ -17,8 +17,6 @@ const Menu = () => {
             <br />
             <Link to="/creerReservation">Créer Réservation</Link>
             <br />
-            <Link to="/modifierReservation">Modifier Réservation</Link>
-            <br />
             <Link to="/supprimerReservation">Supprimer Réservation</Link>
             <br />
             <Link to="/login">Connexion</Link>

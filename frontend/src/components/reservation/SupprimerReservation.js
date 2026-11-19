@@ -2,6 +2,9 @@ import { useState } from "react";
 import instance from "../../axiosConfig";
 import withAuthentication from "../login/withAuthentication";
 
+{/* C'était pas à faire, je l'ai fait pareil en accident, oups! */}
+{/* On peut bien le garder au cas ou ça serait utile plus tard. */}
+
 const SupprimerReservation = () => {
 
     const [feedbackFormulaire, setfeedbackFormulaire] = useState("");
