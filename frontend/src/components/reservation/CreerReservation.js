@@ -32,6 +32,7 @@ const CreerReservation = () => {
             e.target.reset();
         } catch (error) {
             console.log(error);
+            // TODO JO: Afficher la vraie erreur?
             setfeedbackFormulaire("Erreur lors de l'ajout de la réservation. Veuillez réessayer.");
             setErreur(true);
         }
@@ -48,28 +49,28 @@ const CreerReservation = () => {
                         <table>
                             <tbody>
                                 <tr>
-                                <td><label htmlFor="date_debut_reservation">Date de début:</label></td>
-                                <td><input type="date" id="date_debut_reservation" name="date_debut_reservation" required></input></td>
+                                    <td><label htmlFor="date_debut_reservation">Date de début:</label></td>
+                                    <td><input type="date" id="date_debut_reservation" name="date_debut_reservation" required></input></td>
                                 </tr>
                                 <tr>
-                                <td><label htmlFor="date_fin_reservation">Date de fin:</label></td>
-                                <td><input type="date" id="date_fin_reservation" name="date_fin_reservation" required></input></td>
+                                    <td><label htmlFor="date_fin_reservation">Date de fin:</label></td>
+                                    <td><input type="date" id="date_fin_reservation" name="date_fin_reservation" required></input></td>
                                 </tr>
                                 <tr>
-                                <td><label htmlFor="prix_jour">Prix par jour:</label></td>
-                                <td><input type="text" id="prix_jour" name="prix_jour" required></input></td>
+                                    <td><label htmlFor="prix_jour">Prix par jour:</label></td>
+                                    <td><input type="text" id="prix_jour" name="prix_jour" required></input></td>
                                 </tr>
                                 <tr>
-                                <td><label htmlFor="noChambre">Numéro de chambre:</label></td>
-                                <td><input type="number" id="noChambre" name="noChambre" required></input></td>
+                                    <td><label htmlFor="noChambre">Numéro de chambre:</label></td>
+                                    <td><input type="number" id="noChambre" name="noChambre" required></input></td>
                                 </tr>
                                 <tr>
-                                <td><label htmlFor="id_usager">ID Usager:</label></td>
-                                <td><input type="text" id="id_usager" name="id_usager" required></input></td>
+                                    <td><label htmlFor="id_usager">ID Usager:</label></td>
+                                    <td><input type="text" id="id_usager" name="id_usager" required></input></td>
                                 </tr>
                                 <tr>
-                                <td><label htmlFor="info_reservation">Informations supplémentaires:</label></td>
-                                <td><textarea id="info_reservation" name="info_reservation" rows="4" cols="50"></textarea></td>
+                                    <td><label htmlFor="info_reservation">Informations supplémentaires:</label></td>
+                                    <td><textarea id="info_reservation" name="info_reservation" rows="4" cols="50"></textarea></td>
                                 </tr>
                             </tbody>
                         </table>

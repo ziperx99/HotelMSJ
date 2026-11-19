@@ -5,32 +5,44 @@ import withAuthentication from "../login/withAuthentication";
 
 const RechercheReservation = () => {
     const [reservations, setReservations] = useState([]);
-    const [nom, setNom] = useState("");
-    const [prenom, setPrenom] = useState("");
+    const [idReservation, setIdReservation] = useState(null);
+    const [idUsager, setIdUsager] = useState(null);
+    const [idChambre, setIdChambre] = useState(null);
+    const [nom, setNom] = useState(null);
+    const [prenom, setPrenom] = useState(null);
+    const [disponibleSeulement, setDisponibleSeulement] = useState(false);
+    const [date, setDate] = useState(null);
 
     const rechercherReservations = async () => {
+
         const requestData = {
-            id_reservation: null,
-            id_usager: null,
-            id_chambre: null,
-            nom: nom,
-            prenom: prenom,
-            disponible_reservation: null,
-            date: null
+            id_reservation: idReservation || null,
+            id_usager: idUsager || null,
+            id_chambre: idChambre || null,
+            nom: nom || null,
+            prenom: prenom || null,
+            disponible_reservation: disponibleSeulement ? true : null,
+            date: date || null
         };
 
         try {
             const response = await instance.post("/rechercherReservation", requestData);
             setReservations(response.data);
         } catch (error) {
+            // TODO JO: Afficher la vraie erreur?
             console.log(error);
         }
     };
 
     const effacerReservations = () => {
         setReservations([]);
+        setIdReservation("");
+        setIdUsager("");
+        setIdChambre("");
         setNom("");
         setPrenom("");
+        setDisponibleSeulement(null);
+        setDate("")
     };
 
     return (
@@ -43,12 +55,32 @@ const RechercheReservation = () => {
                     <table>
                         <tbody>
                             <tr>
+                                <td><label htmlFor="idReservation">ID réservation:</label></td>
+                                <td><input type="text" id="idReservation" value={idReservation} onChange={(e) => setIdReservation(e.target.value)}/></td>
+                            </tr>
+                            <tr>
+                                <td><label htmlFor="idUsager">ID usager:</label></td>
+                                <td><input type="text" id="idUsager" value={idUsager} onChange={(e) => setIdUsager(e.target.value)}/></td>
+                            </tr>
+                            <tr>
+                                <td><label htmlFor="idChambre">ID chambre:</label></td>
+                                <td><input type="text" id="idChambre" value={idChambre} onChange={(e) => setIdChambre(e.target.value)}/></td>
+                            </tr>
+                            <tr>
                                 <td><label htmlFor="nom">Nom:</label></td>
                                 <td><input type="text" id="nom" value={nom} onChange={(e) => setNom(e.target.value)}/></td>
                             </tr>
                             <tr>
                                 <td><label htmlFor="prenom">Prénom:</label></td>
                                 <td><input type="text" id="prenom" value={prenom} onChange={(e) => setPrenom(e.target.value)}/></td>
+                            </tr>
+                            <tr>
+                                <td><label htmlFor="date">Date:</label></td>
+                                <td><input type="date" id="date" value={date} onChange={(e) => setDate(e.target.value)}/></td>
+                            </tr>
+                            <tr>
+                                <td><label htmlFor="disponibleSeulement">Chambres disponibles:</label></td>
+                                <td><input type="checkbox" id="disponibleSeulement" checked={disponibleSeulement} onChange={(e) => setDisponibleSeulement(e.target.checked)}/></td>
                             </tr>
                         </tbody>
                     </table>
@@ -58,12 +90,6 @@ const RechercheReservation = () => {
                     </div>
                 </div>
             </div>    
-
-
-
-
-
-            
             
             {reservations !== undefined && (
                 <ListeReservation reservations={reservations} />
