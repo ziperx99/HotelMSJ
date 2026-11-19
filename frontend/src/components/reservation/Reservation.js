@@ -35,11 +35,13 @@ function Reservation({ reservation }) {
           <br />
           {reservation.chambre.autre_informations}
         </p>
-        {/* TODO:  Ajouter un bouton afin de basculer en mode edition ou lecture seul */}
+        {/* TODO PD:  Ajouter un bouton afin de basculer en mode edition ou lecture seul */}
       </div>
-      {/* TODO:  Programmer la composante lorsqu'en mode édition */}
+      {/* TODO PD:  Programmer la composante lorsqu'en mode édition */}
     </>
   );
 }
+
+{/* TODO JO:  CSS de l'affichage des réservations */}
 
 export default Reservation;
