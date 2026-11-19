@@ -29,7 +29,7 @@ const RechercheReservation = () => {
             const response = await instance.post("/rechercherReservation", requestData);
             setReservations(response.data);
         } catch (error) {
-            // TODO JO: Afficher la vraie erreur?
+            // TODO : Afficher la vraie erreur?
             console.log(error);
         }
     };

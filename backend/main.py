@@ -230,7 +230,7 @@ def rechercher_reservation_api(critere: RechercherReservationDTO, current_user: 
              raise HTTPException(status_code=404, detail=str(e))
 
 # Modifier Réservation
-@app.put("/modifierReservation")
+@app.post("/modifierReservation")
 def modifier_reservation_api(reservation: ReservationDTO, current_user: Annotated[User, Depends(get_current_user)]):
      try:
           modifier_reservation(reservation)
