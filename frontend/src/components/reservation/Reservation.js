@@ -60,8 +60,23 @@ function Reservation({ reservation }) {
             setModeEdition(false);
         } catch (error) {
             console.log(error);
-            // TODO JO: Afficher la vraie erreur?
-            setfeedbackFormulaire("Erreur lors de la modification de la réservation. Veuillez réessayer.");
+
+            let messageErreur = "Erreur lors de la modification de la réservation.";
+
+            if (error.response){
+                const detail = error.response.data.detail;
+
+                if (Array.isArray(detail)) {
+                    messageErreur = detail.map(err => err.msg.replace("Value error, ", ""));
+                } else if (typeof detail === "string") {
+                    messageErreur = detail;
+                } 
+ 
+            } else {
+                messageErreur = error.message;
+            }
+
+            setfeedbackFormulaire("Erreur :\n" + messageErreur);
             setErreur(true);
         }
     };

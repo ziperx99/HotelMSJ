@@ -32,8 +32,22 @@ const CreerReservation = () => {
             e.target.reset();
         } catch (error) {
             console.log(error);
-            // TODO JO: Afficher la vraie erreur?
-            setfeedbackFormulaire("Erreur lors de l'ajout de la réservation. Veuillez réessayer.");
+            let messageErreur = "Erreur lors de l'ajout de la réservation.";
+
+            if (error.response){
+                const detail = error.response.data.detail;
+
+                if (Array.isArray(detail)) {
+                    messageErreur = detail.map(err => err.msg.replace("Value error, ", ""));
+                } else if (typeof detail === "string") {
+                    messageErreur = detail;
+                } 
+ 
+            } else {
+                messageErreur = error.message;
+            }
+
+            setfeedbackFormulaire("Erreur :\n" + messageErreur);
             setErreur(true);
         }
     };

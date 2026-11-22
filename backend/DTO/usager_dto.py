@@ -5,7 +5,7 @@ from modele.usager import Usager
 
 
 class UsagerDTO(BaseModel):
-    id_usager: UUID = Field(custom_error='id_usager doit être un UUID comportant 36 caractères')
+    id_usager: UUID
     prenom: str = Field(max_length=50, custom_error='prenom a une limite de 50 caractères')
     nom: str = Field(max_length=50, custom_error='nom a une limite de 50 caractères')
     adresse: str = Field(max_length=100, custom_error='adresse a une limite de 100 caractères')
@@ -18,6 +18,17 @@ class UsagerDTO(BaseModel):
         if valeur is None or str(valeur).strip() == "":
             raise ValueError("Ce champ ne peut pas être vide.")
         return valeur
+
+    @field_validator("id_usager", mode="before")
+    @classmethod
+    def verifier_id_usager(cls, valeur):
+        try:
+            uuid = UUID(str(valeur))
+            if len(str(valeur)) != 36:
+                raise ValueError()
+            return uuid
+        except (ValueError, TypeError, AttributeError):
+            raise ValueError("L'ID usager doit être un UUID valide de 36 caractères.")
 
     @field_validator("mobile")
     @classmethod
