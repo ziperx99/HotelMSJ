@@ -12,8 +12,13 @@ const RechercheReservation = () => {
     const [prenom, setPrenom] = useState(null);
     const [disponibleSeulement, setDisponibleSeulement] = useState(false);
     const [date, setDate] = useState(null);
+    const [feedbackFormulaire, setfeedbackFormulaire] = useState("");
+    const [erreur, setErreur] = useState(false);
 
     const rechercherReservations = async () => {
+
+        setfeedbackFormulaire("");
+        setErreur(false);
 
         const requestData = {
             id_reservation: idReservation || null,
@@ -28,9 +33,33 @@ const RechercheReservation = () => {
         try {
             const response = await instance.post("/rechercherReservation", requestData);
             setReservations(response.data);
+            if (response.data.length > 0) {
+                setfeedbackFormulaire("Affichage des " + response.data.length + " résultat(s) de recherche.")
+            }
+            else if (response.data.length == 0) {
+                setfeedbackFormulaire("Aucun résultat de recherche trouvé.")
+            }
+
+            setErreur(false);
         } catch (error) {
-            // TODO : Afficher la vraie erreur?
             console.log(error);
+            let messageErreur = "Erreur lors de la recherche.";
+
+            if (error.response){
+                const detail = error.response.data.detail;
+
+                if (Array.isArray(detail)) {
+                    messageErreur = detail.map(err => err.msg.replace("Value error, ", ""));
+                } else if (typeof detail === "string") {
+                    messageErreur = detail;
+                } 
+ 
+            } else {
+                messageErreur = error.message;
+            }
+
+            setfeedbackFormulaire("Erreur :\n" + messageErreur);
+            setErreur(true);
         }
     };
 
@@ -43,6 +72,8 @@ const RechercheReservation = () => {
         setPrenom("");
         setDisponibleSeulement(null);
         setDate("")
+        setErreur(false);
+        setfeedbackFormulaire("");
     };
 
     return (
@@ -89,7 +120,12 @@ const RechercheReservation = () => {
                         <button onClick={effacerReservations}>Effacer</button>
                     </div>
                 </div>
-            </div>    
+            </div>
+            {feedbackFormulaire && (
+                <div className={`feedbackFormulaire ${erreur ? "erreur" : "succes"}`}>
+                    <p>{feedbackFormulaire}</p>
+                </div>
+            )}    
             
             {reservations !== undefined && (
                 <ListeReservation reservations={reservations} />

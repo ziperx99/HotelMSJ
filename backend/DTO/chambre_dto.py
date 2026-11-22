@@ -39,7 +39,7 @@ class TypeChambreDTO(BaseModel):
         
 class ChambreDTO(BaseModel):
     idChambre : UUID = Field(custom_error='id_type_chambre doit être un UUID comportant 36 caractères')
-    numero_chambre : int = Field(ge=0, le=2147483647, custom_error='numero_chambre doit être une valeur positive avec une taille maximale de 4 bytes')
+    numero_chambre : int
     disponible_reservation : bool = Field(custom_error='disponible_reservation doit être un bool')
     autre_informations: Optional[str] = Field(default=None, max_length=2147483647, custom_error='autre_informations doit posséder une taille plus petite que 2GB')
     type_chambre: TypeChambreDTO
@@ -55,6 +55,14 @@ class ChambreDTO(BaseModel):
             raise ValueError("Le numéro de chambre ne peut pas être nul.")
         # Si le numéro n'est pas nul, on retourne la valeur que pydantic puisse continuer ses autres validations
         return valeur
+
+    @field_validator("numero_chambre", mode="before")
+    @classmethod
+    def verifier_numero_chambre(cls, valeur):
+        if valeur < 0 or valeur > 2147483647:
+            raise ValueError("Le numéro de chambre doit être une valeur positive.")
+        return valeur
+
     def __init__(self, chambre: Chambre = None, **kwargs):
         if chambre is not None:
             super().__init__(idChambre = chambre.id_chambre,
